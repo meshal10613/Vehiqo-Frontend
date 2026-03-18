@@ -104,8 +104,6 @@ export default function NotFoundPage() {
                             variants={digitVariants}
                             className="text-[120px] sm:text-[160px] font-black leading-none tracking-tighter select-none"
                             style={{
-                                color:
-                                    digit === "0" ? "transparent" : undefined,
                                 WebkitTextStroke:
                                     digit === "0" ? "3px #f43f5e" : undefined,
                                 color: digit !== "0" ? "#f43f5e" : undefined,
