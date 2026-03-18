@@ -89,7 +89,7 @@ export default function NotFoundPage() {
                 <motion.div variants={itemVariants}>
                     <Badge
                         variant="outline"
-                        className="border-rose-300 text-rose-500 bg-rose-50 text-xs tracking-widest uppercase mb-10 px-4 py-1.5"
+                        className="border-rose-300 text-primary bg-rose-50 text-xs tracking-widest uppercase mb-10 px-4 py-1.5"
                     >
                         <Compass className="w-3 h-3 mr-1.5 animate-spin animation-duration-[4s]" />
                         Page Not Found
@@ -105,8 +105,8 @@ export default function NotFoundPage() {
                             className="text-[120px] sm:text-[160px] font-black leading-none tracking-tighter select-none"
                             style={{
                                 WebkitTextStroke:
-                                    digit === "0" ? "3px #f43f5e" : undefined,
-                                color: digit !== "0" ? "#f43f5e" : undefined,
+                                    digit === "0" ? "3px #FF5100" : undefined,
+                                color: digit !== "0" ? "#FF5100" : undefined,
                                 textShadow:
                                     digit !== "0"
                                         ? "0 4px 32px rgba(244,63,94,0.2)"
@@ -120,7 +120,7 @@ export default function NotFoundPage() {
 
                 {/* Animated underline */}
                 <motion.div
-                    className="h-px bg-linear-to-r from-transparent via-rose-400 to-transparent mb-8"
+                    className="h-px bg-linear-to-r from-transparent via-primary to-transparent mb-8"
                     initial={{ width: 0, opacity: 0 }}
                     animate={{ width: "100%", opacity: 1 }}
                     transition={{ duration: 0.8, delay: 0.5, ease: "easeOut" }}
@@ -148,7 +148,7 @@ export default function NotFoundPage() {
                     className="flex items-center gap-3 flex-wrap justify-center"
                 >
                     <Button
-                        className="bg-rose-600 hover:bg-primary text-white gap-2 shadow-lg shadow-rose-200 transition-all duration-200 cursor-pointer"
+                        className="bg-primary hover:bg-primary text-white gap-2 shadow-lg shadow-primary/20 transition-all duration-200 cursor-pointer h-10"
                     >
                         <Link href="/" className="flex items-center gap-2">
                             <Home className="w-4 h-4" />
@@ -158,7 +158,7 @@ export default function NotFoundPage() {
 
                     <Button
                         variant="outline"
-                        className="border-zinc-200 text-zinc-700 hover:bg-zinc-50 gap-2 transition-all duration-200 cursor-pointer"
+                        className="border-zinc-200 text-zinc-700 hover:bg-zinc-50 gap-2 transition-all duration-200 cursor-pointer h-10"
                         onClick={() => window.history.back()}
                     >
                         <span onClick={() => window.history.back()} className="flex items-center gap-2 cursor-pointer">
@@ -181,7 +181,7 @@ export default function NotFoundPage() {
                     {[0, 1, 2, 3, 4, 5].map((i) => (
                         <div
                             key={i}
-                            className="absolute w-2 h-2 rounded-full bg-rose-300/60"
+                            className="absolute w-2 h-2 rounded-full bg-primary/80"
                             style={{
                                 top: `${50 + 40 * Math.sin((i * Math.PI * 2) / 6)}%`,
                                 left: `${50 + 40 * Math.cos((i * Math.PI * 2) / 6)}%`,

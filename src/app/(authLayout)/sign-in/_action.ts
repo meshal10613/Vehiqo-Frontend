@@ -5,12 +5,7 @@ import { setTokenInCookies } from "@/lib/tokenUtils";
 import { ApiErrorResponse, ApiResponse } from "@/types/api.type";
 import { ILoginPayload, loginZodSchema } from "@/zod/auth.validation";
 import { redirect } from "next/navigation";
-import { UserRole } from "../../../../types/enum.type";
-import { ILoginResponse } from "../../../../types/auth.type";
-import {
-    getDefaultDashboardRoute,
-    isValidRedirectForRole,
-} from "../../../../lib/authUtils";
+import { ILoginResponse } from "../../../types/auth.type";
 
 export const loginAction = async (
     payload: ILoginPayload,
@@ -46,13 +41,6 @@ export const loginAction = async (
         //     redirect("/verify-email");
         // }else // in the catch block
 
-        // const targetPath =
-        //     redirectPath &&
-        //     isValidRedirectForRole(redirectPath, role as UserRole)
-        //         ? redirectPath
-        //         : getDefaultDashboardRoute(role as UserRole);
-		
-        // redirect(targetPath);
 		return response;
     } catch (error: any) {
         console.log(error, "error");
@@ -75,7 +63,7 @@ export const loginAction = async (
         }
         return {
             success: false,
-            message: `Login failed: ${error.message}`,
+            message: `Login failed: ${error.response.data.message}`,
         };
     }
 };

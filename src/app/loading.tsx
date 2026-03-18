@@ -24,7 +24,7 @@ export default function LoadingPage() {
                 <div
                     className="absolute w-24 h-24 rounded-full border-2 border-transparent"
                     style={{
-                        borderTopColor: "#f43f5e",
+                        borderTopColor: "#FF5100",
                         borderRightColor: "#fda4af",
                         animation: "spin 1s linear infinite",
                     }}
@@ -33,14 +33,14 @@ export default function LoadingPage() {
                 <div
                     className="absolute w-16 h-16 rounded-full border-2 border-transparent"
                     style={{
-                        borderTopColor: "#fb7185",
+                        borderTopColor: "#FF5100",
                         borderLeftColor: "#fecdd3",
                         animation: "spin 1.5s linear infinite reverse",
                     }}
                 />
                 {/* Center dot */}
                 <div
-                    className="w-3 h-3 rounded-full bg-rose-500"
+                    className="w-3 h-3 rounded-full bg-primary"
                     style={{ animation: "pulse-dot 1.2s ease-in-out infinite" }}
                 />
             </div>
@@ -57,7 +57,7 @@ export default function LoadingPage() {
                     {[0, 1, 2].map((i) => (
                         <span
                             key={i}
-                            className="w-1.5 h-1.5 rounded-full bg-rose-400 block"
+                            className="w-1.5 h-1.5 rounded-full bg-primary block"
                             style={{
                                 animation: `bounce-dot 0.8s ease-in-out infinite`,
                                 animationDelay: `${i * 0.15}s`,

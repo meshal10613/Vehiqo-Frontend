@@ -11,7 +11,6 @@ import { useMutation } from "@tanstack/react-query";
 import { Eye, EyeOff, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { loginAction } from "../../../app/(commonLayout)/(authRouteGroup)/login/_action";
 import { Separator } from "../../ui/separator";
 import {
     Card,
@@ -23,6 +22,13 @@ import {
 } from "../../ui/card";
 import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
+import { loginAction } from "../../../app/(authLayout)/sign-in/_action";
+import { redirect } from "next/navigation";
+import {
+    getDefaultDashboardRoute,
+    isValidRedirectForRole,
+} from "../../../lib/authUtils";
+import { UserRole } from "../../../types/enum.type";
 
 interface LoginFormProps {
     redirectPath?: string;
@@ -31,7 +37,7 @@ interface LoginFormProps {
 const LoginForm = ({ redirectPath }: LoginFormProps) => {
     // const queryClient = useQueryClient();
 
-    const [serverError, setServerError] = useState<string | null>(null);
+    // const [serverError, setServerError] = useState<string | null>(null);
     const [showPassword, setShowPassword] = useState(false);
 
     const { mutateAsync, isPending } = useMutation({
@@ -46,22 +52,32 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
         },
 
         onSubmit: async ({ value }) => {
-            setServerError(null);
-            const toastId = toast.loading("Logging in...");
+            const toastId = toast.loading("Sign in...");
+            let targetPath = "/";
             try {
                 const result = (await mutateAsync(value)) as any;
 
                 if (!result.success) {
-                    setServerError(result.message || "Login failed");
-                    toast.error(result.message || "Login failed", {
+                    toast.error(result.message || "Sign In failed", {
                         id: toastId,
                     });
                     return;
                 }
-                toast.success(result.message || "Login successful", { id: toastId });
+
+                toast.success(result.message || "Sign In successful", {
+                    id: toastId,
+                });
+
+                targetPath =
+                    redirectPath &&
+                    isValidRedirectForRole(
+                        redirectPath,
+                        result.data.user.role as UserRole,
+                    )
+                        ? redirectPath
+                        : "/"; // getDefaultDashboardRoute(role as UserRole)
             } catch (error: any) {
-                console.log(`Login failed: ${error.message}`);
-                setServerError(`Login failed: ${error.message}`);
+                console.log(`Sign In failed: ${error.message}`);
                 toast.error(
                     `${error.message}` ||
                         "Something went wrong, please try again.",
@@ -70,6 +86,8 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                     },
                 );
             }
+
+            redirect(targetPath);
         },
     });
     return (
@@ -79,10 +97,11 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                     <Card className="w-full shadow-md">
                         <CardHeader className="text-center">
                             <CardTitle className="text-2xl font-bold">
-                                Welcome Back!
+                                Sign in to your account
                             </CardTitle>
                             <CardDescription>
-                                Please enter your credentials to log in.
+                                Welcome back! Please enter your details to
+                                continue.
                             </CardDescription>
                         </CardHeader>
 
@@ -147,7 +166,7 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                                                     }
                                                     variant="ghost"
                                                     size="icon"
-                                                    className={`cursor-pointer`}
+                                                    className={`cursor-pointer hover:bg-white`}
                                                 >
                                                     {showPassword ? (
                                                         <EyeOff
@@ -188,7 +207,7 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                                             pendingLabel="Logging In...."
                                             disabled={!canSubmit}
                                         >
-                                            Log In
+                                            Sign In
                                         </AppSubmitButton>
                                     )}
                                 </form.Subscribe>
@@ -207,7 +226,7 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
 
                             <Button
                                 variant="outline"
-                                className="w-full cursor-pointer"
+                                className="w-full cursor-pointer h-10"
                                 onClick={() => {
                                     const baseUrl =
                                         process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -224,7 +243,7 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                             <p className="text-sm text-muted-foreground">
                                 Don&apos;t have an account?{" "}
                                 <Link
-                                    href={`/register?redirectPath=${redirectPath}`}
+                                    href={`/sign-in?redirectPath=${redirectPath}`}
                                     className="text-primary font-medium hover:underline underline-offset-4"
                                 >
                                     Sign Up for an account

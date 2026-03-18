@@ -29,10 +29,10 @@ const AppSubmitButton = ({
                 "transition-all duration-200 overflow-hidden cursor-pointer",
                 // default state
                 !isDisabled &&
-                    "bg-rose-600 hover:bg-rose-500 text-white shadow-sm hover:shadow-md hover:shadow-rose-200 active:scale-[0.98]",
+                    "bg-primary text-white shadow-sm hover:shadow-md hover:shadow-rose-200 active:scale-[0.98]",
                 // disabled/pending state
                 isDisabled &&
-                    "bg-rose-100 text-rose-400 cursor-not-allowed shadow-none",
+                    "bg-rose-100 text-red-500 cursor-not-allowed shadow-none",
                 className,
             )}
         >

@@ -53,7 +53,7 @@ const AppField = ({
                 className={cn(
                     "text-sm font-medium transition-colors duration-200",
                     hasError
-                        ? "text-rose-500"
+                        ? "text-primary"
                         : "text-zinc-600 group-focus-within/field:text-zinc-900",
                     disabled && "opacity-50 cursor-not-allowed",
                 )}
@@ -69,10 +69,10 @@ const AppField = ({
                     "border-zinc-200 shadow-sm",
                     // focus-within
                     !hasError &&
-                        "focus-within:border-rose-400 focus-within:shadow-[0_0_0_3px_rgba(244,63,94,0.08)]",
+                        "focus-within:border-red-500 focus-within:shadow-[0_0_0_3px_rgba(244,63,94,0.08)]",
                     // error
                     hasError &&
-                        "border-rose-400 shadow-[0_0_0_3px_rgba(244,63,94,0.08)]",
+                        "border-primary shadow-[0_0_0_3px_rgba(244,63,94,0.08)]",
                     // disabled
                     disabled && "opacity-50 bg-zinc-50 cursor-not-allowed",
                 )}
@@ -83,7 +83,7 @@ const AppField = ({
                         className={cn(
                             "flex items-center justify-center pl-3 shrink-0 text-zinc-400 transition-colors duration-200",
                             "group-focus-within/field:text-zinc-500",
-                            hasError && "text-rose-400",
+                            hasError && "text-red-500",
                         )}
                     >
                         {prepend}
@@ -119,7 +119,7 @@ const AppField = ({
                         className={cn(
                             "flex items-center justify-center pr-3 shrink-0 text-zinc-400 transition-colors duration-200",
                             "group-focus-within/field:text-zinc-500",
-                            hasError && "text-rose-400",
+                            hasError && "text-red-500",
                         )}
                     >
                         {append}
@@ -129,7 +129,7 @@ const AppField = ({
                 {/* Error icon (auto appended on error, only if no custom append) */}
                 {hasError && !append && (
                     <div className="flex items-center justify-center pr-3 shrink-0">
-                        <AlertCircle className="w-4 h-4 text-rose-400" />
+                        <AlertCircle className="w-4 h-4 text-red-500" />
                     </div>
                 )}
             </div>
@@ -139,7 +139,7 @@ const AppField = ({
                 <p
                     id={`${field.name}-error`}
                     role="alert"
-                    className="flex items-center gap-1.5 text-xs text-rose-500 animate-in fade-in slide-in-from-top-1 duration-200"
+                    className="flex items-center gap-1.5 text-xs text-red-500 animate-in fade-in slide-in-from-top-1 duration-200"
                 >
                     {firstError}
                 </p>

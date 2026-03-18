@@ -57,9 +57,9 @@
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.145 0 0);
 
-    /* Rose primary */
-    --primary: oklch(0.586 0.253 17.585);
-    --primary-foreground: oklch(0.969 0.015 17.585);
+    /* #FF5100 primary */
+    --primary: #FF5100;
+    --primary-foreground: oklch(0.985 0 0);
 
     --secondary: oklch(0.97 0 0);
     --secondary-foreground: oklch(0.205 0 0);
@@ -71,7 +71,7 @@
     --destructive-foreground: oklch(0.985 0 0);
     --border: oklch(0.922 0 0);
     --input: oklch(0.922 0 0);
-    --ring: oklch(0.586 0.253 17.585);
+    --ring: #FF5100;
     --radius: 0.625rem;
 
     --chart-1: oklch(0.809 0.105 251.813);
@@ -82,12 +82,12 @@
 
     --sidebar: oklch(0.985 0 0);
     --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.586 0.253 17.585);
-    --sidebar-primary-foreground: oklch(0.969 0.015 17.585);
+    --sidebar-primary: #FF5100;
+    --sidebar-primary-foreground: oklch(0.985 0 0);
     --sidebar-accent: oklch(0.97 0 0);
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
-    --sidebar-ring: oklch(0.586 0.253 17.585);
+    --sidebar-ring: #FF5100;
 }
 
 /* :root {

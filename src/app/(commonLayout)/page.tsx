@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "../components/ui/button";
+import { Button } from "../../components/ui/button";
 
 // async function sleep(ms: number) {
 //     return new Promise((resolve) => setTimeout(resolve, ms));
