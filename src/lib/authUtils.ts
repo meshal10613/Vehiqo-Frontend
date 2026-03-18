@@ -1,8 +1,8 @@
 import { UserRole } from "../types/enum.type";
 
 export const authRoutes = [
-    "/login",
-    "/register",
+    "/sign-in",
+    "/sign-up",
     "/forgot-password",
     "/reset-password",
     "/verify-email",

@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
-import { Sora } from "next/font/google";
+import { Sora, Geist } from "next/font/google";
 import "./globals.css";
 import QueryProviders from "../providers/QueryProvider";
 import { Toaster } from "sonner";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const sora = Sora({
     variable: "--font-sora",
@@ -20,7 +23,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
+        <html lang="en" className={cn("font-sans", geist.variable)}>
             <body className={`${sora.className} antialiased`}>
                 <QueryProviders>{children}</QueryProviders>
                 <Toaster richColors />

@@ -49,6 +49,10 @@ export async function proxy(request: NextRequest) {
         const routerOwner = getRouteOwner(pathname);
         const isAuth = isAuthRoute(pathname);
 
+        if (decodedAccessToken) {
+            userRole = decodedAccessToken.role as UserRole;
+        }
+
         //* proactively refresh token if refresh token exists and access token is expired or about to expire
         if (
             isValidAccessToken &&
@@ -121,7 +125,7 @@ export async function proxy(request: NextRequest) {
                 return NextResponse.next();
             }
 
-            const loginUrl = new URL("/login", request.url);
+            const loginUrl = new URL("/sign-in", request.url);
             loginUrl.searchParams.set("redirect", pathname);
             return NextResponse.redirect(loginUrl);
         }
@@ -197,7 +201,7 @@ export async function proxy(request: NextRequest) {
 
         //* Rule - 5 : User is Not logged in but trying to access protected route -> redirect to login
         if (!accessToken || !isValidAccessToken) {
-            const loginUrl = new URL("/login", request.url);
+            const loginUrl = new URL("/sign-in", request.url);
             loginUrl.searchParams.set("redirect", pathname);
             return NextResponse.redirect(loginUrl);
         }
