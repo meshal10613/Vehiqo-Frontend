@@ -1,3 +1,4 @@
+import LoginForm from "../../../../components/modules/auth/LoginForm";
 
 
 interface LoginParams {
@@ -7,8 +8,7 @@ interface LoginParams {
 const LoginPage = async ({ searchParams }: LoginParams) => {
     const params = await searchParams;
     const redirectPath = params.redirect;
-    // return <LoginForm redirectPath={redirectPath} />;
-	return <div></div>;
+    return <LoginForm redirectPath={redirectPath} />;
 };
 
 export default LoginPage;

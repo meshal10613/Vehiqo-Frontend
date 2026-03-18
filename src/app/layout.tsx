@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { Sora } from "next/font/google";
 import "./globals.css";
+import QueryProviders from "../providers/QueryProvider";
 
 const sora = Sora({
     variable: "--font-sora",
     subsets: ["latin"],
-})
+});
 
 export const metadata: Metadata = {
     title: "Vehiqo - Vehicle Rental System",
@@ -13,17 +14,15 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children,
+    children,
 }: Readonly<{
-  children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body
-        className={`${sora.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
-  );
+    return (
+        <html lang="en">
+            <body className={`${sora.variable} antialiased`}>
+                <QueryProviders>{children}</QueryProviders>
+            </body>
+        </html>
+    );
 }
