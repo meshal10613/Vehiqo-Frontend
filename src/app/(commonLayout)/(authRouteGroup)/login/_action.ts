@@ -2,7 +2,7 @@
 
 import { httpClient } from "@/lib/axios/httpClient";
 import { setTokenInCookies } from "@/lib/tokenUtils";
-import { ApiErrorResponse } from "@/types/api.type";
+import { ApiErrorResponse, ApiResponse } from "@/types/api.type";
 import { ILoginPayload, loginZodSchema } from "@/zod/auth.validation";
 import { redirect } from "next/navigation";
 import { UserRole } from "../../../../types/enum.type";
@@ -15,7 +15,7 @@ import {
 export const loginAction = async (
     payload: ILoginPayload,
     redirectPath?: string,
-): Promise<ILoginResponse | ApiErrorResponse> => {
+): Promise<ApiResponse<ILoginResponse> | ApiErrorResponse> => {
     const parsedPayload = loginZodSchema.safeParse(payload);
 
     if (!parsedPayload.success) {
@@ -46,13 +46,14 @@ export const loginAction = async (
         //     redirect("/verify-email");
         // }else // in the catch block
 
-        const targetPath =
-            redirectPath &&
-            isValidRedirectForRole(redirectPath, role as UserRole)
-                ? redirectPath
-                : getDefaultDashboardRoute(role as UserRole);
-
-        redirect(targetPath);
+        // const targetPath =
+        //     redirectPath &&
+        //     isValidRedirectForRole(redirectPath, role as UserRole)
+        //         ? redirectPath
+        //         : getDefaultDashboardRoute(role as UserRole);
+		
+        // redirect(targetPath);
+		return response;
     } catch (error: any) {
         console.log(error, "error");
         if (
