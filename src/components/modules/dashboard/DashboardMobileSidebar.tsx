@@ -8,34 +8,42 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { IUser } from "../../../types/user.type";
 import { NavSection } from "../../../types/dashboard.type";
+import Image from "next/image";
 
 interface DashboardMobileSidebarProps {
     userInfo: IUser;
     navItems: NavSection[];
     dashboardHome: string;
+	setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const DashboardMobileSidebar = ({
     dashboardHome,
     navItems,
     userInfo,
+	setIsOpen,
 }: DashboardMobileSidebarProps) => {
     const pathname = usePathname();
     return (
         <div className="flex h-full flex-col overflow-y-auto">
             {/* Logo / Brand */}
             <div className="flex h-16 items-center border-b px-6">
-                <Link href={dashboardHome}>
-                    <span className="text-xl font-bold text-primary">
-                        PH Healthcare
-                    </span>
+                <Link
+                    href={dashboardHome}
+                    className="flex items-center gap-2 py-2"
+                >
+                    <Image
+                        src="/logo.svg"
+                        alt={userInfo.name}
+                        width={190}
+                        height={50}
+                    />
                 </Link>
             </div>
 
             <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
 
             {/* Navigation Area  */}
-
             <ScrollArea className="flex-1 px-3 py-4">
                 <nav className="space-y-1">
                     {navItems.map((section, sectionId) => (
@@ -61,6 +69,7 @@ const DashboardMobileSidebar = ({
                                                     ? "bg-primary text-primary-foreground"
                                                     : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                                             )}
+											onClick={() => setIsOpen(false)}
                                         >
                                             <Icon className="h-4 w-4" />
                                             <span className="flex-1">
@@ -78,29 +87,6 @@ const DashboardMobileSidebar = ({
                     ))}
                 </nav>
             </ScrollArea>
-
-            {/* User Info */}
-            <div className="border-t p-4">
-                <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-                        {/* if profile doesnt exist , use first letter of user name as profile photo like component */}
-                        <span className="text-sm font-semibold text-primary">
-                            {userInfo.name.charAt(0).toUpperCase()}
-                        </span>
-                    </div>
-
-                    <div className="flex-1 overflow-hidden">
-                        <p className="text-sm font-medium truncate">
-                            {userInfo.name}
-                        </p>
-                        <p className="text-xs text-muted-foreground capitalize">
-                            {userInfo.role
-                                .toLocaleLowerCase()
-                                .replace("_", " ")}
-                        </p>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 };

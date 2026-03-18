@@ -11,6 +11,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
+import LogoutConfirmDialog from "../../shared/LogoutConfirmDialog";
 
 interface UserDropdownProps {
     userInfo: IUser;
@@ -18,46 +20,73 @@ interface UserDropdownProps {
 }
 
 const UserDropdown = ({ userInfo, onLogout }: UserDropdownProps) => {
+    const initials = userInfo.name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2);
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button
-                    variant={"outline"}
-                    size={"icon"}
-                    className="rounded-full"
-                >
-                    <span className="text-sm font-semibold">
-                        {userInfo.name.charAt(0).toUpperCase()}
-                    </span>
-                </Button>
+                <Avatar className="h-9 w-9 shrink-0 cursor-pointer">
+                    <AvatarImage
+                        src={userInfo?.image || undefined}
+                        alt={userInfo.name}
+                    />
+                    <AvatarFallback className="bg-[#FF5100]/10 text-[#FF5100] text-sm font-semibold">
+                        {initials}
+                    </AvatarFallback>
+                </Avatar>
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align={"end"} className="w-56">
                 <DropdownMenuLabel>
-                    <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium">{userInfo.name}</p>
+                    <div className="flex items-center gap-2">
+                        <Avatar className="h-9 w-9 shrink-0">
+                            <AvatarImage
+                                src={userInfo?.image || undefined}
+                                alt={userInfo.name}
+                            />
+                            <AvatarFallback className="bg-[#FF5100]/10 text-[#FF5100] text-sm font-semibold">
+                                {initials}
+                            </AvatarFallback>
+                        </Avatar>
 
-                        <p className="text-xs text-muted-foreground">
-                            {userInfo.email}
-                        </p>
+                        <div className="flex flex-col space-y-1">
+                            <p className="text-sm font-medium">
+                                {userInfo.name}
+                            </p>
 
-                        <p className="text-xs text-primary capitalize">
-                            {userInfo.role.toLowerCase().replace("_", " ")}
-                        </p>
+                            <p className="text-xs text-muted-foreground">
+                                {userInfo.email}
+                            </p>
+
+                            <p className="text-xs text-primary capitalize">
+                                {userInfo.role.toLowerCase().replace("_", " ")}
+                            </p>
+                        </div>
                     </div>
                 </DropdownMenuLabel>
 
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem>
-                    <Link href={"/my-profile"}>
+                    <Link
+                        href={"/my-profile"}
+                        className="flex items-center gap-2"
+                    >
                         <User className="mr-2 h-4 w-4" />
                         My Profile
                     </Link>
                 </DropdownMenuItem>
 
                 <DropdownMenuItem>
-                    <Link href={"/change-password"}>
+                    <Link
+                        href={"/change-password"}
+                        className="flex items-center gap-2"
+                    >
                         <Key className="mr-2 h-4 w-4" />
                         Change Password
                     </Link>
@@ -65,13 +94,17 @@ const UserDropdown = ({ userInfo, onLogout }: UserDropdownProps) => {
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem
-                    onClick={() => {}}
-                    className="cursor-pointer text-red-600"
-                >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Logout
-                </DropdownMenuItem>
+                <LogoutConfirmDialog
+                    trigger={
+                        <DropdownMenuItem
+                            onSelect={(e) => e.preventDefault()}
+                            className="cursor-pointer text-red-600"
+                        >
+                            <LogOut className="mr-2 h-4 w-4" />
+                            Logout
+                        </DropdownMenuItem>
+                    }
+                />
             </DropdownMenuContent>
         </DropdownMenu>
     );

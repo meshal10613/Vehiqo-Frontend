@@ -41,8 +41,8 @@ const DashboardNavbarContent = ({
         <div className="flex items-center gap-4 w-full px-4 py-3 border-b bg-background">
             {/* Mobile Menu Toggle Button And Menu */}
             <Sheet open={isOpen && isMobile} onOpenChange={setIsOpen}>
-                <SheetTrigger className="md:hidden">
-                    <Button variant={"outline"} size={"icon"}>
+                <SheetTrigger asChild>
+                    <Button variant={"outline"} size={"icon"} className="md:hidden cursor-pointer">
                         <Menu className="h-5 w-5" />
                     </Button>
                 </SheetTrigger>
@@ -52,6 +52,7 @@ const DashboardNavbarContent = ({
                         userInfo={userInfo}
                         dashboardHome={dashboardHome}
                         navItems={navItems}
+                        setIsOpen={setIsOpen}
                     />
                 </SheetContent>
             </Sheet>

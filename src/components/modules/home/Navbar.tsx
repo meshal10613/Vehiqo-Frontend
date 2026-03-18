@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import { LayoutDashboard, LogOut, Menu, Car, Home, Phone } from "lucide-react";
 import Image from "next/image";
 import { IUser } from "../../../types/user.type";
+import LogoutConfirmDialog from "../../shared/LogoutConfirmDialog";
 
 type NavbarProps = {
     user?: IUser;
@@ -116,13 +117,17 @@ function UserMenu({
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem
-                    onClick={onLogout}
-                    className="flex items-center gap-2.5 cursor-pointer text-red-500 focus:text-primary focus:bg-rose-50"
-                >
-                    <LogOut className="w-4 h-4" />
-                    <span>Log out</span>
-                </DropdownMenuItem>
+                <LogoutConfirmDialog
+                    trigger={
+                        <DropdownMenuItem
+                            onSelect={(e) => e.preventDefault()} // prevent dropdown closing before dialog opens
+                            className="flex items-center cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50"
+                        >
+                            <LogOut className="mr-2 h-4 w-4" />
+                            Log out
+                        </DropdownMenuItem>
+                    }
+                />
             </DropdownMenuContent>
         </DropdownMenu>
     );
@@ -210,11 +215,11 @@ export default function Navbar({ user, onLogout }: NavbarProps) {
                             <UserMenu user={user} onLogout={onLogout} />
                         ) : (
                             <Button
+                                asChild
                                 size="sm"
                                 className="bg-[#FF5100] hover:bg-[#e64800] text-white shadow-sm shadow-orange-200 transition-all duration-200 cursor-pointer h-10 px-5"
-                                render={<Link href="/sign-in" />}
                             >
-                                Sign In
+                                <Link href="/sign-in">Sign In</Link>
                             </Button>
                         )}
                     </div>
@@ -301,24 +306,27 @@ export default function Navbar({ user, onLogout }: NavbarProps) {
                                             </Link>
                                         </SheetClose>
 
-                                        <button
-                                            onClick={() => {
-                                                setSheetOpen(false);
-                                                onLogout?.();
-                                            }}
-                                            className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-rose-500 hover:bg-rose-50 transition-all duration-200 w-full text-left cursor-pointer"
-                                        >
-                                            <LogOut className="w-4 h-4 shrink-0" />
-                                            Log out
-                                        </button>
+                                        <LogoutConfirmDialog
+                                            trigger={
+                                                <button
+                                                    // onClick={() => {
+                                                    //     setSheetOpen(false);
+                                                    // }}
+                                                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-rose-500 hover:bg-rose-50 transition-all duration-200 w-full text-left cursor-pointer"
+                                                >
+                                                    <LogOut className="w-4 h-4 shrink-0" />
+                                                    Log out
+                                                </button>
+                                            }
+                                        />
                                     </div>
                                 ) : (
-                                    <Button
-                                        className="w-full bg-[#FF5100] hover:bg-[#e64800] text-white shadow-sm shadow-orange-200 h-10 cursor-pointer"
-                                        render={<Link href="/sign-in" />}
-                                        onClick={() => setSheetOpen(false)}
-                                    >
-                                        Sign In
+                                    <Button className="w-full bg-[#FF5100] hover:bg-[#e64800] text-white shadow-sm shadow-orange-200 h-10 cursor-pointer">
+                                        <SheetClose>
+                                            <Link href={`/sign-in`}>
+                                                Sign In
+                                            </Link>
+                                        </SheetClose>
                                     </Button>
                                 )}
                             </div>
