@@ -4,7 +4,7 @@ import { Button } from "../components/ui/button";
 export default function Home() {
   return (
     <div>
-      <Button variant={`outline`} className={`bg-primary text-primary`}>Click Me</Button>
+      <Button variant={`outline`} className={`text-primary`}>Click Me</Button>
     </div>
   );
 }
