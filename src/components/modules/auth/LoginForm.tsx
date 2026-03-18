@@ -224,7 +224,7 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                             <p className="text-sm text-muted-foreground">
                                 Don&apos;t have an account?{" "}
                                 <Link
-                                    href="/register"
+                                    href={`/register?redirectPath=${redirectPath}`}
                                     className="text-primary font-medium hover:underline underline-offset-4"
                                 >
                                     Sign Up for an account
