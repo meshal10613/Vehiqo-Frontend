@@ -2,8 +2,8 @@
 import { getNewTokensWithRefreshToken } from "@/services/auth.services";
 import axios from "axios";
 import { cookies, headers } from "next/headers";
-import { isTokenExpiringSoon } from "../tokenUtils";
 import { ApiResponse } from "../../types/api.type";
+import { isTokenExpiringSoon } from "../tokenUtils";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
