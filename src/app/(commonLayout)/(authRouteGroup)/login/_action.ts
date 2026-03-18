@@ -1,9 +1,5 @@
 "use server";
 
-import {
-    getDefaultDashboardRoute,
-    isValidRedirectForRole,
-} from "@/lib/authUtils";
 import { httpClient } from "@/lib/axios/httpClient";
 import { setTokenInCookies } from "@/lib/tokenUtils";
 import { ApiErrorResponse } from "@/types/api.type";
@@ -11,6 +7,10 @@ import { ILoginPayload, loginZodSchema } from "@/zod/auth.validation";
 import { redirect } from "next/navigation";
 import { UserRole } from "../../../../types/enum.type";
 import { ILoginResponse } from "../../../../types/auth.type";
+import {
+    getDefaultDashboardRoute,
+    isValidRedirectForRole,
+} from "../../../../lib/authUtils";
 
 export const loginAction = async (
     payload: ILoginPayload,
@@ -33,7 +33,7 @@ export const loginAction = async (
         );
 
         const { accessToken, refreshToken, token, user } = response.data;
-        const { role, emailVerified, needPasswordChange, email } = user;
+        const { role, emailVerified } = user;
         await setTokenInCookies("accessToken", accessToken);
         await setTokenInCookies("refreshToken", refreshToken);
         await setTokenInCookies(
@@ -46,19 +46,13 @@ export const loginAction = async (
         //     redirect("/verify-email");
         // }else // in the catch block
 
-        if (needPasswordChange) {
-            //TODO : refactoring
-            redirect(`/reset-password?email=${email}`);
-        } else {
-            // redirect(redirectPath || "/dashboard");
-            const targetPath =
-                redirectPath &&
-                isValidRedirectForRole(redirectPath, role as UserRole)
-                    ? redirectPath
-                    : getDefaultDashboardRoute(role as UserRole);
+        const targetPath =
+            redirectPath &&
+            isValidRedirectForRole(redirectPath, role as UserRole)
+                ? redirectPath
+                : getDefaultDashboardRoute(role as UserRole);
 
-            redirect(targetPath);
-        }
+        redirect(targetPath);
     } catch (error: any) {
         console.log(error, "error");
         if (
