@@ -3,7 +3,6 @@
 import AppField from "@/components/shared/form/AppField";
 import AppSubmitButton from "@/components/shared/form/AppSubmitButton";
 import { Button } from "@/components/ui/button";
-import { ILoginPayload, loginZodSchema } from "@/zod/auth.validation";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { ArrowLeft, Eye, EyeOff } from "lucide-react";
@@ -13,14 +12,13 @@ import { Separator } from "../../ui/separator";
 import { Card, CardContent, CardFooter } from "../../ui/card";
 import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
-import { loginAction } from "../../../app/(authLayout)/sign-in/_action";
 import { redirect, useRouter } from "next/navigation";
-import { isValidRedirectForRole } from "../../../lib/authUtils";
-import { UserRole } from "../../../types/enum.type";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { IRegisterPayload } from "../../../zod/auth.validation";
+import { registerAction } from "../../../app/(authLayout)/sign-up/_action";
 
-interface LoginFormProps {
+interface RegisterFormProps {
     redirectPath?: string;
 }
 
@@ -40,69 +38,63 @@ const itemVariants = {
     },
 };
 
-const LoginForm = ({ redirectPath }: LoginFormProps) => {
+const RegisterForm = ({ redirectPath }: RegisterFormProps) => {
     const router = useRouter();
     const redirectTo = redirectPath ? `?redirect=${redirectPath}` : "";
     const [showPassword, setShowPassword] = useState(false);
 
     const { mutateAsync, isPending } = useMutation({
-        mutationFn: (payload: ILoginPayload) =>
-            loginAction(payload, redirectPath),
+        mutationFn: (payload: IRegisterPayload) =>
+            registerAction(payload, redirectPath),
     });
 
     const form = useForm({
         defaultValues: {
+            name: "",
             email: "",
             password: "",
         },
 
         onSubmit: async ({ value }) => {
-            const toastId = toast.loading("Sign in...");
+            const toastId = toast.loading("Creating account...");
             let targetPath = "/";
             try {
                 const result = (await mutateAsync(value)) as any;
 
                 if (!result.success) {
-                    if (result.message === "Email not verified") {
-                        const email = value.email;
-                        const query = redirectTo
-                            ? `${redirectTo}&email=${email}`
-                            : `?email=${email}`;
-                        router.push(`/verify-email${query}`);
+                    if (
+                        result.message ===
+                        "Account created successfully. Please login to continue."
+                    ) {
+                        router.push("/sign-in" + redirectTo);
                     }
 
-                    toast.error(result.message || "Sign In failed", {
+                    toast.error(result.message || "Registration failed", {
                         id: toastId,
                     });
                     return;
                 }
 
-                toast.success(result.message || "Sign In successful", {
-                    id: toastId,
-                });
-
-                targetPath =
-                    redirectPath &&
-                    isValidRedirectForRole(
-                        redirectPath,
-                        result.data.user.role as UserRole,
-                    )
-                        ? redirectPath
-                        : "/"; // getDefaultDashboardRoute(role as UserRole)
-            } catch (error: any) {
-                console.log(`Sign In failed: ${error.message}`);
-                toast.error(
-                    `${error.message}` ||
-                        "Something went wrong, please try again.",
+                toast.success(
+                    result.message || "Account created successfully",
                     {
                         id: toastId,
                     },
                 );
-            }
+                targetPath = redirectPath ? redirectPath : "/";
 
-            redirect(targetPath);
+                router.push(targetPath);
+            } catch (error: any) {
+                console.log(`Registration failed: ${error.message}`);
+                toast.error(
+                    `${error.message}` ||
+                        "Something went wrong, please try again.",
+                    { id: toastId },
+                );
+            }
         },
     });
+
     return (
         <div className="min-h-screen flex items-center justify-center px-4 bg-zinc-50">
             {/* Dot grid background */}
@@ -141,7 +133,7 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                     {/* Top accent bar */}
                     <div className="h-1 w-full bg-linear-to-r from-orange-400 via-[#FF5100] to-orange-400" />
 
-                    {/* Header — outside CardHeader for full custom control */}
+                    {/* Header */}
                     <motion.div
                         variants={itemVariants}
                         className="flex flex-col items-center gap-3 px-8 pt-8 pb-6 text-center"
@@ -154,12 +146,10 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                             className="object-contain"
                         />
 
-                        {/* Title */}
                         <div className="space-y-1.5">
                             <h1 className="text-2xl font-bold text-zinc-900 tracking-tight">
-                                Welcome back
+                                Create an account
                             </h1>
-                            {/* Animated underline accent */}
                             <motion.div
                                 className="h-0.5 rounded-full bg-linear-to-r from-transparent via-primary to-transparent mx-auto"
                                 initial={{ width: 0, opacity: 0 }}
@@ -171,7 +161,7 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                                 }}
                             />
                             <p className="text-sm text-zinc-500 leading-relaxed pt-0.5">
-                                Enter your credentials to access your account
+                                Fill in your details to get started
                             </p>
                         </div>
                     </motion.div>
@@ -188,13 +178,23 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                             }}
                             className="space-y-4"
                         >
+                            {/* Name */}
                             <motion.div variants={itemVariants}>
-                                <form.Field
-                                    name="email"
-                                    validators={{
-                                        onChange: loginZodSchema.shape.email,
-                                    }}
-                                >
+                                <form.Field name="name">
+                                    {(field) => (
+                                        <AppField
+                                            field={field}
+                                            label="Name"
+                                            type="text"
+                                            placeholder="Enter your full name"
+                                        />
+                                    )}
+                                </form.Field>
+                            </motion.div>
+
+                            {/* Email */}
+                            <motion.div variants={itemVariants}>
+                                <form.Field name="email">
                                     {(field) => (
                                         <AppField
                                             field={field}
@@ -206,13 +206,9 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                                 </form.Field>
                             </motion.div>
 
+                            {/* Password */}
                             <motion.div variants={itemVariants}>
-                                <form.Field
-                                    name="password"
-                                    validators={{
-                                        onChange: loginZodSchema.shape.password,
-                                    }}
-                                >
+                                <form.Field name="password">
                                     {(field) => (
                                         <AppField
                                             field={field}
@@ -253,18 +249,6 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                                 </form.Field>
                             </motion.div>
 
-                            <motion.div
-                                variants={itemVariants}
-                                className="text-right"
-                            >
-                                <Link
-                                    href="/forgot-password"
-                                    className="text-sm text-[#FF5100] hover:text-orange-600 hover:underline underline-offset-4 transition-colors"
-                                >
-                                    Forgot password?
-                                </Link>
-                            </motion.div>
-
                             <motion.div variants={itemVariants}>
                                 <form.Subscribe
                                     selector={(s) =>
@@ -276,10 +260,10 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                                             isPending={
                                                 isSubmitting || isPending
                                             }
-                                            pendingLabel="Signing in..."
+                                            pendingLabel="Creating account..."
                                             disabled={!canSubmit}
                                         >
-                                            Sign In
+                                            Sign Up
                                         </AppSubmitButton>
                                     )}
                                 </form.Subscribe>
@@ -310,7 +294,7 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                                 }}
                             >
                                 <FcGoogle size={18} />
-                                Sign in with Google
+                                Sign up with Google
                             </Button>
                         </motion.div>
                     </CardContent>
@@ -320,12 +304,12 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                             variants={itemVariants}
                             className="text-sm text-zinc-500"
                         >
-                            Don&apos;t have an account?{" "}
+                            Already have an account?{" "}
                             <Link
-                                href={`/sign-up${redirectTo}`}
+                                href={`/sign-in${redirectTo}`}
                                 className="text-[#FF5100] font-medium hover:text-orange-600 hover:underline underline-offset-4 transition-colors"
                             >
-                                Sign up
+                                Sign in
                             </Link>
                         </motion.p>
                     </CardFooter>
@@ -335,4 +319,4 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
     );
 };
 
-export default LoginForm;
+export default RegisterForm;

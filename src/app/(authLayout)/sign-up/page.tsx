@@ -1,7 +1,11 @@
-export default function SignUpPage() {
-	return(
-		<div>
-			<h1>This is Sign-up Page</h1>
-		</div>
-	)
+import RegisterForm from "../../../components/modules/auth/RegisterForm";
+
+interface RegisterParams {
+    searchParams: Promise<{ redirect?: string }>;
+}
+
+export default async function SignUpPage({ searchParams }: RegisterParams) {
+    const params = await searchParams;
+    const redirectPath = params.redirect;
+    return <RegisterForm redirectPath={redirectPath} />;
 }

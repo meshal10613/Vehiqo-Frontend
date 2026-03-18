@@ -9,6 +9,15 @@ import { useEffect, useState } from "react";
 import { Menu, Search } from "lucide-react";
 import DashboardMobileSidebar from "./DashboardMobileSidebar";
 import UserDropdown from "./UserDropdown";
+import { usePathname } from "next/navigation";
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from "../../ui/breadcrumb";
 
 interface DashboardNavbarProps {
     userInfo: IUser;
@@ -23,6 +32,36 @@ const DashboardNavbarContent = ({
 }: DashboardNavbarProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
+    const pathname = usePathname();
+
+    // const segments = pathname
+    //     .split("/")
+    //     .filter(Boolean)
+    //     .map((segment) => ({
+    //         label: segment
+    //             .replace(/-/g, " ")
+    //             .replace(/\b\w/g, (c) => c.toUpperCase()),
+    //         href:
+    //             "/" +
+    //             pathname
+    //                 .split("/")
+    //                 .filter(Boolean)
+    //                 .slice(
+    //                     0,
+    //                     pathname.split("/").filter(Boolean).indexOf(segment) +
+    //                         1,
+    //                 )
+    //                 .join("/"),
+    //     }));
+
+    // Build breadcrumb segments from pathname
+    const segments = pathname.split("/").filter(Boolean);
+
+    const pageLabel = segments
+        .map((segment) =>
+            segment.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+        )
+        .join(" ");
 
     useEffect(() => {
         const checkSmallerScreen = () => {
@@ -42,7 +81,11 @@ const DashboardNavbarContent = ({
             {/* Mobile Menu Toggle Button And Menu */}
             <Sheet open={isOpen && isMobile} onOpenChange={setIsOpen}>
                 <SheetTrigger asChild>
-                    <Button variant={"outline"} size={"icon"} className="md:hidden cursor-pointer">
+                    <Button
+                        variant={"outline"}
+                        size={"icon"}
+                        className="md:hidden cursor-pointer"
+                    >
                         <Menu className="h-5 w-5" />
                     </Button>
                 </SheetTrigger>
@@ -57,16 +100,76 @@ const DashboardNavbarContent = ({
                 </SheetContent>
             </Sheet>
 
-            {/* Search Component */}
-            <div className="flex-1 flex items-center">
-                <div className="relative w-full hidden sm:block">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                        type="text"
-                        placeholder="Search..."
-                        className="pl-9 pr-4"
-                    />
-                </div>
+            {/* Breadcrumb */}
+            <div className="flex-1">
+                <Breadcrumb>
+                    <BreadcrumbList>
+                        {pathname === dashboardHome ? (
+                            <BreadcrumbItem>
+                                <BreadcrumbLink
+                                    href={dashboardHome}
+                                    className="text-muted-foreground hover:text-foreground transition-colors"
+                                >
+                                    {pageLabel}
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                        ) : (
+                            <BreadcrumbItem>
+                                <BreadcrumbLink
+                                    href={dashboardHome}
+                                    className="text-muted-foreground hover:text-foreground transition-colors"
+                                >
+                                    {dashboardHome
+                                        .split("/")
+                                        .map((segment) =>
+                                            segment
+                                                .replace(/-/g, " ")
+                                                .replace(/\b\w/g, (c) =>
+                                                    c.toUpperCase(),
+                                                ),
+                                        )
+                                        .join(" ")}
+                                </BreadcrumbLink>
+                            </BreadcrumbItem>
+                        )}
+
+                        {/* {segments.map((segment, index) => {
+                            const isLast = index === segments.length - 1;
+                            return (
+                                <span
+                                    key={segment.href}
+                                    className="flex items-center gap-1.5"
+                                >
+                                    <BreadcrumbSeparator />
+                                    <BreadcrumbItem>
+                                        {isLast ? (
+                                            <BreadcrumbPage className="font-medium text-foreground">
+                                                {segment.label}
+                                            </BreadcrumbPage>
+                                        ) : (
+                                            <BreadcrumbLink
+                                                href={segment.href}
+                                                className="text-muted-foreground hover:text-foreground transition-colors"
+                                            >
+                                                {segment.label}
+                                            </BreadcrumbLink>
+                                        )}
+                                    </BreadcrumbItem>
+                                </span>
+                            );
+                        })} */}
+                        {pathname !== dashboardHome && (
+                            <>
+                                <BreadcrumbSeparator />
+                                <BreadcrumbItem>
+                                    <BreadcrumbPage className="font-medium text-foreground">
+                                        {pageLabel}
+                                    </BreadcrumbPage>
+                                </BreadcrumbItem>
+                            </>
+                        )}
+                    </BreadcrumbList>
+                </Breadcrumb>
             </div>
 
             {/* Right Side Actions */}

@@ -167,35 +167,6 @@ export async function proxy(request: NextRequest) {
                         ),
                     );
                 }
-
-                // // need password change scenario
-                // if (userInfo.needPasswordChange) {
-                //     if (pathname !== "/reset-password") {
-                //         const resetPasswordUrl = new URL(
-                //             "/reset-password",
-                //             request.url,
-                //         );
-                //         resetPasswordUrl.searchParams.set(
-                //             "email",
-                //             userInfo.email,
-                //         );
-                //         return NextResponse.redirect(resetPasswordUrl);
-                //     }
-
-                //     return NextResponse.next();
-                // }
-
-                // if (
-                //     !userInfo.needPasswordChange &&
-                //     pathname === "/reset-password"
-                // ) {
-                //     return NextResponse.redirect(
-                //         new URL(
-                //             getDefaultDashboardRoute(userRole as UserRole | null),
-                //             request.url,
-                //         ),
-                //     );
-                // }
             }
         }
 

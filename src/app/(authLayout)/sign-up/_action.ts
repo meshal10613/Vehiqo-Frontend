@@ -3,15 +3,15 @@
 import { httpClient } from "@/lib/axios/httpClient";
 import { setTokenInCookies } from "@/lib/tokenUtils";
 import { ApiErrorResponse, ApiResponse } from "@/types/api.type";
-import { ILoginPayload, loginZodSchema } from "@/zod/auth.validation";
+import { IRegisterPayload, registerZodSchema } from "@/zod/auth.validation";
 import { redirect } from "next/navigation";
 import { ILoginResponse } from "../../../types/auth.type";
 
-export const loginAction = async (
-    payload: ILoginPayload,
+export const registerAction = async (
+    payload: IRegisterPayload,
     redirectPath?: string,
 ): Promise<ApiResponse<ILoginResponse> | ApiErrorResponse> => {
-    const parsedPayload = loginZodSchema.safeParse(payload);
+    const parsedPayload = registerZodSchema.safeParse(payload);
 
     if (!parsedPayload.success) {
         const firstError =
@@ -23,11 +23,19 @@ export const loginAction = async (
     }
     try {
         const response = await httpClient.post<ILoginResponse>(
-            "/auth/login",
+            "/auth/register",
             parsedPayload.data,
         );
 
         const { accessToken, refreshToken, token, user } = response.data;
+        if (user.emailVerified === false) {
+            return {
+                success: false,
+                message:
+                    "Account created successfully. Please login to continue.",
+            };
+        }
+
         await setTokenInCookies("accessToken", accessToken);
         await setTokenInCookies("refreshToken", refreshToken);
         await setTokenInCookies(
@@ -35,14 +43,6 @@ export const loginAction = async (
             token,
             24 * 60 * 60,
         ); // 1 day in seconds
-
-        if (user.emailVerified === false) {
-            return {
-                success: false,
-                message:
-                    "Email not verified",
-            };
-        }
 
         return response;
     } catch (error: any) {
@@ -69,7 +69,7 @@ export const loginAction = async (
         }
         return {
             success: false,
-            message: `Login failed: ${error.response.data.message}`,
+            message: `Registration failed: ${error.response.data.message}`,
         };
     }
 };

@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Change Password | Vehiqo",
+    description: "Manage your vehicle rental system from the admin dashboard.",
+};
+
 export default function ChangePasswordPage() {
 	return(
 		<div>
