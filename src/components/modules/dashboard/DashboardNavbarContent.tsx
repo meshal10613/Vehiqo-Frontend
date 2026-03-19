@@ -34,32 +34,32 @@ const DashboardNavbarContent = ({
     const [isMobile, setIsMobile] = useState(false);
     const pathname = usePathname();
 
-    // const segments = pathname
-    //     .split("/")
-    //     .filter(Boolean)
-    //     .map((segment) => ({
-    //         label: segment
-    //             .replace(/-/g, " ")
-    //             .replace(/\b\w/g, (c) => c.toUpperCase()),
-    //         href:
-    //             "/" +
-    //             pathname
-    //                 .split("/")
-    //                 .filter(Boolean)
-    //                 .slice(
-    //                     0,
-    //                     pathname.split("/").filter(Boolean).indexOf(segment) +
-    //                         1,
-    //                 )
-    //                 .join("/"),
-    //     }));
+    const homeSegments = dashboardHome.split("/").filter(Boolean);
 
-    // Build breadcrumb segments from pathname
+    // Replace the segments and pageLabel logic with this
     const segments = pathname.split("/").filter(Boolean);
 
-    const pageLabel = segments
-        .map((segment) =>
-            segment.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+    // Build breadcrumb items with cumulative hrefs
+    const breadcrumbSegments = segments.map((segment, index) => ({
+        label: segment
+            .replace(/-/g, " ")
+            .replace(/\b\w/g, (c) => c.toUpperCase()),
+        href: "/" + segments.slice(0, index + 1).join("/"),
+    }));
+
+    // Check if current path starts with dashboardHome
+    const isInsideDashboard = homeSegments.every(
+        (seg, i) => segments[i] === seg,
+    );
+
+    // If inside dashboard, skip home segments. If not, show all segments.
+    const pageSegments = isInsideDashboard
+        ? breadcrumbSegments.slice(homeSegments.length)
+        : breadcrumbSegments;
+
+    const homeLabel = homeSegments
+        .map((s) =>
+            s.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
         )
         .join(" ");
 
@@ -104,37 +104,19 @@ const DashboardNavbarContent = ({
             <div className="flex-1">
                 <Breadcrumb>
                     <BreadcrumbList>
-                        {pathname === dashboardHome ? (
-                            <BreadcrumbItem>
-                                <BreadcrumbLink
-                                    href={dashboardHome}
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                >
-                                    {pageLabel}
-                                </BreadcrumbLink>
-                            </BreadcrumbItem>
-                        ) : (
-                            <BreadcrumbItem>
-                                <BreadcrumbLink
-                                    href={dashboardHome}
-                                    className="text-muted-foreground hover:text-foreground transition-colors"
-                                >
-                                    {dashboardHome
-                                        .split("/")
-                                        .map((segment) =>
-                                            segment
-                                                .replace(/-/g, " ")
-                                                .replace(/\b\w/g, (c) =>
-                                                    c.toUpperCase(),
-                                                ),
-                                        )
-                                        .join(" ")}
-                                </BreadcrumbLink>
-                            </BreadcrumbItem>
-                        )}
+                        {/* Home */}
+                        <BreadcrumbItem>
+                            <BreadcrumbLink
+                                href={dashboardHome}
+                                className="text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                                {homeLabel}
+                            </BreadcrumbLink>
+                        </BreadcrumbItem>
 
-                        {/* {segments.map((segment, index) => {
-                            const isLast = index === segments.length - 1;
+                        {/* Page segments beyond home */}
+                        {pageSegments.map((segment, index) => {
+                            const isLast = index === pageSegments.length - 1;
                             return (
                                 <span
                                     key={segment.href}
@@ -157,17 +139,7 @@ const DashboardNavbarContent = ({
                                     </BreadcrumbItem>
                                 </span>
                             );
-                        })} */}
-                        {pathname !== dashboardHome && (
-                            <>
-                                <BreadcrumbSeparator />
-                                <BreadcrumbItem>
-                                    <BreadcrumbPage className="font-medium text-foreground">
-                                        {pageLabel}
-                                    </BreadcrumbPage>
-                                </BreadcrumbItem>
-                            </>
-                        )}
+                        })}
                     </BreadcrumbList>
                 </Breadcrumb>
             </div>

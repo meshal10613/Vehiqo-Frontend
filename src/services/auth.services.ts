@@ -2,6 +2,9 @@
 
 import { setTokenInCookies } from "@/lib/tokenUtils";
 import { cookies } from "next/headers";
+import { IUpdateUserPayload, updateUserSchema } from "../zod/user.validation";
+import { ApiErrorResponse, ApiResponse } from "../types/api.type";
+import { IUser } from "../types/user.type";
 
 const BASE_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -116,5 +119,60 @@ export async function logoutUser() {
     } catch (error) {
         console.error("Error logging out:", error);
         return { success: false };
+    }
+}
+
+export async function updateUserImage(
+    image: File,
+): Promise<ApiResponse<IUser> | ApiErrorResponse> {
+    try {
+        const cookieStore = await cookies();
+        const accessToken = cookieStore.get("accessToken")?.value;
+        const sessionToken = cookieStore.get(
+            "better-auth.session_token",
+        )?.value;
+
+        if (!accessToken) {
+            return { success: false, message: "Unauthorized" };
+        }
+
+        // Convert File → Buffer (Node.js doesn't support Blob in fetch/FormData)
+        const arrayBuffer = await image.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+
+        const formData = new FormData();
+        const blob = new Blob([buffer], { type: image.type });
+        formData.append("image", blob, image.name);
+
+        const res = await fetch(`${BASE_API_URL}/auth/update-profile`, {
+            method: "PATCH",
+            headers: {
+                // ⚠️ DO NOT set Content-Type — fetch sets multipart/form-data + boundary automatically
+                Cookie: `accessToken=${accessToken}; better-auth.session_token=${sessionToken}`,
+            },
+            body: formData,
+        });
+
+        if (!res.ok) {
+            const error = await res.json().catch(() => ({}));
+            return {
+                success: false,
+                message: error?.message || "Failed to update image",
+            };
+        }
+
+        const { data } = await res.json();
+        console.log(data)
+        return {
+            success: true,
+            data,
+            message: "Profile image updated successfully",
+        };
+    } catch (error: any) {
+        console.error("Error updating user:", error);
+        return {
+            success: false,
+            message: error?.message || "Something went wrong",
+        };
     }
 }

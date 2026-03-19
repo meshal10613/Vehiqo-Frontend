@@ -44,3 +44,8 @@ export type BookingStatus =
     | "CANCELLED";
 
 export type Gender = "MALE" | "FEMALE";
+
+export enum GenderEnum {
+    MALE = "MALE",
+    FEMALE = "FEMALE",
+}

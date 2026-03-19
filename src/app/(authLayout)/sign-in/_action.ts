@@ -69,7 +69,7 @@ export const loginAction = async (
         }
         return {
             success: false,
-            message: `Login failed: ${error.response.data.message}`,
+            message: `Login failed: ${error.response.data}`,
         };
     }
 };

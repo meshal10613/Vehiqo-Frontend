@@ -32,7 +32,7 @@ async function tryRefreshToken(
     }
 }
 
-const axiosInstance = async () => {
+export const axiosInstance = async () => {
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("accessToken")?.value;
     const refreshToken = cookieStore.get("refreshToken")?.value;

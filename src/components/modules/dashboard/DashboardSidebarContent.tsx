@@ -90,7 +90,7 @@ export default function DashboardSidebarContent({
                     </nav>
                 </ScrollArea>
 
-                <div className="px-3 py-4 border-t">
+                <div className="py-4 border-t-2 mx-3">
                     <LogoutConfirmDialog
                         trigger={
                             <Button
