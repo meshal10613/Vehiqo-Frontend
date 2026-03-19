@@ -27,7 +27,7 @@ export const loginAction = async (
             parsedPayload.data,
         );
 
-        const { accessToken, refreshToken, token, user } = response.data;
+        const { accessToken, refreshToken, token, user } = response.data.data;
         await setTokenInCookies("accessToken", accessToken);
         await setTokenInCookies("refreshToken", refreshToken);
         await setTokenInCookies(

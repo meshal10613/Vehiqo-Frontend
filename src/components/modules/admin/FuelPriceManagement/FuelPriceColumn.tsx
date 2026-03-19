@@ -17,28 +17,19 @@ export const fuelPriceColumn: ColumnDef<IFuelPrice>[] = [
         id: "pricePerUnit",
         accessorKey: "pricePerUnit",
         header: "Price Per Unit",
+        cell: ({ row }) => {
+            return (
+                <span className="text-sm">৳{row.original.pricePerUnit}</span>
+            );
+        },
     },
     {
-        id: "vehicle",
-        accessorKey: "vehicle",
+        id: "vehicleCount",
+        accessorKey: "vehicleCount",
         header: "Vehicle",
         cell: ({ row }) => {
             const vehicles = row.original.vehicle;
-
-            if (!vehicles || vehicles.length === 0) {
-                return (
-                    <span className="text-xs text-muted-foreground">
-                        No Vehicles
-                    </span>
-                );
-            }
-
-            return (
-                <span className="text-sm text-zinc-500">
-                    {vehicles.length}{" "}
-                    {vehicles.length === 1 ? "vehicle" : "vehicles"}
-                </span>
-            );
+            return <span className="text-sm">{vehicles.length}</span>;
         },
     },
     {

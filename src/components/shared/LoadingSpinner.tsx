@@ -1,9 +1,9 @@
 export default function LoadingSpinner() {
     return (
-        <div className="relative min-h-screen bg-white flex flex-col items-center justify-center overflow-hidden gap-8">
+        <div className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden gap-8">
             {/* Background glow */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-96 h-96 rounded-full bg-rose-400/10 blur-3xl" />
+                <div className="w-96 h-96 rounded-full blur-3xl" />
             </div>
 
             {/* Dot grid */}
