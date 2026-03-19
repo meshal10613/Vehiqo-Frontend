@@ -1,8 +1,11 @@
-import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import {
+    dehydrate,
+    HydrationBoundary,
+    QueryClient,
+} from "@tanstack/react-query";
 import { getAllVehicleCategory } from "../../../../../services/vehicleCategory.services";
 import { Metadata } from "next";
 import VehicleCategoryTable from "../../../../../components/modules/admin/VehicleCategoryManagement/VehicleCategoryTable";
-import { get } from "http";
 
 export const metadata: Metadata = {
     title: "Vehicle Category Management | Vehiqo",
