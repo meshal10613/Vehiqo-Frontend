@@ -7,7 +7,7 @@ export const getCommonTopNavItems = (role: UserRole) => {
 
     return [
         {
-			title: "Dashboard",
+            title: "Dashboard",
             items: [
                 {
                     title: "Home",
@@ -79,52 +79,32 @@ export const customerNavItems: NavSection[] = [
 
 export const adminNavItems: NavSection[] = [
     {
-        title: "User Management",
+        title: "Vehicle Management",
         items: [
             {
-                title: "Admins",
-                href: "/admin/dashboard/admins-management",
-                icon: "Shield",
+                title: "Fuel Price",
+                href: "/admin/dashboard/fuel-price-management",
+                icon: "Fuel",
             },
             {
-                title: "Doctors",
-                href: "/admin/dashboard/doctors-management",
-                icon: "Stethoscope",
+                title: "Vehicle Category",
+                href: "/admin/dashboard/vehicle-category-management",
+                icon: "Layers",
             },
             {
-                title: "Patients",
-                href: "/admin/dashboard/patients-management",
-                icon: "Users",
-            },
-        ],
-    },
-    {
-        title: "Hospital Management",
-        items: [
-            {
-                title: "Appointments",
-                href: "/admin/dashboard/appointments-management",
-                icon: "Calendar",
+                title: "Vehicle Type",
+                href: "/admin/dashboard/vehicle-type-management",
+                icon: "Car",
             },
             {
-                title: "Schedules",
-                href: "/admin/dashboard/schedules-management",
-                icon: "Clock",
+                title: "Vehicles",
+                href: "/admin/dashboard/vehicles-management",
+                icon: "CarFront",
             },
             {
-                title: "Specialties",
-                href: "/admin/dashboard/specialties-management",
-                icon: "Hospital",
-            },
-            {
-                title: "Doctor Schedules",
-                href: "/admin/dashboard/doctor-schedules-managament",
-                icon: "CalendarClock",
-            },
-            {
-                title: "Doctor Specialties",
-                href: "/admin/dashboard/doctor-specialties-management",
-                icon: "Stethoscope",
+                title: "Bookings",
+                href: "/admin/dashboard/bookings-management",
+                icon: "BookOpen",
             },
             {
                 title: "Payments",
@@ -132,14 +112,19 @@ export const adminNavItems: NavSection[] = [
                 icon: "CreditCard",
             },
             {
-                title: "Prescriptions",
-                href: "/admin/dashboard/prescriptions-management",
-                icon: "FileText",
-            },
-            {
                 title: "Reviews",
                 href: "/admin/dashboard/reviews-management",
                 icon: "Star",
+            },
+        ],
+    },
+    {
+        title: "User Management",
+        items: [
+            {
+                title: "Users",
+                href: "/admin/dashboard/users-management",
+                icon: "Users",
             },
         ],
     },
