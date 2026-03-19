@@ -18,9 +18,11 @@ export async function getNewTokensWithRefreshToken(
     try {
         const res = await fetch(`${BASE_API_URL}/auth/refresh-token`, {
             method: "POST",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
                 Cookie: `refreshToken=${refreshToken}`,
+                cache: "no-store",
             },
         });
 
@@ -32,21 +34,19 @@ export async function getNewTokensWithRefreshToken(
 
         const { accessToken, refreshToken: newRefreshToken, token } = data;
 
-        if (accessToken) {
-            await setTokenInCookies("accessToken", accessToken);
-        }
-
-        if (newRefreshToken) {
-            await setTokenInCookies("refreshToken", newRefreshToken);
-        }
-
-        if (token) {
-            await setTokenInCookies(
-                "better-auth.session_token",
-                token,
-                24 * 60 * 60,
-            ); // 1 day in seconds
-        }
+        await Promise.all(
+            [
+                accessToken
+                    ? setTokenInCookies("accessToken", accessToken)
+                    : null,
+                newRefreshToken
+                    ? setTokenInCookies("refreshToken", newRefreshToken)
+                    : null,
+                token
+                    ? setTokenInCookies("better-auth.session_token", token)
+                    : null,
+            ].filter(Boolean),
+        );
 
         return true;
     } catch (error) {
@@ -69,9 +69,14 @@ export async function getUserInfo() {
 
         const res = await fetch(`${BASE_API_URL}/auth/me`, {
             method: "GET",
+            credentials: "include",
             headers: {
                 "Content-Type": "application/json",
                 Cookie: `accessToken=${accessToken}; better-auth.session_token=${sessionToken}`,
+            },
+            next: {
+                tags: ["user"],
+                revalidate: 60, // cache for 60 seconds
             },
         });
 
@@ -162,7 +167,7 @@ export async function updateUserImage(
         }
 
         const { data } = await res.json();
-        console.log(data)
+        console.log(data);
         return {
             success: true,
             data,

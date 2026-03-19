@@ -5,5 +5,7 @@ export interface IVehicleCategory {
     name: string;
     image?: string | null;
     description?: string | null;
+    createdAt: Date;
+    updatedAt: Date;
 	types?: IVehicleType[]
 }

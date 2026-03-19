@@ -16,7 +16,7 @@ export async function getAllFuelPrice(queryString?: string) {
             queryString ? `/fuel-price?${queryString}` : "/fuel-price",
         );
 
-        return result.data;
+        return result;
     } catch (error) {
         console.log("Error fetching fuel price:", error);
         throw error;

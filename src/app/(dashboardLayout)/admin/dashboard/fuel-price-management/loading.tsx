@@ -1,5 +1,5 @@
 import LoadingSpinner from "../../../../../components/shared/LoadingSpinner";
 
-export default function FuelPricePanagementLoading() {
+export default function FuelPriceManagementLoading() {
     return <LoadingSpinner />;
 }

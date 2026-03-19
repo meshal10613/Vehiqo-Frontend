@@ -15,6 +15,7 @@ import { logoutUser } from "../../services/auth.services";
 import { LogOut } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 interface LogoutConfirmDialogProps {
     trigger: React.ReactNode;
@@ -23,26 +24,35 @@ interface LogoutConfirmDialogProps {
 export default function LogoutConfirmDialog({
     trigger,
 }: LogoutConfirmDialogProps) {
-	const router = useRouter();
+    const router = useRouter();
     const [isPending, setIsPending] = useState(false);
 
     const handleLogout = async () => {
         setIsPending(true);
         await logoutUser();
-		router.refresh();
+        router.refresh();
     };
 
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
 
-            <AlertDialogContent
-                className="animate-in fade-in-0 zoom-in-95 duration-200 max-w-sm"
-            >
+            <AlertDialogContent className="animate-in fade-in-0 zoom-in-95 duration-200 max-w-sm">
                 {/* Icon */}
                 <div className="flex justify-center pt-2 pb-1">
                     <div className="w-14 h-14 rounded-full bg-red-50 border border-red-100 flex items-center justify-center animate-in zoom-in-75 duration-300">
-                        <LogOut className="w-6 h-6 text-red-500" />
+                        <motion.div
+                            animate={{ x: [0, 4, 0, -4, 0] }}
+                            transition={{
+                                duration: 0.4,
+                                delay: 2,
+                                repeat: Infinity,
+                                repeatDelay: 2,
+                                ease: "easeInOut",
+                            }}
+                        >
+                            <LogOut className="w-6 h-6 text-red-500" />
+                        </motion.div>
                     </div>
                 </div>
 
@@ -66,9 +76,7 @@ export default function LogoutConfirmDialog({
                     >
                         {isPending ? (
                             <>
-                                <span
-                                    className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin"
-                                />
+                                <span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
                                 Logging out...
                             </>
                         ) : (

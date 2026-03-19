@@ -142,86 +142,54 @@ export default function MyProfile() {
                         <div className="h-1 w-full bg-linear-to-r from-orange-400 via-[#FF5100] to-orange-400" />
 
                         {/* Cover strip */}
-                        <div className="relative h-28 bg-linear-to-br from-zinc-100 via-orange-50/60 to-zinc-50">
-                            <div
-                                className="absolute inset-0 opacity-50"
-                                style={{
-                                    backgroundImage:
-                                        "radial-gradient(circle, #FF510014 1px, transparent 1px)",
-                                    backgroundSize: "16px 16px",
-                                }}
+                        <div className="relative h-60 xl:h-98 overflow-hidden">
+                            <Image
+                                src="https://i.ibb.co.com/tMyfQxYJ/banner4.png"
+                                alt="Profile cover"
+                                fill
+                                className="object-cover"
+                                priority
                             />
+                            {/* subtle overlay to keep contrast */}
+                            <div className="absolute inset-0 bg-black/10" />
                         </div>
 
-                        <CardContent className="px-6 pb-6 -mt-14 z-20">
-                            <div className="flex flex-col sm:flex-row sm:items-end gap-4">
+                        <CardContent className="px-6 pb-6 -mt-16 relative z-20">
+                            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                                 {/* Avatar */}
-                                <div className="relative shrink-0">
+                                <div className="relative shrink-0 w-fit">
                                     {user.image ? (
-                                        <div className="h-24 w-24 rounded-2xl border-4 border-white shadow-lg overflow-hidden ring-2 ring-orange-100">
+                                        <div className="h-40 w-40 rounded-full border-[5px] border-white shadow-xl overflow-hidden ring-2 ring-orange-100">
                                             <Image
                                                 src={user.image}
                                                 alt={user.name}
                                                 width={96}
                                                 height={96}
-                                                className="object-cover w-full h-full"
+                                                className="object-cover w-full h-full rounded-full"
                                             />
                                         </div>
                                     ) : (
-                                        <div className="h-24 w-24 rounded-2xl border-4 border-white shadow-lg bg-linear-to-br from-orange-400 to-[#FF5100] flex items-center justify-center ring-2 ring-orange-100">
+                                        <div className="h-40 w-40 rounded-full border-4 border-white shadow-lg bg-linear-to-br from-orange-400 to-[#FF5100] flex items-center justify-center ring-2 ring-orange-100">
                                             <span className="text-3xl font-bold text-white tracking-tight">
                                                 {initials}
                                             </span>
                                         </div>
                                     )}
                                     {/* Verified pip */}
-                                    <div className="absolute -bottom-1.5 -right-1.5 rounded-full bg-white p-0.5 shadow-sm">
+                                    <div className="absolute bottom-1.5 right-0 rounded-full bg-white p-0.5 shadow-sm">
                                         {user.emailVerified ? (
-                                            <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                                            <CheckCircle2 className="h-7 w-7 text-emerald-500" />
                                         ) : (
-                                            <XCircle className="h-5 w-5 text-zinc-300" />
+                                            <XCircle className="h-7 w-7 text-zinc-300" />
                                         )}
                                     </div>
-                                </div>
-
-                                {/* Identity block */}
-                                <div className="flex-1 min-w-0 pb-1 space-y-1.5">
-                                    <div className="flex flex-wrap items-center gap-2">
-                                        <h1 className="text-2xl font-bold text-zinc-900 tracking-tight">
-                                            {user.name}
-                                        </h1>
-                                        <Badge
-                                            variant="outline"
-                                            className="border-orange-200 text-[#FF5100] bg-orange-50 text-[10px] font-bold uppercase tracking-widest px-2 py-0.5"
-                                        >
-                                            {user.role}
-                                        </Badge>
-                                    </div>
-
-                                    <div className="flex items-center gap-1.5 text-sm text-zinc-900">
-                                        <Mail className="h-3.5 w-3.5 shrink-0" />
-                                        <span className="truncate">
-                                            {user.email}
-                                        </span>
-                                        {user.emailVerified ? (
-                                            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                                        ) : (
-                                            <XCircle className="h-3.5 w-3.5 text-zinc-300 shrink-0" />
-                                        )}
-                                    </div>
-
-                                    <p className="text-xs text-zinc-900 flex items-center gap-1.5">
-                                        <Calendar className="h-3 w-3" />
-                                        Member since{" "}
-                                        {formatDate(user.createdAt)}
-                                    </p>
                                 </div>
 
                                 {/* Edit Profile link — right aligned */}
                                 <div className="shrink-0 pb-1 self-end">
                                     <Button
                                         onClick={() => setIsEditModalOpen(true)}
-                                        className="inline-flex items-center gap-1.5 px-3 rounded-lg border border-zinc-200 bg-white text-xs font-medium text-zinc-700 shadow-sm hover:text-primary hover:border-orange-200 hover:bg-orange-50 transition-all duration-200 cursor-pointer h-10"
+                                        className="inline-flex items-center gap-1.5 px-3 rounded-lg border text-xs font-medium shadow-sm text-primary border-orange-200 bg-orange-50 hover:bg-orange-100 transition-all duration-200 cursor-pointer h-10"
                                     >
                                         <Pencil className="h-3 w-3" />
                                         Edit Profile
@@ -252,16 +220,7 @@ export default function MyProfile() {
                                     <InfoRow
                                         icon={Mail}
                                         label="Email"
-                                        value={
-                                            <span className="flex items-center gap-1.5">
-                                                {user.email}
-                                                {user.emailVerified ? (
-                                                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                                                ) : (
-                                                    <XCircle className="h-3.5 w-3.5 text-zinc-300 shrink-0" />
-                                                )}
-                                            </span>
-                                        }
+                                        value={user.email}
                                     />
                                     <InfoRow
                                         icon={Phone}

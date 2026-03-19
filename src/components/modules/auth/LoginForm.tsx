@@ -98,9 +98,11 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                         id: toastId,
                     },
                 );
+                return;
+            } finally {
+                toast.dismiss(toastId);
+                redirect(targetPath);
             }
-
-            redirect(targetPath);
         },
     });
     return (

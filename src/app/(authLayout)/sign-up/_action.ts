@@ -36,13 +36,19 @@ export const registerAction = async (
             };
         }
 
-        await setTokenInCookies("accessToken", accessToken);
-        await setTokenInCookies("refreshToken", refreshToken);
-        await setTokenInCookies(
-            "better-auth.session_token",
-            token,
-            24 * 60 * 60,
-        ); // 1 day in seconds
+        await Promise.all(
+            [
+                accessToken
+                    ? setTokenInCookies("accessToken", accessToken)
+                    : null,
+                refreshToken
+                    ? setTokenInCookies("refreshToken", refreshToken)
+                    : null,
+                token
+                    ? setTokenInCookies("better-auth.session_token", token)
+                    : null,
+            ].filter(Boolean),
+        );
 
         return response;
     } catch (error: any) {

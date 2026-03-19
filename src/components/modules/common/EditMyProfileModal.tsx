@@ -154,7 +154,9 @@ export default function EditMyProfileModal({
         if (fileInputRef.current) fileInputRef.current.value = "";
     };
 
-    const handleImageChange = async(e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleImageChange = async (
+        e: React.ChangeEvent<HTMLInputElement>,
+    ) => {
         const file = e.target.files?.[0];
         if (!file) return;
 
@@ -195,6 +197,8 @@ export default function EditMyProfileModal({
             });
             setImagePreview(user.image ?? null);
             setImageFile(null);
+        } finally {
+            resetForm();
         }
     };
 

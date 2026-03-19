@@ -4,7 +4,6 @@ import { httpClient } from "@/lib/axios/httpClient";
 import { setTokenInCookies } from "@/lib/tokenUtils";
 import { ApiErrorResponse, ApiResponse } from "@/types/api.type";
 import { ILoginPayload, loginZodSchema } from "@/zod/auth.validation";
-import { redirect } from "next/navigation";
 import { ILoginResponse } from "../../../types/auth.type";
 
 export const loginAction = async (
@@ -27,26 +26,32 @@ export const loginAction = async (
             parsedPayload.data,
         );
 
-        const { accessToken, refreshToken, token, user } = response.data.data;
-        await setTokenInCookies("accessToken", accessToken);
-        await setTokenInCookies("refreshToken", refreshToken);
-        await setTokenInCookies(
-            "better-auth.session_token",
-            token,
-            24 * 60 * 60,
-        ); // 1 day in seconds
+        const { accessToken, refreshToken, token, user } = response.data;
+
+        await Promise.all(
+            [
+                accessToken
+                    ? setTokenInCookies("accessToken", accessToken)
+                    : null,
+                refreshToken
+                    ? setTokenInCookies("refreshToken", refreshToken)
+                    : null,
+                token
+                    ? setTokenInCookies("better-auth.session_token", token)
+                    : null,
+            ].filter(Boolean),
+        );
 
         if (user.emailVerified === false) {
             return {
                 success: false,
-                message:
-                    "Email not verified",
+                message: "Email not verified",
             };
         }
 
         return response;
     } catch (error: any) {
-        console.log(error, "error");
+        console.log(error.response, "error");
         if (
             error &&
             typeof error === "object" &&
@@ -64,7 +69,7 @@ export const loginAction = async (
         ) {
             return {
                 success: false,
-                message: error.response.data.message,
+                message: error,
             };
         }
         return {

@@ -1,9 +1,6 @@
 "use server";
 
 import { httpClient } from "@/lib/axios/httpClient";
-import { setTokenInCookies } from "@/lib/tokenUtils";
-import { ApiErrorResponse, ApiResponse } from "@/types/api.type";
-import { ILoginResponse } from "../../../types/auth.type";
 
 interface OtpResponse {
     success: boolean;
