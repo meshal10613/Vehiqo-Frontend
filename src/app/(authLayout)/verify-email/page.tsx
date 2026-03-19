@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Verify Email | Vehiqo",
+    description: "Manage your vehicle rental system from the admin dashboard.",
+};
+
 import VerifyEmailForm from "../../../components/modules/auth/VerifyEmail";
 
 interface VerifyEmailParams {

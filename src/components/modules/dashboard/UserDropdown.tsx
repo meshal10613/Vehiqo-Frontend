@@ -41,7 +41,7 @@ const UserDropdown = ({ userInfo, onLogout }: UserDropdownProps) => {
                 </Avatar>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent align={"end"} className="w-56">
+            <DropdownMenuContent align={"end"} className="w-fit">
                 <DropdownMenuLabel>
                     <div className="flex items-center gap-2">
                         <Avatar className="h-9 w-9 shrink-0">

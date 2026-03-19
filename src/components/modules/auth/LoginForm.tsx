@@ -258,7 +258,7 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                                 className="text-right"
                             >
                                 <Link
-                                    href="/forgot-password"
+                                    href={`/forgot-password${redirectTo}`}
                                     className="text-sm text-[#FF5100] hover:text-orange-600 hover:underline underline-offset-4 transition-colors"
                                 >
                                     Forgot password?

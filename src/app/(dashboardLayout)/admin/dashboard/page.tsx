@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 export default function AdminDashboardPage() {
     return (
         <div>
-            <h1>This is Dashboard Page</h1>
+            <h1>This is Admin Dashboard Page</h1>
         </div>
     );
 }

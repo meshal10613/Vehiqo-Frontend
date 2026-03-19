@@ -1,3 +1,10 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Sign In | Vehiqo",
+    description: "Manage your vehicle rental system from the admin dashboard.",
+};
+
 import LoginForm from "../../../components/modules/auth/LoginForm";
 
 interface LoginParams {

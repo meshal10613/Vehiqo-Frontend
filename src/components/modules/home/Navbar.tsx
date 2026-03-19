@@ -76,7 +76,7 @@ function UserMenu({
     return (
         <DropdownMenu>
             <DropdownMenuTrigger>
-                <button className="rounded-full ring-2 ring-transparent hover:ring-[#FF5100]/30 transition-all duration-200 focus:outline-none focus:ring-[#FF5100]/40 cursor-pointer">
+                <span className="rounded-full ring-2 ring-transparent hover:ring-[#FF5100]/30 transition-all duration-200 focus:outline-none focus:ring-[#FF5100]/40 cursor-pointer">
                     <Avatar className="h-9 w-9">
                         <AvatarImage
                             src={user?.image || undefined}
@@ -86,7 +86,7 @@ function UserMenu({
                             {initials}
                         </AvatarFallback>
                     </Avatar>
-                </button>
+                </span>
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end" className="w-52 mt-1">
@@ -226,7 +226,7 @@ export default function Navbar({ user, onLogout }: NavbarProps) {
 
                     {/* Mobile: hamburger */}
                     <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-                        <SheetTrigger>
+                        <SheetTrigger asChild>
                             <Button
                                 variant="ghost"
                                 size="icon"
