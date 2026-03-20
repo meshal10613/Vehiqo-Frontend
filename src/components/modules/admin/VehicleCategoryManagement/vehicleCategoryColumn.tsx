@@ -10,7 +10,7 @@ export const vehicleCategoryColumn: ColumnDef<IVehicleCategory>[] = [
 		header: "Name",
 	},
 	{
-		id: "vehicleTypeCount",
+		id: "types._count",
 		accessorKey: "vehicleTypeCount",
 		header: "Vehicle Type",
 		cell: ({ row }) => {

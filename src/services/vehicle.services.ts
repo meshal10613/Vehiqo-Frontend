@@ -54,11 +54,11 @@ export async function createVehicle(
 
         formData.append("brand", d.brand);
         formData.append("model", d.model);
-        formData.append("year", String(d.year));
+        formData.append("year", d.year);
         formData.append("plateNo", d.plateNo);
         formData.append("transmission", d.transmission);
         formData.append("fuelType", d.fuelType);
-        formData.append("pricePerDay", String(d.pricePerDay));
+        formData.append("pricePerDay", d.pricePerDay);
         formData.append("vehicleTypeId", d.vehicleTypeId);
 
         if (d.color) formData.append("color", d.color);

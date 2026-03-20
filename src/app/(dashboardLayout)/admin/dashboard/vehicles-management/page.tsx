@@ -1,8 +1,7 @@
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { Metadata } from "next";
-import { getAllVehicleType } from "../../../../../services/vehicleType.services";
-import VehicleTypeTable from "../../../../../components/modules/admin/VehicleTypeManagement/VehicleTypeTable";
 import VehicleTable from "../../../../../components/modules/admin/VehicleManagement/VehicleTable";
+import { getAllVehicles } from "../../../../../services/vehicle.services";
 
 export const metadata: Metadata = {
     title: "Vehicle Management | Vehiqo",
@@ -39,7 +38,7 @@ export default async function VehicleManagementPage({
     const queryClient = new QueryClient();
     await queryClient.prefetchQuery({
         queryKey: ["vehicle-type", queryString],
-        queryFn: () => getAllVehicleType(queryString),
+        queryFn: () => getAllVehicles(queryString),
         staleTime: 1000 * 60 * 60, // 1 hour
         gcTime: 1000 * 60 * 60 * 6, // 6 hour
     });
