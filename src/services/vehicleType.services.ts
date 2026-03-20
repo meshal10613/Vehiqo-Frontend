@@ -23,6 +23,7 @@ export async function getAllVehicleType(queryString?: string) {
         const result = await httpClient.get<IVehicleType[]>(
             queryString ? `/vehicle-type?${queryString}` : "/vehicle-type",
         );
+
         return result;
     } catch (error) {
         console.error("Error fetching vehicle types:", error);

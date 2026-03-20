@@ -10,5 +10,8 @@ export interface IVehicleType {
     categoryId: string;
     category?: IVehicleCategory;
 
+    createdAt: Date;
+    updatedAt: Date;
+
 	vehicles: IVehicle[]
 }
