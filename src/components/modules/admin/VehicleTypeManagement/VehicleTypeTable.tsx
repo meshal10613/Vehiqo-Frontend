@@ -175,7 +175,12 @@ export default function VehicleTypeTable({
                     onFilterChange: handleFilterChange,
                     onClearAll: clearAllFilters,
                 }}
-                toolbarAction={<CreateVehicleTypeFormModal />}
+                toolbarAction={
+                    <CreateVehicleTypeFormModal
+                        vehicleCategory={vehicleCategory}
+                        isLoadingVehicleCategory={isLoadingVehicleCategory}
+                    />
+                }
                 meta={meta}
                 actions={tableActions}
             />
