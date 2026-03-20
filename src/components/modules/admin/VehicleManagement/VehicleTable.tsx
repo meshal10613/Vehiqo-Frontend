@@ -36,6 +36,7 @@ import {
 import ViewVehicleDialog from "./ViewVehicleDialog";
 import CreateVehicleFormModal from "./CreateVehicleFormModal";
 import DeleteVehicleFormModal from "./DeleteVehicleFormModal";
+import EditVehicleFormModal from "./EditVehicleFormModal";
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 10;
@@ -237,13 +238,13 @@ export default function VehicleTable({
                 actions={tableActions}
             />
 
-            {/* <EditVehicleFormModal
+            <EditVehicleFormModal
                 open={isEditModalOpen}
                 onOpenChange={onEditOpenChange}
                 vehicle={editingItem}
                 vehicleTypes={vehicleTypes}
                 isLoadingVehicleTypes={isLoadingVehicleType}
-            /> */}
+            />
 
             <DeleteVehicleFormModal
                 open={isDeleteDialogOpen}
