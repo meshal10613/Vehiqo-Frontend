@@ -23,6 +23,7 @@ import { useMemo } from "react";
 import { getAllVehicleCategory } from "../../../../services/vehicleCategory.services";
 import ViewVehicleTypeDialog from "./ViewVehicleTypeDialog";
 import DeleteVehicleTypeFormModal from "./DeleteVehicleTypeFormModal";
+import EditVehicleTypeFormModal from "./EditVehicleTypeFormModal";
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 10;
@@ -187,11 +188,13 @@ export default function VehicleTypeTable({
                 actions={tableActions}
             />
 
-            {/* <EditVehicleCategoryFormModal
+            <EditVehicleTypeFormModal
                 open={isEditModalOpen}
                 onOpenChange={onEditOpenChange}
                 vehicleCategory={editingItem}
-            /> */}
+                categories={vehicleCategory}
+                isLoadingCategories={isLoadingVehicleCategory}
+            />
 
             <DeleteVehicleTypeFormModal
                 open={isDeleteDialogOpen}
