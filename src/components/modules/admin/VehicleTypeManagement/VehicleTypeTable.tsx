@@ -21,6 +21,8 @@ import {
 } from "../../../shared/table/DataTableFilters";
 import { useMemo } from "react";
 import { getAllVehicleCategory } from "../../../../services/vehicleCategory.services";
+import ViewVehicleTypeDialog from "./ViewVehicleTypeDialog";
+import DeleteVehicleTypeFormModal from "./DeleteVehicleTypeFormModal";
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 10;
@@ -189,19 +191,19 @@ export default function VehicleTypeTable({
                 open={isEditModalOpen}
                 onOpenChange={onEditOpenChange}
                 vehicleCategory={editingItem}
-            />
+            /> */}
 
-            <DeleteVehicleCategoryFormModal
+            <DeleteVehicleTypeFormModal
                 open={isDeleteDialogOpen}
                 onOpenChange={onDeleteOpenChange}
-                vehicleCategory={deletingItem}
+                vehicleType={deletingItem}
             />
 
-            <ViewVehicleCategoryDialoag
+            <ViewVehicleTypeDialog
                 open={isViewDialogOpen}
                 onOpenChange={onViewOpenChange}
-                vehicleCategory={viewingItem}
-            /> */}
+                vehicleType={viewingItem}
+            />
         </>
     );
 }
