@@ -61,7 +61,6 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
             let targetPath = "/";
             try {
                 const result = (await mutateAsync(value)) as any;
-
                 if (!result.success) {
                     if (result.message === "Email not verified") {
                         const email = value.email;
@@ -69,6 +68,7 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                             ? `${redirectTo}&email=${email}`
                             : `?email=${email}`;
                         router.push(`/verify-email${query}`);
+                        return;
                     }
 
                     toast.error(result.message || "Sign In failed", {
@@ -89,6 +89,8 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                     )
                         ? redirectPath
                         : "/"; // getDefaultDashboardRoute(role as UserRole)
+
+                router.push(targetPath);
             } catch (error: any) {
                 console.log(`Sign In failed: ${error.message}`);
                 toast.error(
@@ -101,7 +103,6 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                 return;
             } finally {
                 toast.dismiss(toastId);
-                redirect(targetPath);
             }
         },
     });

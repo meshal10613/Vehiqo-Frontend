@@ -46,32 +46,27 @@ export const getCommonBottomNavItems = () => {
 
 export const customerNavItems: NavSection[] = [
     {
-        title: "Appointments",
+        title: "Bookings",
         items: [
             {
-                title: "My Appointments",
-                href: "/dashboard/my-appointments",
-                icon: "Calendar",
+                title: "My Bookings",
+                href: "/dashboard/my-bookings",
+                icon: "CalendarCheck",
             },
             {
-                title: "Book Appointment",
-                href: "/dashboard/book-appointments",
-                icon: "ClipboardList",
+                title: "My Payments",
+                href: "/dashboard/my-payments",
+                icon: "CreditCard",
             },
         ],
     },
     {
-        title: "Medical Records",
+        title: "Reviews",
         items: [
             {
-                title: "My Prescriptions",
-                href: "/dashboard/my-prescriptions",
-                icon: "FileText",
-            },
-            {
-                title: "Health Records",
-                href: "/dashboard/health-records",
-                icon: "Activity",
+                title: "My Reviews",
+                href: "/dashboard/my-reviews",
+                icon: "Star",
             },
         ],
     },
@@ -81,11 +76,6 @@ export const adminNavItems: NavSection[] = [
     {
         title: "Vehicle Management",
         items: [
-            {
-                title: "Fuel Price",
-                href: "/admin/dashboard/fuel-price-management",
-                icon: "Fuel",
-            },
             {
                 title: "Vehicle Category",
                 href: "/admin/dashboard/vehicle-category-management",
@@ -101,6 +91,11 @@ export const adminNavItems: NavSection[] = [
                 href: "/admin/dashboard/vehicles-management",
                 icon: "CarFront",
             },
+        ],
+    },
+    {
+        title: "Booking & Payments",
+        items: [
             {
                 title: "Bookings",
                 href: "/admin/dashboard/bookings-management",
@@ -111,6 +106,16 @@ export const adminNavItems: NavSection[] = [
                 href: "/admin/dashboard/payments-management",
                 icon: "CreditCard",
             },
+            {
+                title: "Fuel Price",
+                href: "/admin/dashboard/fuel-price-management",
+                icon: "Fuel",
+            },
+        ],
+    },
+    {
+        title: "Reviews & Feedback",
+        items: [
             {
                 title: "Reviews",
                 href: "/admin/dashboard/reviews-management",

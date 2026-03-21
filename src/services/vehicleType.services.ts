@@ -25,9 +25,9 @@ export async function getAllVehicleType(queryString?: string) {
         );
 
         return result;
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error fetching vehicle types:", error);
-        throw error;
+        return error.response.data;
     }
 }
 

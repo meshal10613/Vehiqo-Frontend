@@ -19,9 +19,9 @@ export async function getAllVehicles(queryString?: string) {
             queryString ? `/vehicle?${queryString}` : "/vehicle",
         );
         return result;
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error fetching vehicles:", error);
-        throw error;
+        return error.response.data;
     }
 }
 
@@ -29,9 +29,9 @@ export async function getVehicleById(vehicleId: string) {
     try {
         const result = await httpClient.get<IVehicle>(`/vehicle/${vehicleId}`);
         return result;
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error fetching vehicle:", error);
-        throw error;
+        return error.response.data;
     }
 }
 

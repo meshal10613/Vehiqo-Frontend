@@ -17,9 +17,9 @@ export async function getAllUsers(queryString?: string) {
         );
 
         return result;
-    } catch (error) {
+    } catch (error: any) {
         console.log("Error fetching user:", error);
-        throw error;
+        return error.response.data;
     }
 }
 
@@ -34,9 +34,9 @@ export async function updateUserRole(payload: {
         );
 
         return result;
-    } catch (error) {
+    } catch (error: any) {
         console.log("Error update user role:", error);
-        throw error;
+        return error.response.data;
     }
 }
 
@@ -49,6 +49,23 @@ export async function deleteUser(id: string) {
         return result;
     } catch (error: any) {
         console.log("Error delete user:", error.response);
-        throw error;
+        return error.response.data;
+    }
+}
+
+export async function changePassword(payload: {
+    currentPassword: string;
+    newPassword: string;
+}) {
+    try {
+        const result = await httpClient.post<IUser>(
+            `/auth/change-password`,
+            payload,
+        );
+
+        return result;
+    } catch (error: any) {
+        console.log("Error delete user:", error.response.data);
+        return error.response.data;
     }
 }

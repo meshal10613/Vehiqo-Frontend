@@ -5,7 +5,7 @@ import AppSubmitButton from "@/components/shared/form/AppSubmitButton";
 import { Button } from "@/components/ui/button";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
-import { ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Separator } from "../../ui/separator";
@@ -13,10 +13,36 @@ import { Card, CardContent, CardFooter } from "../../ui/card";
 import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
 import { redirect, useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import { IRegisterPayload } from "../../../zod/auth.validation";
 import { registerAction } from "../../../app/(authLayout)/sign-up/_action";
+import { cn } from "../../../lib/utils";
+
+const REQUIREMENTS = [
+    { label: "At least 8 characters", test: (v: string) => v.length >= 8 },
+    { label: "One uppercase letter", test: (v: string) => /[A-Z]/.test(v) },
+    { label: "One lowercase letter", test: (v: string) => /[a-z]/.test(v) },
+    { label: "One number", test: (v: string) => /[0-9]/.test(v) },
+    {
+        label: "One special character",
+        test: (v: string) => /[@$!%*?&]/.test(v),
+    },
+];
+
+function getStrength(password: string) {
+    if (!password) return { score: 0, label: "", color: "" };
+    let score = 0;
+    if (password.length >= 8) score++;
+    if (password.length >= 12) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+    if (score <= 2) return { score, label: "Weak", color: "bg-red-400" };
+    if (score === 3) return { score, label: "Fair", color: "bg-amber-400" };
+    if (score === 4) return { score, label: "Good", color: "bg-emerald-400" };
+    return { score, label: "Strong", color: "bg-emerald-500" };
+}
 
 interface RegisterFormProps {
     redirectPath?: string;
@@ -62,11 +88,13 @@ const RegisterForm = ({ redirectPath }: RegisterFormProps) => {
                 const result = (await mutateAsync(value)) as any;
 
                 if (!result.success) {
-                    if (
-                        result.message ===
-                        "Account created successfully. Please login to continue."
-                    ) {
-                        router.push("/sign-in" + redirectTo);
+                    if (result.message === "Email not verified") {
+                        const email = value.email;
+                        const query = redirectTo
+                            ? `${redirectTo}&email=${email}`
+                            : `?email=${email}`;
+                        router.push(`/verify-email${query}`);
+                        return;
                     }
 
                     toast.error(result.message || "Registration failed", {
@@ -91,6 +119,8 @@ const RegisterForm = ({ redirectPath }: RegisterFormProps) => {
                         "Something went wrong, please try again.",
                     { id: toastId },
                 );
+            } finally {
+                toast.dismiss(toastId);
             }
         },
     });
@@ -209,45 +239,176 @@ const RegisterForm = ({ redirectPath }: RegisterFormProps) => {
                             {/* Password */}
                             <motion.div variants={itemVariants}>
                                 <form.Field name="password">
-                                    {(field) => (
-                                        <AppField
-                                            field={field}
-                                            label="Password"
-                                            type={
-                                                showPassword
-                                                    ? "text"
-                                                    : "password"
-                                            }
-                                            placeholder="Enter your password"
-                                            append={
-                                                <Button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        setShowPassword(
-                                                            (v) => !v,
-                                                        )
+                                    {(field) => {
+                                        const value = field.state.value ?? "";
+                                        const strength = getStrength(value);
+
+                                        return (
+                                            <div>
+                                                <AppField
+                                                    field={field}
+                                                    label="Password"
+                                                    type={
+                                                        showPassword
+                                                            ? "text"
+                                                            : "password"
                                                     }
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="cursor-pointer hover:bg-white"
-                                                >
-                                                    {showPassword ? (
-                                                        <EyeOff
-                                                            className="size-4"
-                                                            aria-hidden="true"
-                                                        />
-                                                    ) : (
-                                                        <Eye
-                                                            className="size-4"
-                                                            aria-hidden="true"
-                                                        />
+                                                    placeholder="Enter your password"
+                                                    append={
+                                                        <Button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                setShowPassword(
+                                                                    (v) => !v,
+                                                                )
+                                                            }
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            className="cursor-pointer hover:bg-white"
+                                                        >
+                                                            {showPassword ? (
+                                                                <EyeOff
+                                                                    className="size-4"
+                                                                    aria-hidden="true"
+                                                                />
+                                                            ) : (
+                                                                <Eye
+                                                                    className="size-4"
+                                                                    aria-hidden="true"
+                                                                />
+                                                            )}
+                                                        </Button>
+                                                    }
+                                                />
+                                                <AnimatePresence>
+                                                    {value.length > 0 && (
+                                                        <motion.div
+                                                            initial={{
+                                                                opacity: 0,
+                                                                height: 0,
+                                                            }}
+                                                            animate={{
+                                                                opacity: 1,
+                                                                height: "auto",
+                                                            }}
+                                                            exit={{
+                                                                opacity: 0,
+                                                                height: 0,
+                                                            }}
+                                                            transition={{
+                                                                duration: 0.2,
+                                                            }}
+                                                            className="overflow-hidden space-y-1"
+                                                        >
+                                                            <div className="flex gap-1">
+                                                                {[
+                                                                    1, 2, 3, 4,
+                                                                    5,
+                                                                ].map((i) => (
+                                                                    <div
+                                                                        key={i}
+                                                                        className={cn(
+                                                                            "h-1 flex-1 rounded-full transition-colors duration-300",
+                                                                            i <=
+                                                                                strength.score
+                                                                                ? strength.color
+                                                                                : "bg-zinc-100",
+                                                                        )}
+                                                                    />
+                                                                ))}
+                                                            </div>
+                                                            <p
+                                                                className={cn(
+                                                                    "text-[11px] font-semibold",
+                                                                    strength.label ===
+                                                                        "Weak" &&
+                                                                        "text-red-400",
+                                                                    strength.label ===
+                                                                        "Fair" &&
+                                                                        "text-amber-500",
+                                                                    (strength.label ===
+                                                                        "Good" ||
+                                                                        strength.label ===
+                                                                            "Strong") &&
+                                                                        "text-emerald-500",
+                                                                )}
+                                                            >
+                                                                {strength.label}
+                                                            </p>
+                                                        </motion.div>
                                                     )}
-                                                </Button>
-                                            }
-                                        />
-                                    )}
+                                                </AnimatePresence>
+                                            </div>
+                                        );
+                                    }}
                                 </form.Field>
                             </motion.div>
+
+                            <form.Field name="password">
+                                {(field) => {
+                                    const value = field.state.value ?? "";
+                                    if (!value) return null;
+                                    return (
+                                        <motion.div
+                                            initial={{
+                                                opacity: 0,
+                                                height: 0,
+                                            }}
+                                            animate={{
+                                                opacity: 1,
+                                                height: "auto",
+                                            }}
+                                            className="rounded-xl bg-zinc-50 border border-zinc-100 px-4 py-3 space-y-1.5 overflow-hidden"
+                                        >
+                                            <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">
+                                                Requirements
+                                            </p>
+                                            {REQUIREMENTS.map(
+                                                ({ label, test }) => {
+                                                    const met = test(value);
+                                                    return (
+                                                        <div
+                                                            key={label}
+                                                            className="flex items-center gap-2"
+                                                        >
+                                                            <motion.div
+                                                                animate={{
+                                                                    scale: met
+                                                                        ? [
+                                                                              1,
+                                                                              1.4,
+                                                                              1,
+                                                                          ]
+                                                                        : 1,
+                                                                }}
+                                                                transition={{
+                                                                    duration: 0.2,
+                                                                }}
+                                                            >
+                                                                {met ? (
+                                                                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                                                                ) : (
+                                                                    <div className="h-3.5 w-3.5 rounded-full border-2 border-zinc-200" />
+                                                                )}
+                                                            </motion.div>
+                                                            <span
+                                                                className={cn(
+                                                                    "text-xs transition-colors duration-200",
+                                                                    met
+                                                                        ? "text-emerald-600 font-medium"
+                                                                        : "text-zinc-400",
+                                                                )}
+                                                            >
+                                                                {label}
+                                                            </span>
+                                                        </div>
+                                                    );
+                                                },
+                                            )}
+                                        </motion.div>
+                                    );
+                                }}
+                            </form.Field>
 
                             <motion.div variants={itemVariants}>
                                 <form.Subscribe

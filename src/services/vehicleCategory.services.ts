@@ -27,9 +27,9 @@ export async function getAllVehicleCategory(queryString?: string) {
         );
 
         return result;
-    } catch (error) {
+    } catch (error: any) {
         console.log("Error fetching fuel price:", error);
-        throw error;
+        return error.response.data;
     }
 }
 

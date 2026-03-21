@@ -31,8 +31,7 @@ export const registerAction = async (
         if (user.emailVerified === false) {
             return {
                 success: false,
-                message:
-                    "Account created successfully. Please login to continue.",
+                message: "Email not verified",
             };
         }
 

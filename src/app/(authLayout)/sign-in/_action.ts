@@ -51,7 +51,7 @@ export const loginAction = async (
 
         return response;
     } catch (error: any) {
-        console.log(error.response, "error");
+        console.log(error.response.data, "error");
         if (
             error &&
             typeof error === "object" &&
@@ -69,7 +69,7 @@ export const loginAction = async (
         ) {
             return {
                 success: false,
-                message: error,
+                message: error.response.data.message,
             };
         }
         return {
