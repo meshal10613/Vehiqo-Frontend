@@ -87,13 +87,13 @@ export default function Error({
                         {/* Actions */}
                         <div className="flex items-center gap-3 flex-wrap">
                             <Button
-                                onClick={reset}
-                                className="bg-primary hover:bg-rose-500 text-white gap-2 shadow-lg shadow-rose-200 transition-all duration-200 cursor-pointer"
+                                onClick={() => window.location.reload()}
+                                className="bg-primary hover:bg-rose-500 text-white gap-2 shadow-lg shadow-rose-200 transition-all duration-200 cursor-pointer h-10"
                             >
                                 <RotateCcw className="w-4 h-4" />
                                 Try Again
                             </Button>
-                            <Button className="bg-zinc-100 hover:bg-zinc-200 text-zinc-800 gap-2 transition-all duration-200 cursor-pointer">
+                            <Button className="bg-zinc-100 hover:bg-zinc-200 text-zinc-800 gap-2 transition-all duration-200 cursor-pointer h-10">
                                 <Link
                                     href="/"
                                     className="flex items-center gap-2"

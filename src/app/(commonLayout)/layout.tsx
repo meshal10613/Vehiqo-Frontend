@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Navbar from "../../components/modules/home/Navbar";
 import { getUserInfo, logoutUser } from "../../services/auth.services";
+import Footer from "../../components/modules/home/Footer";
 
 export default async function CommonLayout({
     children,
@@ -13,6 +14,7 @@ export default async function CommonLayout({
         <>
             <Navbar user={userInfo} />
             {children}
+            {/* <Footer/> */}
         </>
     );
 }
