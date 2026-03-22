@@ -13,8 +13,8 @@ export default async function CommonLayout({
     return (
         <>
             <Navbar user={userInfo} />
-            {children}
-            {/* <Footer/> */}
+            <div className="min-h-[calc(100vh-657px)]">{children}</div>
+            <Footer />
         </>
     );
 }
