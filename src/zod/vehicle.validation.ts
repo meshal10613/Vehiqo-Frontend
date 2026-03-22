@@ -22,8 +22,7 @@ const vehicleImageArray = z
         { message: "Images must be an array" },
     )
     .min(1, { message: "At least one image is required" })
-    .max(10, { message: "You can upload up to 10 images" })
-    .optional();
+    .max(10, { message: "You can upload up to 10 images" });
 
 export const createVehicleSchema = z
     .object({
@@ -70,8 +69,7 @@ export const createVehicleSchema = z
             .number({ message: "Seats must be a number" })
             .int({ message: "Seats must be an integer" })
             .min(1, { message: "Seats must be at least 1" })
-            .max(100, { message: "Seats must not exceed 100" })
-            .optional(),
+            .max(100, { message: "Seats must not exceed 100" }),
 
         fuelType: z.nativeEnum(FuelEnum, {
             message: "Invalid fuel type",
@@ -164,7 +162,7 @@ export const updateVehicleSchema = z
             .trim()
             .optional(),
 
-        image: vehicleImageArray,
+        image: vehicleImageArray.optional(),
 
         color: z
             .string({ message: "Color must be a string" })

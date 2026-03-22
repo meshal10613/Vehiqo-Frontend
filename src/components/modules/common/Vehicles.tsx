@@ -707,6 +707,7 @@ import {
 import { Input } from "../../ui/input";
 import { cn } from "../../../lib/utils";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { VehicleStatusEnum } from "../../../types/enum.type";
 
 const DEFAULT_PAGE_SIZES = [1, 5, 10, 20, 30, 50, 100];
 
@@ -1158,7 +1159,10 @@ export default function Vehicles({
         queryFn: () => getAllVehicles(queryString),
     });
 
-    const vehicles: IVehicle[] = vehicleData?.data ?? [];
+    const v: IVehicle[] = vehicleData?.data ?? [];
+    const vehicles: IVehicle[] = v.filter(
+        (vehicle: IVehicle) => vehicle.status === VehicleStatusEnum.AVAILABLE,
+    );
     const meta: PaginationMeta | undefined = vehicleData?.meta;
 
     // Search state
