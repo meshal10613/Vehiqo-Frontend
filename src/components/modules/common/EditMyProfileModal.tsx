@@ -393,7 +393,7 @@ export default function EditMyProfileModal({
                                                             <SelectTrigger
                                                                 id="gender"
                                                                 className={cn(
-                                                                    "w-full h-25 border rounded-lg shadow-sm transition-all duration-200",
+                                                                    "w-full border rounded-lg shadow-sm transition-all duration-200 h-10!",
                                                                     firstError
                                                                         ? "border-red-500 shadow-[0_0_0_3px_rgba(239,68,68,0.08)]"
                                                                         : "border-zinc-200 focus:border-[#FF5100] focus:shadow-[0_0_0_3px_rgba(255,81,0,0.08)]",

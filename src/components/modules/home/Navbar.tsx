@@ -184,7 +184,7 @@ export default function Navbar({ user, onLogout }: NavbarProps) {
 
     return (
         <header className="sticky top-0 z-50 w-full bg-white/90 backdrop-blur-md border-b border-zinc-100">
-            <div className="container mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-6">
+            <div className="container mx-auto px-4 sm:px-6 lg:px-0 h-16 flex items-center justify-between gap-6">
                 {/* Logo */}
                 <Link href={`/`}>
                     <Image

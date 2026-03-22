@@ -1,14 +1,18 @@
-import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import {
+    dehydrate,
+    HydrationBoundary,
+    QueryClient,
+} from "@tanstack/react-query";
 import { Metadata } from "next";
-import VehicleTable from "../../../../../components/modules/admin/VehicleManagement/VehicleTable";
-import { getAllVehicles } from "../../../../../services/vehicle.services";
+import { getAllVehicles } from "../../../services/vehicle.services";
+import Vehicles from "../../../components/modules/common/Vehicles";
 
 export const metadata: Metadata = {
-    title: "Vehicle Management | Vehiqo",
+    title: "Vehicles | Vehiqo",
     description: "Manage your vehicle rental system from the admin dashboard.",
 };
 
-export default async function VehicleManagementPage({
+export default async function VehiclesPage({
     searchParams,
 }: {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -45,7 +49,7 @@ export default async function VehicleManagementPage({
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
-            <VehicleTable initialQueryString={queryString} />
+            <Vehicles initialQueryString={queryString} />
         </HydrationBoundary>
     );
 }

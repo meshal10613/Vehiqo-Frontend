@@ -497,7 +497,7 @@ export default function EditVehicleFormModal({
                                                     <SelectTrigger
                                                         id={field.name}
                                                         className={cn(
-                                                            "w-full transition-all duration-200",
+                                                            "w-full transition-all duration-200 h-10!",
                                                             firstError
                                                                 ? "border-destructive"
                                                                 : "border-zinc-200 focus:border-[#FF5100] focus:ring-[#FF5100]/20",
@@ -566,7 +566,7 @@ export default function EditVehicleFormModal({
                                                     <SelectTrigger
                                                         id={field.name}
                                                         className={cn(
-                                                            "w-full transition-all duration-200",
+                                                            "w-full transition-all duration-200 h-10!",
                                                             firstError
                                                                 ? "border-destructive"
                                                                 : "border-zinc-200 focus:border-[#FF5100] focus:ring-[#FF5100]/20",
@@ -649,7 +649,7 @@ export default function EditVehicleFormModal({
                                                     <SelectTrigger
                                                         id={field.name}
                                                         className={cn(
-                                                            "w-full transition-all duration-200",
+                                                            "w-full transition-all duration-200 h-10!",
                                                             firstError
                                                                 ? "border-destructive"
                                                                 : "border-zinc-200 focus:border-[#FF5100] focus:ring-[#FF5100]/20",
@@ -712,7 +712,7 @@ export default function EditVehicleFormModal({
                                                     <SelectTrigger
                                                         id={field.name}
                                                         className={cn(
-                                                            "w-full transition-all duration-200",
+                                                            "w-full transition-all duration-200 h-10!",
                                                             firstError
                                                                 ? "border-destructive"
                                                                 : "border-zinc-200 focus:border-[#FF5100] focus:ring-[#FF5100]/20",

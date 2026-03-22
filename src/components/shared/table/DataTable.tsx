@@ -36,6 +36,7 @@ import DataTableFilters, {
     DataTableFilterValues,
 } from "./DataTableFilters";
 import LoadingPage from "../../../app/loading";
+import LoadingSpinner from "../LoadingSpinner";
 
 interface DataTableActions<TData> {
     onView?: (data: TData) => void;
@@ -204,7 +205,7 @@ const DataTable = <TData,>({
         <div className="relative">
             {showLoadingOverlay && (
                 <div className="absolute inset-0 backdrop-blur-sm z-10 flex items-center justify-center">
-                    <LoadingPage />
+                    <LoadingSpinner />
                 </div>
             )}
 

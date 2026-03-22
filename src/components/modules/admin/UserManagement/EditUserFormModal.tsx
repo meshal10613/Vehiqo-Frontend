@@ -147,7 +147,7 @@ export default function EditUserFormModal({
 
                 <div className="px-6 py-5 space-y-5">
                     {/* ── User identity card ── */}
-                    <motion.div
+                    {/* <motion.div
                         initial={{ opacity: 0, y: 6 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.2 }}
@@ -180,7 +180,7 @@ export default function EditUserFormModal({
                         >
                             {user.role}
                         </Badge>
-                    </motion.div>
+                    </motion.div> */}
 
                     {/* ── Self-edit warning ── */}
                     <AnimatePresence>

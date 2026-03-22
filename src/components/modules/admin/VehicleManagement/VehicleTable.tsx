@@ -114,7 +114,7 @@ export default function VehicleTable({
     // ── vehicle types (for filters + form) ────────────────────────────────────
     const { data: vehicleTypeData, isLoading: isLoadingVehicleType } = useQuery(
         {
-            queryKey: ["vehicle-type"],
+            queryKey: ["vehicle"],
             queryFn: () => getAllVehicleType(),
         },
     );
@@ -161,7 +161,7 @@ export default function VehicleTable({
                 id: "vehicleType.name",
                 label: "Vehicle Type",
                 type: "multi-select",
-                options: vehicleTypes.map((v) => ({
+                options: vehicleTypes.map((v: any) => ({
                     label: v.name,
                     value: v.name,
                 })),
@@ -170,7 +170,7 @@ export default function VehicleTable({
                 id: "vehicleType.categoryId",
                 label: "Category",
                 type: "multi-select",
-                options: vehicleCategories.map((v) => ({
+                options: vehicleCategories.map((v: any) => ({
                     label: v.name,
                     value: v.id,
                 })),
