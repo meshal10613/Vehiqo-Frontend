@@ -1,3 +1,10 @@
+export interface IPublicStats {
+    vehicleType: number;
+    vehicleCategory: number;
+    vehicle: number;
+    review: number;
+}
+
 export interface ICustomerStats {
     booking: {
         total: number;

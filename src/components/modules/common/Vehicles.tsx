@@ -684,6 +684,7 @@ import { PaginationMeta } from "../../../types/api.type";
 import { useServerManagedDataTable } from "../../../hooks/useServerManagedDataTable";
 import { useSearchParams } from "next/navigation";
 import { IVehicle } from "../../../types/vehicle.type";
+import { motion } from "framer-motion";
 import {
     Users,
     Settings2,
@@ -708,6 +709,7 @@ import { Input } from "../../ui/input";
 import { cn } from "../../../lib/utils";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { VehicleStatusEnum } from "../../../types/enum.type";
+import VehicleCard from "./VehicleCard";
 
 const DEFAULT_PAGE_SIZES = [1, 5, 10, 20, 30, 50, 100];
 
@@ -919,7 +921,13 @@ function Pagination({
     );
 }
 
-function ImageSlider({ images, alt }: { images: string[]; alt: string }) {
+export function ImageSlider({
+    images,
+    alt,
+}: {
+    images: string[];
+    alt: string;
+}) {
     const [current, setCurrent] = useState(0);
     const [isHovered, setIsHovered] = useState(false);
     const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -1012,119 +1020,6 @@ function ImageSlider({ images, alt }: { images: string[]; alt: string }) {
             {/* Image count badge */}
             <div className="absolute top-2 right-2 bg-black/40 backdrop-blur-sm text-white text-[10px] font-semibold px-2 py-0.5 rounded-full z-10">
                 {current + 1} / {total}
-            </div>
-        </div>
-    );
-}
-
-function VehicleCard({ vehicle }: { vehicle: IVehicle }) {
-    const formattedTransmission =
-        vehicle.transmission.charAt(0).toUpperCase() +
-        vehicle.transmission.slice(1).toLowerCase();
-
-    const images = vehicle.image ?? [];
-    const hasMultipleImages = images.length > 1;
-
-    return (
-        <div className="border border-zinc-200 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow flex flex-col w-92 md:w-88 lg:w-full mx-auto">
-            <div className="w-full h-55 relative bg-zinc-100">
-                <div className="w-full h-55 relative bg-zinc-100">
-                    {hasMultipleImages ? (
-                        <ImageSlider
-                            images={images}
-                            alt={`${vehicle.brand} ${vehicle.model}`}
-                        />
-                    ) : images.length === 1 ? (
-                        <img
-                            src={images[0]}
-                            alt={`${vehicle.brand} ${vehicle.model}`}
-                            className="w-full h-full object-cover"
-                        />
-                    ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-zinc-200">
-                            <CarFront className="w-16 h-16 text-zinc-400" />
-                        </div>
-                    )}
-                </div>
-            </div>
-
-            <div className="p-5 flex-1 flex flex-col">
-                <div className="flex justify-between items-start mb-6">
-                    <div>
-                        <h3 className="text-xl font-bold text-zinc-900 leading-tight">
-                            {vehicle.brand} {vehicle.model}
-                        </h3>
-                        <p className="text-zinc-500 text-sm mt-1">
-                            {vehicle.vehicleType?.name || "Economy Sedan"}
-                        </p>
-                    </div>
-                    <div className="text-right">
-                        <p className="text-primary text-xl font-bold leading-tight">
-                            ৳{vehicle.pricePerDay}
-                        </p>
-                        <p className="text-zinc-500 text-xs mt-1">Per day</p>
-                    </div>
-                </div>
-
-                <div className="flex justify-between items-center mb-8 px-2">
-                    <div className="flex flex-col items-center gap-2">
-                        <Users
-                            strokeWidth={1.5}
-                            className="text-zinc-600 w-6 h-6"
-                        />
-                        <span className="text-xs text-zinc-600">
-                            {vehicle.seats || "-"} Seats
-                        </span>
-                    </div>
-                    <div className="flex flex-col items-center gap-2">
-                        <IdCard
-                            strokeWidth={1.5}
-                            className="text-zinc-600 w-6 h-6"
-                        />
-                        <span className="text-xs text-zinc-600 text-center">
-                            {vehicle.vehicleType?.requiresLicense
-                                ? "License Req"
-                                : "No License"}
-                        </span>
-                    </div>
-                    <div className="flex flex-col items-center gap-2">
-                        <Zap
-                            strokeWidth={1.5}
-                            className="text-zinc-600 w-6 h-6"
-                        />
-                        <span className="text-xs text-zinc-600">
-                            {vehicle.fuelType.charAt(0).toUpperCase() +
-                                vehicle.fuelType.slice(1).toLowerCase()}
-                        </span>
-                    </div>
-                    <div className="flex flex-col items-center gap-2">
-                        <Settings2
-                            strokeWidth={1.5}
-                            className="text-zinc-600 w-6 h-6"
-                        />
-                        <span className="text-xs text-zinc-600">
-                            {formattedTransmission}
-                        </span>
-                    </div>
-                </div>
-
-                <div className="flex justify-between items-center mt-auto">
-                    <Link
-                        href={`/vehicles/${vehicle.id}`}
-                        className="bg-primary hover:bg-[#ff5a00] text-white font-semibold py-1.5 pl-5 pr-1.5 rounded-lg flex items-center gap-3 transition-colors cursor-pointer"
-                    >
-                        Rent Now
-                        <span className="bg-white text-zinc-900 p-1.5 rounded-md flex items-center justify-center">
-                            <CarFront className="w-4 h-4" strokeWidth={2} />
-                        </span>
-                    </Link>
-                    <Link
-                        href={`/vehicles/${vehicle.id}`}
-                        className="text-zinc-700 font-semibold text-sm hover:text-zinc-900 transition-colors cursor-pointer"
-                    >
-                        See Details
-                    </Link>
-                </div>
             </div>
         </div>
     );
@@ -1230,66 +1125,68 @@ export default function Vehicles({
         isLoading || isFetching || isRouteRefreshPending;
 
     return (
-        <div className="pb-10 container mx-auto px-4">
-            <div className="my-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div>
-                    <h1 className="text-2xl font-bold text-zinc-900 tracking-tight">
-                        Vehicles
-                    </h1>
-                    <p className="text-sm text-zinc-500 mt-1">
-                        Manage vehicles, assign types, and configure
-                        availability and pricing.
-                    </p>
+        <div className="pb-10 container mx-auto px-4 my-8">
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: "easeOut" as const }}
+                className="max-w-2xl mx-auto"
+            >
+                {/* Pill badge */}
+                <div className="flex items-center justify-center gap-2 bg-[#FF5100]/15 border border-[#FF5100]/25 text-[#FF5100] text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full mb-5 text-center w-fit mx-auto">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#FF5100] animate-pulse" />
+                    Available Vehicles
                 </div>
 
-                <div className="flex flex-row items-center justify-between gap-3">
-                    {/* Search Input */}
-                    <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-400 w-4 h-4" />
-                        <Input
-                            placeholder="Search vehicles by name"
-                            value={searchInput}
-                            onChange={(e) => setSearchInput(e.target.value)}
-                            className="pl-10 w-full sm:w-64 h-10"
-                        />
-                    </div>
+                <h1 className="text-4xl sm:text-5xl font-extrabold text-zinc-900 tracking-tight leading-tight mb-4 text-center">
+                    Choose. <span className="text-[#FF5100]">Book.</span> Drive.
+                </h1>
+                <p className="text-base text-zinc-400 leading-relaxed text-center">
+                    Every vehicle in our fleet is verified, maintained, and
+                    ready to hit the road — just pick your dates.
+                </p>
+            </motion.div>
 
-                    {/* Sort Select */}
-                    <Select
-                        value={currentSortValue}
-                        onValueChange={handleSortSelectChange}
-                    >
-                        <SelectTrigger className="w-fit sm:w-48 h-10!">
-                            <SelectValue
-                                placeholder="Sort by"
-                                className="h-10"
-                            />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="pricePerDay:asc">
-                                Price: Low to High
-                            </SelectItem>
-                            <SelectItem value="pricePerDay:desc">
-                                Price: High to Low
-                            </SelectItem>
-                            <SelectItem value="year:desc">
-                                Year: Newest First
-                            </SelectItem>
-                            <SelectItem value="year:asc">
-                                Year: Oldest First
-                            </SelectItem>
-                            <SelectItem value="brand:asc">
-                                Brand: A-Z
-                            </SelectItem>
-                            <SelectItem value="brand:desc">
-                                Brand: Z-A
-                            </SelectItem>
-                            <SelectItem value="createdAt:desc">
-                                Newest Added
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
+            <div className="flex flex-row items-center justify-between gap-3 mb-8">
+                {/* Search Input */}
+                <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-400 w-4 h-4" />
+                    <Input
+                        placeholder="Search vehicles by name"
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
+                        className="pl-10 w-full sm:w-64 h-10 focus:border-none"
+                    />
                 </div>
+
+                {/* Sort Select */}
+                <Select
+                    value={currentSortValue}
+                    onValueChange={handleSortSelectChange}
+                >
+                    <SelectTrigger className="w-fit sm:w-48 h-10!">
+                        <SelectValue placeholder="Sort by" className="h-10" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="pricePerDay:asc">
+                            Price: Low to High
+                        </SelectItem>
+                        <SelectItem value="pricePerDay:desc">
+                            Price: High to Low
+                        </SelectItem>
+                        <SelectItem value="year:desc">
+                            Year: Newest First
+                        </SelectItem>
+                        <SelectItem value="year:asc">
+                            Year: Oldest First
+                        </SelectItem>
+                        <SelectItem value="brand:asc">Brand: A-Z</SelectItem>
+                        <SelectItem value="brand:desc">Brand: Z-A</SelectItem>
+                        <SelectItem value="createdAt:desc">
+                            Newest Added
+                        </SelectItem>
+                    </SelectContent>
+                </Select>
             </div>
 
             <div>
