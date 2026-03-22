@@ -19,7 +19,7 @@ import {
     SheetClose,
 } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, LogOut, Menu, Car, Home, Phone } from "lucide-react";
+import { LayoutDashboard, LogOut, Menu, Car, Home, Phone, Info, Sparkles, Building2 } from "lucide-react";
 import Image from "next/image";
 import { IUser } from "../../../types/user.type";
 import LogoutConfirmDialog from "../../shared/LogoutConfirmDialog";
@@ -29,14 +29,13 @@ type NavbarProps = {
     onLogout?: () => void;
 };
 
-// ── Nav links ──────────────────────────────────────────────────────────────
 const navLinks = [
     { href: "/", label: "Home", icon: Home },
     { href: "/vehicles", label: "Vehicles", icon: Car },
-    { href: "/contact", label: "Contact Us", icon: Phone },
+    { href: "/contact", label: "Contact", icon: Phone },
+    { href: "/about", label: "About Us", icon: Building2 },
 ];
 
-// ── Desktop nav link ───────────────────────────────────────────────────────
 function NavLink({ href, label }: { href: string; label: string }) {
     const pathname = usePathname();
     const isActive = pathname === href;
@@ -58,7 +57,6 @@ function NavLink({ href, label }: { href: string; label: string }) {
     );
 }
 
-// ── User dropdown ──────────────────────────────────────────────────────────
 function UserMenu({
     user,
     onLogout,
@@ -133,7 +131,6 @@ function UserMenu({
     );
 }
 
-// ── Mobile sidebar nav link ────────────────────────────────────────────────
 function MobileNavLink({
     href,
     label,
@@ -170,7 +167,6 @@ function MobileNavLink({
     );
 }
 
-// ── Main Navbar ────────────────────────────────────────────────────────────
 export default function Navbar({ user, onLogout }: NavbarProps) {
     const [sheetOpen, setSheetOpen] = useState(false);
 

@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import Contact from "../../../components/modules/common/Contact";
 
 export const metadata: Metadata = {
-    title: "Contact Us | Vehiqo",
+    title: "Contact | Vehiqo",
     description: "Manage your vehicle rental system from the admin dashboard.",
 };
 
