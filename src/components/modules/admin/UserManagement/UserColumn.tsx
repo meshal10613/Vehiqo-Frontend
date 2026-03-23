@@ -94,15 +94,4 @@ export const userTypeColumn: ColumnDef<IUser>[] = [
             );
         },
     },
-    // {
-    //     id: "actions",
-    //     cell: ({ row }) => (
-    //         <TableRowActions
-    //             row={row}
-    //             onView={actions.onView}
-    //             onEdit={actions.onEdit}
-    //             onDelete={actions.onDelete}
-    //         />
-    //     ),
-    // },
 ];

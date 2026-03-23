@@ -35,6 +35,7 @@ import {
     FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { BookingModal } from "./BookingModal";
 
 function capitalize(s: string) {
     return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
@@ -363,173 +364,173 @@ function LicenseModal({
     );
 }
 
-function BookingModal({
-    open,
-    onClose,
-    vehicle,
-}: {
-    open: boolean;
-    onClose: () => void;
-    vehicle: IVehicle;
-}) {
-    const today = toDateInputValue(new Date());
-    const tomorrow = toDateInputValue(new Date(Date.now() + 86400000));
+// function BookingModal({
+//     open,
+//     onClose,
+//     vehicle,
+// }: {
+//     open: boolean;
+//     onClose: () => void;
+//     vehicle: IVehicle;
+// }) {
+//     const today = toDateInputValue(new Date());
+//     const tomorrow = toDateInputValue(new Date(Date.now() + 86400000));
 
-    const [startDate, setStartDate] = useState(today);
-    const [endDate, setEndDate] = useState(tomorrow);
+//     const [startDate, setStartDate] = useState(today);
+//     const [endDate, setEndDate] = useState(tomorrow);
 
-    const days =
-        startDate && endDate
-            ? diffDays(new Date(startDate), new Date(endDate))
-            : 1;
-    const baseCost = days * vehicle.pricePerDay;
-    const advance = Math.ceil(baseCost * 0.3);
+//     const days =
+//         startDate && endDate
+//             ? diffDays(new Date(startDate), new Date(endDate))
+//             : 1;
+//     const baseCost = days * vehicle.pricePerDay;
+//     const advance = Math.ceil(baseCost * 0.3);
 
-    return (
-        <AnimatePresence>
-            {open && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-                    onClick={onClose}
-                >
-                    <motion.div
-                        initial={{ opacity: 0, y: 24, scale: 0.97 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 12, scale: 0.97 }}
-                        transition={{
-                            type: "spring",
-                            stiffness: 300,
-                            damping: 28,
-                        }}
-                        className="bg-white rounded-3xl shadow-2xl w-full max-w-md relative overflow-hidden"
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        {/* Header band */}
-                        <div className="bg-[#FF5100] px-6 py-5">
-                            <button
-                                onClick={onClose}
-                                className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors cursor-pointer"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                            <p className="text-white/80 text-xs font-semibold uppercase tracking-widest mb-1">
-                                Book This Vehicle
-                            </p>
-                            <h2 className="text-white text-xl font-bold">
-                                {vehicle.brand} {vehicle.model}{" "}
-                                <span className="font-normal opacity-80">
-                                    {vehicle.year}
-                                </span>
-                            </h2>
-                        </div>
+//     return (
+//         <AnimatePresence>
+//             {open && (
+//                 <motion.div
+//                     initial={{ opacity: 0 }}
+//                     animate={{ opacity: 1 }}
+//                     exit={{ opacity: 0 }}
+//                     className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+//                     onClick={onClose}
+//                 >
+//                     <motion.div
+//                         initial={{ opacity: 0, y: 24, scale: 0.97 }}
+//                         animate={{ opacity: 1, y: 0, scale: 1 }}
+//                         exit={{ opacity: 0, y: 12, scale: 0.97 }}
+//                         transition={{
+//                             type: "spring",
+//                             stiffness: 300,
+//                             damping: 28,
+//                         }}
+//                         className="bg-white rounded-3xl shadow-2xl w-full max-w-md relative overflow-hidden"
+//                         onClick={(e) => e.stopPropagation()}
+//                     >
+//                         {/* Header band */}
+//                         <div className="bg-[#FF5100] px-6 py-5">
+//                             <button
+//                                 onClick={onClose}
+//                                 className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors cursor-pointer"
+//                             >
+//                                 <X className="w-5 h-5" />
+//                             </button>
+//                             <p className="text-white/80 text-xs font-semibold uppercase tracking-widest mb-1">
+//                                 Book This Vehicle
+//                             </p>
+//                             <h2 className="text-white text-xl font-bold">
+//                                 {vehicle.brand} {vehicle.model}{" "}
+//                                 <span className="font-normal opacity-80">
+//                                     {vehicle.year}
+//                                 </span>
+//                             </h2>
+//                         </div>
 
-                        <div className="p-6 space-y-5">
-                            {/* Date pickers */}
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">
-                                        Pick-up Date
-                                    </label>
-                                    <input
-                                        type="date"
-                                        min={today}
-                                        value={startDate}
-                                        onChange={(e) => {
-                                            setStartDate(e.target.value);
-                                            if (e.target.value >= endDate)
-                                                setEndDate(
-                                                    toDateInputValue(
-                                                        new Date(
-                                                            new Date(
-                                                                e.target.value,
-                                                            ).getTime() +
-                                                                86400000,
-                                                        ),
-                                                    ),
-                                                );
-                                        }}
-                                        className="w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#FF5100]/30 focus:border-[#FF5100] transition-all"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">
-                                        Return Date
-                                    </label>
-                                    <input
-                                        type="date"
-                                        min={
-                                            startDate
-                                                ? toDateInputValue(
-                                                      new Date(
-                                                          new Date(
-                                                              startDate,
-                                                          ).getTime() +
-                                                              86400000,
-                                                      ),
-                                                  )
-                                                : tomorrow
-                                        }
-                                        value={endDate}
-                                        onChange={(e) =>
-                                            setEndDate(e.target.value)
-                                        }
-                                        className="w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#FF5100]/30 focus:border-[#FF5100] transition-all"
-                                    />
-                                </div>
-                            </div>
+//                         <div className="p-6 space-y-5">
+//                             {/* Date pickers */}
+//                             <div className="grid grid-cols-2 gap-4">
+//                                 <div>
+//                                     <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">
+//                                         Pick-up Date
+//                                     </label>
+//                                     <input
+//                                         type="date"
+//                                         min={today}
+//                                         value={startDate}
+//                                         onChange={(e) => {
+//                                             setStartDate(e.target.value);
+//                                             if (e.target.value >= endDate)
+//                                                 setEndDate(
+//                                                     toDateInputValue(
+//                                                         new Date(
+//                                                             new Date(
+//                                                                 e.target.value,
+//                                                             ).getTime() +
+//                                                                 86400000,
+//                                                         ),
+//                                                     ),
+//                                                 );
+//                                         }}
+//                                         className="w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#FF5100]/30 focus:border-[#FF5100] transition-all"
+//                                     />
+//                                 </div>
+//                                 <div>
+//                                     <label className="text-xs font-semibold text-zinc-500 uppercase tracking-wider block mb-1.5">
+//                                         Return Date
+//                                     </label>
+//                                     <input
+//                                         type="date"
+//                                         min={
+//                                             startDate
+//                                                 ? toDateInputValue(
+//                                                       new Date(
+//                                                           new Date(
+//                                                               startDate,
+//                                                           ).getTime() +
+//                                                               86400000,
+//                                                       ),
+//                                                   )
+//                                                 : tomorrow
+//                                         }
+//                                         value={endDate}
+//                                         onChange={(e) =>
+//                                             setEndDate(e.target.value)
+//                                         }
+//                                         className="w-full border border-zinc-200 rounded-xl px-3 py-2.5 text-sm text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#FF5100]/30 focus:border-[#FF5100] transition-all"
+//                                     />
+//                                 </div>
+//                             </div>
 
-                            {/* Cost breakdown */}
-                            <div className="bg-zinc-50 rounded-2xl p-4 space-y-3 border border-zinc-100">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-zinc-500">
-                                        ৳{fmt(vehicle.pricePerDay)} × {days} day
-                                        {days > 1 ? "s" : ""}
-                                    </span>
-                                    <span className="font-semibold text-zinc-800">
-                                        ৳{fmt(baseCost)}
-                                    </span>
-                                </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-zinc-500 flex items-center gap-1">
-                                        <Info className="w-3.5 h-3.5" />
-                                        Advance (30%)
-                                    </span>
-                                    <span className="font-semibold text-[#FF5100]">
-                                        ৳{fmt(advance)}
-                                    </span>
-                                </div>
-                                <div className="border-t border-zinc-200 pt-3 flex justify-between">
-                                    <span className="font-bold text-zinc-900">
-                                        Total Estimate
-                                    </span>
-                                    <span className="font-bold text-zinc-900 text-lg">
-                                        ৳{fmt(baseCost)}
-                                    </span>
-                                </div>
-                            </div>
+//                             {/* Cost breakdown */}
+//                             <div className="bg-zinc-50 rounded-2xl p-4 space-y-3 border border-zinc-100">
+//                                 <div className="flex justify-between text-sm">
+//                                     <span className="text-zinc-500">
+//                                         ৳{fmt(vehicle.pricePerDay)} × {days} day
+//                                         {days > 1 ? "s" : ""}
+//                                     </span>
+//                                     <span className="font-semibold text-zinc-800">
+//                                         ৳{fmt(baseCost)}
+//                                     </span>
+//                                 </div>
+//                                 <div className="flex justify-between text-sm">
+//                                     <span className="text-zinc-500 flex items-center gap-1">
+//                                         <Info className="w-3.5 h-3.5" />
+//                                         Advance (30%)
+//                                     </span>
+//                                     <span className="font-semibold text-[#FF5100]">
+//                                         ৳{fmt(advance)}
+//                                     </span>
+//                                 </div>
+//                                 <div className="border-t border-zinc-200 pt-3 flex justify-between">
+//                                     <span className="font-bold text-zinc-900">
+//                                         Total Estimate
+//                                     </span>
+//                                     <span className="font-bold text-zinc-900 text-lg">
+//                                         ৳{fmt(baseCost)}
+//                                     </span>
+//                                 </div>
+//                             </div>
 
-                            {/* Note */}
-                            <p className="text-xs text-zinc-400 flex items-start gap-1.5">
-                                <Shield className="w-3.5 h-3.5 mt-0.5 shrink-0 text-zinc-400" />
-                                Final cost may vary based on fuel usage, late
-                                return, or damage charges.
-                            </p>
+//                             {/* Note */}
+//                             <p className="text-xs text-zinc-400 flex items-start gap-1.5">
+//                                 <Shield className="w-3.5 h-3.5 mt-0.5 shrink-0 text-zinc-400" />
+//                                 Final cost may vary based on fuel usage, late
+//                                 return, or damage charges.
+//                             </p>
 
-                            {/* CTA */}
-                            <button className="w-full bg-[#FF5100] hover:bg-[#e04800] text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-md shadow-[#FF5100]/20 cursor-pointer">
-                                Confirm Booking
-                                <ArrowRight className="w-5 h-5" />
-                            </button>
-                        </div>
-                    </motion.div>
-                </motion.div>
-            )}
-        </AnimatePresence>
-    );
-}
+//                             {/* CTA */}
+//                             <button className="w-full bg-[#FF5100] hover:bg-[#e04800] text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-colors shadow-md shadow-[#FF5100]/20 cursor-pointer">
+//                                 Confirm Booking
+//                                 <ArrowRight className="w-5 h-5" />
+//                             </button>
+//                         </div>
+//                     </motion.div>
+//                 </motion.div>
+//             )}
+//         </AnimatePresence>
+//     );
+// }
 
 function SpecItem({
     icon: Icon,
@@ -630,7 +631,7 @@ export default function VehicleDetails({ id }: { id: string }) {
     const [licenseModal, setLicenseModal] = useState(false);
 
     const { data: vehicleData, isLoading: isVehicleLoading } = useQuery({
-        queryKey: ["vehicle", id],
+        queryKey: ["vehicle-details", id],
         queryFn: () => getVehicleById(id),
     });
 
@@ -904,7 +905,7 @@ export default function VehicleDetails({ id }: { id: string }) {
                                     {[
                                         {
                                             icon: Clock,
-                                            text: "Advance payment: minimum 500",
+                                            text: "Advance payment: minimum 200",
                                         },
                                         {
                                             icon: Shield,
