@@ -84,14 +84,14 @@ function ReviewCard({ review, index }: { review: IReview; index: number }) {
             <Quote className="w-7 h-7 text-zinc-100 absolute top-5 right-5 rotate-180" />
 
             {/* Rating + vehicle */}
-            <div className="flex items-start justify-between gap-3 mb-4">
+            <div className="flex items-start justify-between gap-3 mb-4 relative">
                 <div className="space-y-1.5">
                     <StarRating rating={review.rating} />
                     <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-[#FF5100] bg-[#FF5100]/8 px-2 py-0.5 rounded-full">
                         {vehicleName}
                     </span>
                 </div>
-                <span className="text-[10px] text-zinc-400 font-medium shrink-0 mt-0.5">
+                <span className="text-[10px] text-zinc-400 font-medium shrink-0 mt-0.5 absolute right-0 bottom-0">
                     {timeAgo(review.createdAt)}
                 </span>
             </div>
@@ -103,10 +103,7 @@ function ReviewCard({ review, index }: { review: IReview; index: number }) {
 
             {/* User info */}
             <div className="flex items-center gap-3 pt-4 border-t border-zinc-100">
-                <Avatar
-                    image={review.user?.image}
-                    name={review.user?.name}
-                />
+                <Avatar image={review.user?.image} name={review.user?.name} />
                 <div className="min-w-0">
                     <p className="text-sm font-semibold text-zinc-800 truncate">
                         {review.user?.name ?? "Anonymous"}
@@ -140,16 +137,9 @@ export default function Reviews({ reviews }: { reviews: IReview[] }) {
             {/* Dot grid */}
             <div
                 className="absolute inset-0 opacity-40 pointer-events-none"
-                // style={{
-                //     backgroundImage:
-                //         "radial-gradient(circle, #d4d4d8 1px, transparent 1px)",
-                //     backgroundSize: "28px 28px",
-                // }}
             />
-            {/* <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-[#FF5100]/5 blur-3xl pointer-events-none" /> */}
 
             <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
-
                 {/* ── Header ── */}
                 <motion.div
                     className="mb-12"
@@ -158,20 +148,21 @@ export default function Reviews({ reviews }: { reviews: IReview[] }) {
                     viewport={{ once: true }}
                     transition={{ duration: 0.45, ease: "easeOut" as const }}
                 >
-                    <div className="inline-flex items-center gap-2 bg-[#FF5100]/8 border border-[#FF5100]/15 text-[#FF5100] text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full mb-5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#FF5100] animate-pulse" />
-                        Customer Reviews
-                    </div>
-
-                    <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8">
+                    <div className="flex flex-col lg:flex-row items-center lg:items-end justify-between gap-8">
                         {/* Left: title */}
                         <div>
-                            <h2 className="text-3xl sm:text-4xl font-extrabold text-zinc-900 tracking-tight leading-tight">
+                            <div className="flex items-center justify-center gap-2 bg-[#FF5100]/8 border border-[#FF5100]/15 text-[#FF5100] text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full mb-5 w-fit mx-auto lg:mx-0">
+                                <span className="w-1.5 h-1.5 rounded-full bg-[#FF5100] animate-pulse" />
+                                Customer Reviews
+                            </div>
+                            <h2 className="text-4xl sm:text-5xl font-extrabold text-zinc-900 tracking-tight leading-tight">
                                 What our{" "}
-                                <span className="text-[#FF5100]">customers</span>{" "}
+                                <span className="text-[#FF5100]">
+                                    customers
+                                </span>{" "}
                                 say
                             </h2>
-                            <p className="text-sm text-zinc-500 mt-2">
+                            <p className="mt-4 text-base text-zinc-500 leading-relaxed text-center lg:text-left">
                                 {reviews.length} verified review
                                 {reviews.length !== 1 ? "s" : ""} from real
                                 Vehiqo renters.
@@ -228,7 +219,7 @@ export default function Reviews({ reviews }: { reviews: IReview[] }) {
                 </motion.div>
 
                 {/* ── Review Grid ── */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                     {reviews.map((review, i) => (
                         <ReviewCard key={review.id} review={review} index={i} />
                     ))}

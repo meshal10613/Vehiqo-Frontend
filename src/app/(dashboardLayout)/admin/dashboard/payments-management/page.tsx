@@ -1,14 +1,18 @@
-import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+import {
+    dehydrate,
+    HydrationBoundary,
+    QueryClient,
+} from "@tanstack/react-query";
 import type { Metadata } from "next";
-import { getMyPayments } from "../../../../../services/payment.services";
-import MyPaymentTable from "../../../../../components/modules/customer/MyPaymentManagement/MyPaymentTable";
+import { getAllPayments } from "../../../../../services/payment.services";
+import PaymentTable from "../../../../../components/modules/admin/PaymentManagement/PaymentTable";
 
 export const metadata: Metadata = {
-    title: "My Payments | Vehiqo",
-    description: "Manage your vehicle rental system from the dashboard.",
+    title: "Payment Management | Vehiqo",
+    description: "Manage your vehicle rental system from the admin dashboard.",
 };
 
-export default async function MyPaymentsPage({
+export default async function PaymentManagementPage({
     searchParams,
 }: {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -37,15 +41,15 @@ export default async function MyPaymentsPage({
 
     const queryClient = new QueryClient();
     await queryClient.prefetchQuery({
-        queryKey: ["my-payments", queryString],
-        queryFn: () => getMyPayments(queryString),
+        queryKey: ["payments", queryString],
+        queryFn: () => getAllPayments(queryString),
         staleTime: 1000 * 60 * 60, // 1 hour
         gcTime: 1000 * 60 * 60 * 6, // 6 hour
     });
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
-            <MyPaymentTable initialQueryString={queryString} />
+            <PaymentTable initialQueryString={queryString} />
         </HydrationBoundary>
     );
 }

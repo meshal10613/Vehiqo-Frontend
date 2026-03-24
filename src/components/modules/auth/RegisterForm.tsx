@@ -99,6 +99,7 @@ const RegisterForm = ({ redirectPath }: RegisterFormProps) => {
 
                     toast.error(result.message || "Registration failed", {
                         id: toastId,
+                        duration: 2000,
                     });
                     return;
                 }
@@ -107,6 +108,7 @@ const RegisterForm = ({ redirectPath }: RegisterFormProps) => {
                     result.message || "Account created successfully",
                     {
                         id: toastId,
+                        duration: 2000,
                     },
                 );
                 targetPath = redirectPath ? redirectPath : "/";
@@ -117,10 +119,8 @@ const RegisterForm = ({ redirectPath }: RegisterFormProps) => {
                 toast.error(
                     `${error.message}` ||
                         "Something went wrong, please try again.",
-                    { id: toastId },
+                    { id: toastId, duration: 2000 },
                 );
-            } finally {
-                toast.dismiss(toastId);
             }
         },
     });

@@ -1,21 +1,3 @@
-// "use client";
-
-// import { IVehicleCategory } from "../../../types/vehicleCategory.type";
-
-// export default function VehicleCategory({
-//     vehicleCategory,
-// }: {
-//     vehicleCategory: IVehicleCategory[] | [];
-// }) {
-// 	if(vehicleCategory.length === 0) return null;
-
-//     return (
-//         <div>
-//             <h1>This is Common Page</h1>
-//         </div>
-//     );
-// }
-
 "use client";
 
 import { useState, useMemo } from "react";
@@ -25,6 +7,7 @@ import { IVehicle } from "../../../types/vehicle.type";
 import VehicleCard from "./VehicleCard";
 import { LayoutGrid, ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { VehicleStatusEnum } from "../../../types/enum.type";
 
 const ALL_ID = "__all__";
 
@@ -34,7 +17,10 @@ function getVehiclesForCategory(category: IVehicleCategory): IVehicle[] {
     const vehicles: IVehicle[] = [];
     for (const type of category.types) {
         for (const v of type.vehicles ?? []) {
-            if (!seen.has(v.id)) {
+            if (
+                !seen.has(v.id) &&
+                v?.status === ("AVAILABLE" as VehicleStatusEnum)
+            ) {
                 seen.add(v.id);
                 vehicles.push(v);
             }
@@ -225,21 +211,20 @@ export default function VehicleCategory({
                         Browse by Category
                     </div>
                     {/* <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4"> */}
-                        <div className="flex flex-col items-center justify-center">
-                            <h2 className="text-4xl sm:text-5xl font-extrabold text-zinc-900 tracking-tight leading-tight">
-                                Find your{" "}
-                                <span className="text-[#FF5100]">perfect</span>{" "}
-                                ride
-                            </h2>
-                            <p className="mt-4 text-base text-zinc-500 leading-relaxed">
-                                {totalVehicles} vehicles across{" "}
-                                {vehicleCategory.length} categories — something
-                                for every road.
-                            </p>
-                        </div>
+                    <div className="flex flex-col items-center justify-center">
+                        <h2 className="text-4xl sm:text-5xl font-extrabold text-zinc-900 tracking-tight leading-tight">
+                            Find your{" "}
+                            <span className="text-[#FF5100]">perfect</span> ride
+                        </h2>
+                        <p className="mt-4 text-base text-zinc-500 leading-relaxed">
+                            {totalVehicles} vehicles across{" "}
+                            {vehicleCategory.length} categories — something for
+                            every road.
+                        </p>
+                    </div>
 
-                        {/* Active category label */}
-                        {/* <div className="text-xs font-semibold text-zinc-400 hidden sm:block">
+                    {/* Active category label */}
+                    {/* <div className="text-xs font-semibold text-zinc-400 hidden sm:block">
                             Showing:{" "}
                             <span className="text-zinc-700">{activeName}</span>
                             {" · "}

@@ -4,15 +4,17 @@ import VehicleCategory from "../../components/modules/common/VehicleCategory";
 import { IPublicStats } from "../../types/stats.type";
 import Stats from "../../components/modules/common/Stats";
 import Faq from "../../components/modules/common/Faq";
-import Reviews from "../../components/modules/home/Reviews";
 import { getPublicStats } from "../../services/stats.services";
 import { getAllVehicleCategory } from "../../services/vehicleCategory.services";
 import { IReview } from "../../types/review.type";
+import { getAllReviews } from "../../services/review.services";
+import Reviews from "../../components/modules/home/Reviews";
 
 export default async function Home() {
-    const [stats, category] = await Promise.all([
+    const [stats, category, review] = await Promise.all([
         getPublicStats(),
         getAllVehicleCategory(),
+        getAllReviews()
     ]);
     const stat: IPublicStats = stats.data ?? {
         vehicleType: 0,
@@ -21,7 +23,8 @@ export default async function Home() {
         review: 0,
     };
     const vehicleCategory: IVehicleCategory[] | [] = category.data ?? [];
-    const reviews: IReview[] = [];
+    const reviews: IReview[] = review.data.data ?? [];
+
     return (
         <div>
             <Banner/>

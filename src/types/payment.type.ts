@@ -12,8 +12,10 @@ export interface IPayment {
     note?: string | null;
     paidAt?: Date | null;
     invoiceUrl?: string | null;
+    
     bookingId: string;
     booking?: IBooking;
+
     createdAt: Date;
     updatedAt: Date;
 }

@@ -98,7 +98,6 @@ export default function VehicleTable({
             updateParams,
         });
 
-    // ── vehicles ──────────────────────────────────────────────────────────────
     const {
         data: vehicleData,
         isLoading,

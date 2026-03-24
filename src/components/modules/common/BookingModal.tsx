@@ -1,10 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-    useMutation,
-    useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -21,10 +18,8 @@ import {
 } from "lucide-react";
 import { IVehicle } from "../../../types/vehicle.type";
 import { createBooking } from "../../../services/booking.services";
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Helpers
-// ─────────────────────────────────────────────────────────────────────────────
+import { createAdvancePaymentSession } from "../../../services/payment.services";
+import { toast } from "sonner";
 
 function fmt(n: number) {
     return new Intl.NumberFormat("en-BD").format(n);
@@ -41,13 +36,6 @@ function toDateInputValue(d: Date) {
     return d.toISOString().split("T")[0];
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// PaymentChoiceModal
-// Shown after a booking is successfully created.
-// "Pay Now"  → navigates to /payment/[bookingId]
-// "Pay Later" → closes both modals
-// ─────────────────────────────────────────────────────────────────────────────
-
 function PaymentChoiceModal({
     open,
     bookingId,
@@ -60,6 +48,17 @@ function PaymentChoiceModal({
     onPayLater: () => void;
 }) {
     const router = useRouter();
+
+    const onPayNow = async (id: string) => {
+        const result = await createAdvancePaymentSession(id);
+        if (!result.success) {
+            onPayLater();
+            toast.error(result.message);
+            return;
+        }
+        router.push(result.data.sessionUrl);
+        onPayLater();
+    };
 
     return (
         <AnimatePresence>
@@ -122,9 +121,7 @@ function PaymentChoiceModal({
                             {/* Options */}
                             <div className="space-y-3">
                                 <button
-                                    onClick={() =>
-                                        router.push(`/payment/${bookingId}`)
-                                    }
+                                    onClick={() => onPayNow(bookingId)}
                                     className="w-full bg-[#FF5100] hover:bg-[#e04800] text-white font-bold py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-[#FF5100]/20 cursor-pointer"
                                 >
                                     <CreditCard className="w-4 h-4" />
@@ -338,7 +335,7 @@ export function BookingModal({
                                     <div className="flex justify-between text-sm">
                                         <span className="text-zinc-500 flex items-center gap-1">
                                             <Info className="w-3.5 h-3.5" />
-                                            Advance due now (30%)
+                                            Advance due now (৳200)
                                         </span>
                                         <span className="font-semibold text-[#FF5100]">
                                             ৳{fmt(advanceAmount)}

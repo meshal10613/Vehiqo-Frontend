@@ -120,16 +120,7 @@ export default function Stats({ stat }: { stat: IPublicStats }) {
             {/* Background texture — subtle dot grid */}
             <div
                 className="absolute inset-0 opacity-40 pointer-events-none"
-                // style={{
-                //     backgroundImage:
-                //         "radial-gradient(circle, #d4d4d8 1px, transparent 1px)",
-                //     backgroundSize: "28px 28px",
-                // }}
             />
-
-            {/* Orange glow blob */}
-            {/* <div className="absolute -top-32 -right-32 w-96 h-96 rounded-full bg-[#FF5100]/6 blur-3xl pointer-events-none" />
-            <div className="absolute -bottom-32 -left-32 w-80 h-80 rounded-full bg-[#FF5100]/4 blur-3xl pointer-events-none" /> */}
 
             <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Section header */}

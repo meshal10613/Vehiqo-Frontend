@@ -12,11 +12,23 @@ if (!BASE_API_URL) {
 export async function getAllPayments(queryString?: string) {
     try {
         const result = await httpClient.get<IPayment[]>(
-            queryString ? `/vehicle?${queryString}` : "/vehicle",
+            queryString ? `/payment?${queryString}` : "/payment",
         );
         return result;
     } catch (error: any) {
         console.error("Error fetching payments:", error);
+        return error.response.data;
+    }
+}
+
+export async function getMyPayments(queryString?: string) {
+    try {
+        const result = await httpClient.get<IPayment[]>(
+            queryString ? `/payment/my-payment?${queryString}` : "/payment/my-payment",
+        );
+        return result;
+    } catch (error: any) {
+        console.error("Error fetching my payments:", error);
         return error.response.data;
     }
 }
@@ -30,7 +42,7 @@ export async function createAdvancePaymentSession(id: string) {
             },
         );
 
-		return result;
+        return result;
     } catch (error: any) {
         console.error("Error creating session:", error);
         return error.response.data;

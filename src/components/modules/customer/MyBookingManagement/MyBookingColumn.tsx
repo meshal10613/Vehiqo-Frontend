@@ -85,6 +85,8 @@ interface MyBookingColumnHandlers {
     onView: (booking: IBooking) => void;
     onPay: (booking: IBooking) => void;
     onCancel: (booking: IBooking) => void;
+    onReview: (booking: IBooking) => void;
+    onReturn: (booking: IBooking) => void;
 }
 
 // No actions column here — DataTable appends its own dropdown when the
@@ -231,7 +233,11 @@ export function MyBookingColumns(
                     booking.status === "PENDING" ||
                     (booking.status === "RETURNED" && booking.remainingDue > 0);
 
+                const canReview = booking.status === "COMPLETED";
+
                 const canCancel = booking.status === "PENDING";
+
+                const canReturn = booking.status === "PICKED_UP";
 
                 return (
                     <DropdownMenu>
@@ -263,6 +269,28 @@ export function MyBookingColumns(
                                     Cancel
                                 </DropdownMenuItem>
                             )}
+                            {
+                                canReview && (
+                                    <DropdownMenuItem
+                                        onClick={() =>
+                                            handlers.onReview(booking)
+                                        }
+                                    >
+                                        Review
+                                    </DropdownMenuItem>
+                                )
+                            }
+                            {
+                                canReturn && (
+                                    <DropdownMenuItem
+                                        onClick={() =>
+                                            handlers.onReturn(booking)
+                                        }
+                                    >
+                                        Return
+                                    </DropdownMenuItem>
+                                )
+                            }
                         </DropdownMenuContent>
                     </DropdownMenu>
                 );

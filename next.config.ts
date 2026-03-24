@@ -1,7 +1,19 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-    /* config options here */
+    transpilePackages: ["react-pdf"],
+    turbopack: {
+        resolveAlias: {
+            canvas: { browser: "" },
+            encoding: { browser: "" },
+        },
+    },
+    webpack: (config) => {
+        // Fix for react-pdf canvas rendering
+        config.resolve.alias.canvas = false;
+        config.resolve.alias.encoding = false;
+        return config;
+    },
     images: {
         formats: ["image/avif", "image/webp"], // by default avif, and if not avif then webp
         remotePatterns: [

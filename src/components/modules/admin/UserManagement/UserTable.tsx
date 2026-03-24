@@ -21,7 +21,6 @@ import {
 import { useMemo } from "react";
 import ViewUserDialog from "./ViewUserDialog";
 import EditUserFormModal from "./EditUserFormModal";
-import { getUserInfo } from "../../../../services/auth.services";
 import DeleteUserFormModal from "./DeleteUserFormModal";
 
 const DEFAULT_PAGE = 1;

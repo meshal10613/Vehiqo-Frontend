@@ -61,6 +61,7 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
             let targetPath = "/";
             try {
                 const result = (await mutateAsync(value)) as any;
+
                 if (!result.success) {
                     if (result.message === "Email not verified") {
                         const email = value.email;
@@ -73,12 +74,14 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
 
                     toast.error(result.message || "Sign In failed", {
                         id: toastId,
+                        duration: 2000,
                     });
                     return;
                 }
 
                 toast.success(result.message || "Sign In successful", {
                     id: toastId,
+                    duration: 2000,
                 });
 
                 targetPath =
@@ -98,11 +101,10 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                         "Something went wrong, please try again.",
                     {
                         id: toastId,
+                        duration: 2000,
                     },
                 );
                 return;
-            } finally {
-                toast.dismiss(toastId);
             }
         },
     });

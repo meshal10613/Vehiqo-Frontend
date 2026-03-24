@@ -657,7 +657,7 @@ export default function VehicleDetails({ id }: { id: string }) {
         }
     };
 
-    if (isVehicleLoading) return <Skeleton />;
+    if (isVehicleLoading || isUserLoading) return <Skeleton />;
 
     if (!vehicle) {
         return (

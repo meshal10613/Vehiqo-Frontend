@@ -321,7 +321,6 @@
 
 // export default DataTable;
 
-
 "use client";
 
 import { Button } from "@/components/ui/button";
@@ -350,7 +349,14 @@ import {
     SortingState,
     useReactTable,
 } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp, ArrowUpDown, MoreHorizontal } from "lucide-react";
+import {
+    ArrowDown,
+    ArrowUp,
+    ArrowUpDown,
+    Delete,
+    MoreHorizontal,
+    Trash2,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import DataTablePagination from "./DataTablePagination";
 import { PaginationMeta } from "../../../types/api.type";
@@ -361,6 +367,7 @@ import DataTableFilters, {
     DataTableFilterValues,
 } from "./DataTableFilters";
 import LoadingSpinner from "../LoadingSpinner";
+import { Separator } from "../../ui/separator";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -368,16 +375,16 @@ import LoadingSpinner from "../LoadingSpinner";
 
 // Fixed three-slot actions (existing — used by UserManagementTable etc.)
 interface DataTableFixedActions<TData> {
-    onView?:   (data: TData) => void;
-    onEdit?:   (data: TData) => void;
+    onView?: (data: TData) => void;
+    onEdit?: (data: TData) => void;
     onDelete?: (data: TData) => void;
 }
 
 // Flexible per-row action list (new — used by MyBookingTable etc.)
 export interface RowAction {
-    label:        string;
-    icon?:        React.ElementType;
-    onClick:      () => void;
+    label: string;
+    icon?: React.ElementType;
+    onClick: () => void;
     destructive?: boolean;
     // When provided, the action is hidden (not just disabled) when false.
     // This keeps the dropdown clean — e.g. "Pay advance" only shows for PENDING rows.
@@ -385,35 +392,38 @@ export interface RowAction {
 }
 
 interface DataTableProps<TData> {
-    data:          TData[];
-    columns:       ColumnDef<TData>[];
+    data: TData[];
+    columns: ColumnDef<TData>[];
     // Existing fixed slots — unchanged, fully backward compatible
-    actions?:      DataTableFixedActions<TData>;
+    actions?: DataTableFixedActions<TData>;
     // New flexible slot — receives the row and returns a list of actions.
     // When provided, this replaces the fixed actions dropdown for that table.
-    rowActions?:   (row: TData) => RowAction[];
+    rowActions?: (row: TData) => RowAction[];
     toolbarAction?: React.ReactNode;
     emptyMessage?: string;
-    isLoading?:    boolean;
+    isLoading?: boolean;
     sorting?: {
-        state:           SortingState;
+        state: SortingState;
         onSortingChange: (state: SortingState) => void;
     };
     pagination?: {
-        state:               PaginationState;
-        onPaginationChange:  (state: PaginationState) => void;
+        state: PaginationState;
+        onPaginationChange: (state: PaginationState) => void;
     };
     search?: {
-        initialValue?:     string;
-        placeholder?:      string;
-        debounceMs?:       number;
+        initialValue?: string;
+        placeholder?: string;
+        debounceMs?: number;
         onDebouncedChange: (value: string) => void;
     };
     filters?: {
-        configs:        DataTableFilterConfig[];
-        values:         DataTableFilterValues;
-        onFilterChange: (filterId: string, value: DataTableFilterValue | undefined) => void;
-        onClearAll?:    () => void;
+        configs: DataTableFilterConfig[];
+        values: DataTableFilterValues;
+        onFilterChange: (
+            filterId: string,
+            value: DataTableFilterValue | undefined,
+        ) => void;
+        onClearAll?: () => void;
     };
     meta?: PaginationMeta;
 }
@@ -442,11 +452,12 @@ const DataTable = <TData,>({
         setHasHydrated(true);
     }, []);
 
-    const hydratedIsLoading  = hasHydrated ? Boolean(isLoading) : false;
+    const hydratedIsLoading = hasHydrated ? Boolean(isLoading) : false;
     const showLoadingOverlay = hydratedIsLoading;
 
-    const hasFixedActions = actions?.onView || actions?.onEdit || actions?.onDelete;
-    const hasRowActions   = Boolean(rowActions);
+    const hasFixedActions =
+        actions?.onView || actions?.onEdit || actions?.onDelete;
+    const hasRowActions = Boolean(rowActions);
 
     // Append an actions column when either actions prop is present.
     // rowActions takes priority — if both are passed (unusual), rowActions wins.
@@ -455,8 +466,8 @@ const DataTable = <TData,>({
             ? [
                   ...columns,
                   {
-                      id:            "actions",
-                      header:        "Actions",
+                      id: "actions",
+                      header: "Actions",
                       enableSorting: false,
                       cell: ({ row }) => {
                           const rowData = row.original;
@@ -471,45 +482,112 @@ const DataTable = <TData,>({
 
                               // Split into normal and destructive groups so we
                               // can render a separator between them
-                              const normal      = items.filter((a) => !a.destructive);
-                              const destructive = items.filter((a) =>  a.destructive);
+                              const normal = items.filter(
+                                  (a) => !a.destructive,
+                              );
+                              const destructive = items.filter(
+                                  (a) => a.destructive,
+                              );
 
                               return (
+                                  //   <DropdownMenu>
+                                  //       <DropdownMenuTrigger asChild>
+                                  //           <Button
+                                  //               variant="ghost"
+                                  //               className="h-8 w-8 p-0"
+                                  //           >
+                                  //               <span className="sr-only">
+                                  //                   Open menu
+                                  //               </span>
+                                  //               <MoreHorizontal className="h-4 w-4" />
+                                  //           </Button>
+                                  //       </DropdownMenuTrigger>
+                                  //       <DropdownMenuContent align="end">
+                                  //           {normal.map((action, i) => (
+                                  //               <DropdownMenuItem
+                                  //                   key={i}
+                                  //                   onClick={action.onClick}
+                                  //                   className="flex items-center gap-2"
+                                  //               >
+                                  //                   {action.icon && (
+                                  //                       <action.icon className="h-4 w-4 text-muted-foreground" />
+                                  //                   )}
+                                  //                   {action.label}
+                                  //               </DropdownMenuItem>
+                                  //           ))}
+                                  //           {normal.length > 0 &&
+                                  //               destructive.length > 0 && (
+                                  //                   <DropdownMenuSeparator />
+                                  //               )}
+                                  //           {destructive.map((action, i) => (
+                                  //               <DropdownMenuItem
+                                  //                   key={i}
+                                  //                   onClick={action.onClick}
+                                  //                   className="flex items-center gap-2 text-destructive focus:text-destructive"
+                                  //               >
+                                  //                   {action.icon && (
+                                  //                       <action.icon className="h-4 w-4" />
+                                  //                   )}
+                                  //                   {action.label}
+                                  //               </DropdownMenuItem>
+                                  //           ))}
+                                  //       </DropdownMenuContent>
+                                  //   </DropdownMenu>
                                   <DropdownMenu>
                                       <DropdownMenuTrigger asChild>
-                                          <Button variant="ghost" className="h-8 w-8 p-0">
-                                              <span className="sr-only">Open menu</span>
-                                              <MoreHorizontal className="h-4 w-4" />
+                                          <Button
+                                              variant="ghost"
+                                              className="h-9 w-9 p-0 rounded-full hover:bg-primary/10"
+                                          >
+                                              <MoreHorizontal className="h-4 w-4 text-primary" />
                                           </Button>
                                       </DropdownMenuTrigger>
-                                      <DropdownMenuContent align="end">
-                                          {normal.map((action, i) => (
-                                              <DropdownMenuItem
-                                                  key={i}
-                                                  onClick={action.onClick}
-                                                  className="flex items-center gap-2"
-                                              >
-                                                  {action.icon && (
-                                                      <action.icon className="h-4 w-4 text-muted-foreground" />
-                                                  )}
-                                                  {action.label}
-                                              </DropdownMenuItem>
-                                          ))}
-                                          {normal.length > 0 && destructive.length > 0 && (
-                                              <DropdownMenuSeparator />
+
+                                      <DropdownMenuContent
+                                          align="end"
+                                          className="w-44 rounded-xl border shadow-md"
+                                      >
+                                          {/* Normal Actions */}
+                                          {normal.map(
+                                              (action: any, i: number) => (
+                                                  <DropdownMenuItem
+                                                      key={i}
+                                                      onClick={action.onClick}
+                                                      className="flex items-center gap-2 cursor-pointer rounded-md px-2 py-2 text-sm hover:bg-primary/10 focus:bg-primary/10"
+                                                  >
+                                                      {action.icon && (
+                                                          <action.icon className="h-4 w-4 text-primary" />
+                                                      )}
+                                                      <span className="text-foreground">
+                                                          {action.label}
+                                                      </span>
+                                                  </DropdownMenuItem>
+                                              ),
                                           )}
-                                          {destructive.map((action, i) => (
-                                              <DropdownMenuItem
-                                                  key={i}
-                                                  onClick={action.onClick}
-                                                  className="flex items-center gap-2 text-destructive focus:text-destructive"
-                                              >
-                                                  {action.icon && (
-                                                      <action.icon className="h-4 w-4" />
-                                                  )}
-                                                  {action.label}
-                                              </DropdownMenuItem>
-                                          ))}
+
+                                          {/* Separator */}
+                                          {normal.length > 0 &&
+                                              destructive.length > 0 && (
+                                                  <DropdownMenuSeparator />
+                                              )}
+
+                                          {/* Destructive Actions */}
+                                          {destructive.map(
+                                              (action: any, i: number) => (
+                                                  <DropdownMenuItem
+                                                      key={i}
+                                                      onClick={action.onClick}
+                                                      className="flex items-center gap-2 cursor-pointer rounded-md px-2 py-2 text-sm text-destructive hover:bg-destructive/10 focus:bg-destructive/10"
+                                                  >
+                                                      {action.icon && (
+                                                          <action.icon className="h-4 w-4" />
+                                                      )}
+                                                      <span>
+                                                          {action.label}
+                                                      </span>
+                                                  </DropdownMenuItem>
+                                              ),
+                                          )}
                                       </DropdownMenuContent>
                                   </DropdownMenu>
                               );
@@ -519,30 +597,45 @@ const DataTable = <TData,>({
                           return (
                               <DropdownMenu>
                                   <DropdownMenuTrigger asChild>
-                                      <Button variant="ghost" className="h-8 w-8 p-0">
-                                          <span className="sr-only">Open Menu</span>
+                                      <Button
+                                          variant="ghost"
+                                          className="h-8 w-8 p-0"
+                                      >
+                                          <span className="sr-only">
+                                              Open Menu
+                                          </span>
                                           <MoreHorizontal className="h-4 w-4" />
                                       </Button>
                                   </DropdownMenuTrigger>
                                   <DropdownMenuContent align="end">
                                       {actions?.onView && (
                                           <DropdownMenuItem
-                                              onClick={() => actions.onView?.(rowData)}
+                                              onClick={() =>
+                                                  actions.onView?.(rowData)
+                                              }
                                           >
                                               View
                                           </DropdownMenuItem>
                                       )}
+
                                       {actions?.onEdit && (
                                           <DropdownMenuItem
-                                              onClick={() => actions.onEdit?.(rowData)}
+                                              onClick={() =>
+                                                  actions.onEdit?.(rowData)
+                                              }
                                           >
                                               Edit
                                           </DropdownMenuItem>
                                       )}
+
                                       {actions?.onDelete && (
                                           <DropdownMenuItem
-                                              onClick={() => actions.onDelete?.(rowData)}
+                                              onClick={() =>
+                                                  actions.onDelete?.(rowData)
+                                              }
+                                            //   className="text-destructive hover:cursor-pointer"
                                           >
+                                              {/* <Trash2 className="mr-2 h-4 w-4" /> */}
                                               Delete
                                           </DropdownMenuItem>
                                       )}
@@ -558,14 +651,14 @@ const DataTable = <TData,>({
     const table = useReactTable({
         data,
         columns: tableColumns,
-        getCoreRowModel:       getCoreRowModel(),
-        getSortedRowModel:     getSortedRowModel(),
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
-        manualSorting:         !!sorting,
-        manualPagination:      !!pagination,
+        manualSorting: !!sorting,
+        manualPagination: !!pagination,
         pageCount: pagination ? Math.max(meta?.totalPages ?? 0, 0) : undefined,
         state: {
-            ...(sorting    ? { sorting:    sorting.state    } : {}),
+            ...(sorting ? { sorting: sorting.state } : {}),
             ...(pagination ? { pagination: pagination.state } : {}),
         },
         onSortingChange: sorting
@@ -637,12 +730,15 @@ const DataTable = <TData,>({
                                                 onClick={header.column.getToggleSortingHandler()}
                                             >
                                                 {flexRender(
-                                                    header.column.columnDef.header,
+                                                    header.column.columnDef
+                                                        .header,
                                                     header.getContext(),
                                                 )}
-                                                {header.column.getIsSorted() === "asc" ? (
+                                                {header.column.getIsSorted() ===
+                                                "asc" ? (
                                                     <ArrowUp className="ml-1 h-4 w-4" />
-                                                ) : header.column.getIsSorted() === "desc" ? (
+                                                ) : header.column.getIsSorted() ===
+                                                  "desc" ? (
                                                     <ArrowDown className="ml-1 h-4 w-4" />
                                                 ) : (
                                                     <ArrowUpDown className="ml-1 h-4 w-4 opacity-50" />

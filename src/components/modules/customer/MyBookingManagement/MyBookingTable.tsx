@@ -25,6 +25,7 @@ import PayModal from "./PayModal";
 import CancelBookingDialog from "./CancelBookingDialog";
 import { createAdvancePaymentSession } from "../../../../services/payment.services";
 import { toast } from "sonner";
+import ViewBookingDialog from "./ViewBookingDialog";
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 10;
@@ -47,6 +48,16 @@ export default function MyBookingTable({
     const [viewModalOpen, setViewModalOpen] = useState(false);
     const [viewingBooking, setViewingBooking] = useState<IBooking | null>(null);
 
+    const [reviewModalOpen, setReviewModalOpen] = useState(false);
+    const [reviewingBooking, setReviewingBooking] = useState<IBooking | null>(
+        null,
+    );
+
+    const [returnModalOpen, setReturnModalOpen] = useState(false);
+    const [returningBooking, setReturningBooking] = useState<IBooking | null>(
+        null,
+    );
+
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -59,7 +70,6 @@ export default function MyBookingTable({
         onDeleteOpenChange,
     } = useRowActionModalState<IBooking>();
 
-    // ── Server-managed table state ────────────────────────────────────────────
     const {
         queryStringFromUrl,
         optimisticSortingState,
@@ -130,9 +140,9 @@ export default function MyBookingTable({
 
     // Pay Now: navigate to the payment page
     const handlePayNow = useCallback(
-        async(booking: IBooking) => {
+        async (booking: IBooking) => {
             const result = await createAdvancePaymentSession(booking.id);
-            if(!result.success) {
+            if (!result.success) {
                 setPayModalOpen(false);
                 toast.error(result.message);
                 return;
@@ -153,6 +163,16 @@ export default function MyBookingTable({
         setViewModalOpen(true);
     }, []);
 
+    const handleReview = useCallback((booking: IBooking) => {
+        setReviewingBooking(booking);
+        setReviewModalOpen(true);
+    }, []);
+
+    const handleReturn = useCallback((booking: IBooking) => {
+        setReturnModalOpen(true);
+        setReturningBooking(booking);
+    }, []);
+
     // Columns are built once — only rebuild if handlers change (they won't)
     const columns = useMemo(
         () =>
@@ -160,8 +180,10 @@ export default function MyBookingTable({
                 onPay: handlePay,
                 onCancel: handleCancel,
                 onView: handleView,
+                onReview: handleReview,
+                onReturn: handleReturn,
             }),
-        [handlePay, handleCancel],
+        [handlePay, handleCancel, handleReview],
     );
 
     return (
@@ -203,11 +225,11 @@ export default function MyBookingTable({
                 meta={meta}
             />
 
-            {/* <ViewBookingDialog
-                open={isViewDialogOpen}
-                onOpenChange={(o) => onViewOpenChange(o)}
-                booking={viewingItem}
-            /> */}
+            <ViewBookingDialog
+                open={viewModalOpen}
+                onOpenChange={setViewModalOpen}
+                booking={viewingBooking}
+            />
 
             <CancelBookingDialog
                 open={cancelModalOpen}
