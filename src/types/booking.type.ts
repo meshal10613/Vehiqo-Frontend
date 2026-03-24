@@ -1,5 +1,6 @@
 import { BookingStatus } from "./enum.type";
 import { IPayment } from "./payment.type";
+import { IReview } from "./review.type";
 import { IUser } from "./user.type";
 import { IVehicle } from "./vehicle.type";
 
@@ -45,5 +46,6 @@ export interface IBooking {
     // Optional relations (if included)
     vehicle?: IVehicle;
     customer?: IUser;
+    review?: IReview;
     payments?: IPayment[];
 }

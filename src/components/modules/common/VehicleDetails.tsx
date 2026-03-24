@@ -36,6 +36,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BookingModal } from "./BookingModal";
+import { IBooking } from "../../../types/booking.type";
+import Reviews from "../home/Reviews";
 
 function capitalize(s: string) {
     return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
@@ -681,11 +683,22 @@ export default function VehicleDetails({ id }: { id: string }) {
 
     const isAvailable = vehicle.status === "AVAILABLE";
 
+    const bookingsWithReview: IBooking[] = vehicle?.bookings?.filter(
+        (b: IBooking) => b?.review?.rating != null,
+    );
+
+    const reviews: IReview[] =
+        bookingsWithReview.map((b: IBooking) => b.review!) ?? [];
+
+    const totalReviews = bookingsWithReview?.length ?? 0;
+
     const avgRating =
-        vehicle.reviews?.length > 0
+        totalReviews > 0
             ? (
-                  vehicle.reviews.reduce((acc, r) => acc + r.rating, 0) /
-                  vehicle.reviews.length
+                  bookingsWithReview.reduce(
+                      (acc, b) => acc + b.review!.rating,
+                      0,
+                  ) / totalReviews
               ).toFixed(1)
             : null;
 
@@ -710,18 +723,6 @@ export default function VehicleDetails({ id }: { id: string }) {
                     </span>
                 </motion.nav>
 
-                {/* Gallery */}
-                <motion.div
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.05 }}
-                >
-                    <Gallery
-                        images={vehicle.image ?? []}
-                        alt={`${vehicle.brand} ${vehicle.model}`}
-                    />
-                </motion.div>
-
                 {/* Content grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Left: Details */}
@@ -731,6 +732,11 @@ export default function VehicleDetails({ id }: { id: string }) {
                         transition={{ delay: 0.1 }}
                         className="lg:col-span-2 space-y-8"
                     >
+                        <Gallery
+                            images={vehicle.image ?? []}
+                            alt={`${vehicle.brand} ${vehicle.model}`}
+                        />
+
                         {/* Title row */}
                         <div>
                             <div className="flex flex-wrap items-center gap-3 mb-2">
@@ -738,8 +744,7 @@ export default function VehicleDetails({ id }: { id: string }) {
                                 {avgRating && (
                                     <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-full">
                                         <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
-                                        {avgRating} ({vehicle.reviews.length}{" "}
-                                        reviews)
+                                        {avgRating}({totalReviews} reviews)
                                     </span>
                                 )}
                                 {vehicle.vehicleType && (
@@ -881,7 +886,7 @@ export default function VehicleDetails({ id }: { id: string }) {
                         initial={{ opacity: 0, y: 16 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.15 }}
-                        className="lg:sticky lg:top-6 self-start"
+                        className="lg:sticky lg:top-20 self-start"
                     >
                         <div className="rounded-3xl border border-zinc-200 bg-white shadow-lg overflow-hidden">
                             {/* Price header */}
@@ -957,6 +962,8 @@ export default function VehicleDetails({ id }: { id: string }) {
                     </motion.div>
                 </div>
             </div>
+
+            <Reviews reviews={reviews} />
 
             {/* Modals */}
             <AuthModal

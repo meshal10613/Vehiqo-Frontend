@@ -6,17 +6,31 @@ import { IReview } from "../types/review.type";
 const BASE_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 if (!BASE_API_URL) {
-	throw new Error("NEXT_PUBLIC_API_BASE_URL is not defined");
+    throw new Error("NEXT_PUBLIC_API_BASE_URL is not defined");
 }
 
 export async function getAllReviews(queryString?: string) {
-	try {
-		const result = await httpClient.get<IReview[]>(
-			queryString ? `/review?${queryString}` : "/review",
-		);
-		return result;
-	} catch (error: any) {
-		console.error("Error fetching reviews:", error);
-		return error.response.data;
-	}
+    try {
+        const result = await httpClient.get<IReview[]>(
+            queryString ? `/review?${queryString}` : "/review",
+        );
+        return result;
+    } catch (error: any) {
+        console.error("Error fetching reviews:", error);
+        return error.response.data;
+    }
+}
+
+export async function createReview(payload: {
+    bookingId: string;
+    rating: number;
+    comment: string;
+}) {
+    try {
+        const result = await httpClient.post<IReview>(`/review`, payload);
+        return result;
+    } catch (error: any) {
+        console.error("Error creating review:", error);
+        return error.response.data;
+    }
 }

@@ -97,22 +97,22 @@ export default function WhyChoose() {
                             <Image
                                 src={img1}
                                 alt=""
-                                className="rounded-xl h-[180px] object-cover"
+                                className="rounded-xl h-45 object-cover"
                             />
                             <Image
                                 src={img2}
                                 alt=""
-                                className="rounded-xl h-[220px] object-cover"
+                                className="rounded-xl h-55 object-cover"
                             />
                             <Image
                                 src={img3}
                                 alt=""
-                                className="rounded-xl h-[180px] object-cover"
+                                className="rounded-xl h-45 object-cover"
                             />
                         </div>
 
                         {/* TABLET (md → lg) */}
-                        <div className="hidden md:flex lg:hidden relative h-[420px]">
+                        <div className="hidden md:flex lg:hidden relative h-105">
                             {/* left */}
                             <div className="absolute left-0 top-6 w-[48%]">
                                 <div className="rounded-xl overflow-hidden border-[5px] border-white shadow-lg">
@@ -136,7 +136,7 @@ export default function WhyChoose() {
                         </div>
 
                         {/* DESKTOP (lg+) */}
-                        <div className="hidden lg:block relative h-[520px] xl:h-[600px]">
+                        <div className="hidden lg:block relative h-130 xl:h-150">
                             {/* top left */}
                             <motion.div
                                 initial={{ opacity: 0, y: -40, rotate: -6 }}

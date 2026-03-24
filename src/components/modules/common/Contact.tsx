@@ -439,7 +439,7 @@ export default function Contact() {
                                             <>
                                                 <Send className="w-4 h-4" />
                                                 Send Message
-                                                <ArrowRight className="w-4 h-4" />
+                                                {/* <ArrowRight className="w-4 h-4" /> */}
                                             </>
                                         )}
                                     </button>

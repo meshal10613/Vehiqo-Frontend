@@ -23,9 +23,16 @@ import { useRouter } from "next/navigation";
 import { MyBookingColumns } from "./MyBookingColumn";
 import PayModal from "./PayModal";
 import CancelBookingDialog from "./CancelBookingDialog";
-import { createAdvancePaymentSession } from "../../../../services/payment.services";
+import {
+    createAdvancePaymentSession,
+    createRemainingPaymentSession,
+} from "../../../../services/payment.services";
 import { toast } from "sonner";
 import ViewBookingDialog from "./ViewBookingDialog";
+import PickupModal from "./PickupModal";
+import ReturnModal from "./ReturnModal";
+import { BookingStatusEnum } from "../../../../types/enum.type";
+import ReviewModal from "./ReviewModal";
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 10;
@@ -47,6 +54,11 @@ export default function MyBookingTable({
 
     const [viewModalOpen, setViewModalOpen] = useState(false);
     const [viewingBooking, setViewingBooking] = useState<IBooking | null>(null);
+
+    const [pickupModalOpen, setPickupModalOpen] = useState(false);
+    const [pickupingBooking, setPickupingBooking] = useState<IBooking | null>(
+        null,
+    );
 
     const [reviewModalOpen, setReviewModalOpen] = useState(false);
     const [reviewingBooking, setReviewingBooking] = useState<IBooking | null>(
@@ -141,14 +153,29 @@ export default function MyBookingTable({
     // Pay Now: navigate to the payment page
     const handlePayNow = useCallback(
         async (booking: IBooking) => {
-            const result = await createAdvancePaymentSession(booking.id);
-            if (!result.success) {
+            if (booking.status === BookingStatusEnum.PENDING) {
+                const result = await createAdvancePaymentSession(booking.id);
+                if (!result.success) {
+                    setPayModalOpen(false);
+                    toast.error(result.message);
+                    return;
+                }
+
+                router.push(result.data.sessionUrl);
                 setPayModalOpen(false);
-                toast.error(result.message);
-                return;
             }
-            router.push(result.data.sessionUrl);
-            setPayModalOpen(false);
+
+            if (booking.status === BookingStatusEnum.RETURNED) {
+                const result = await createRemainingPaymentSession(booking.id);
+                if (!result.success) {
+                    setPayModalOpen(false);
+                    toast.error(result.message);
+                    return;
+                }
+
+                router.push(result.data.sessionUrl);
+                setPayModalOpen(false);
+            }
         },
         [router],
     );
@@ -161,6 +188,11 @@ export default function MyBookingTable({
     const handleView = useCallback((booking: IBooking) => {
         setViewingBooking(booking);
         setViewModalOpen(true);
+    }, []);
+
+    const handlePickup = useCallback((booking: IBooking) => {
+        setPickupModalOpen(true);
+        setPickupingBooking(booking);
     }, []);
 
     const handleReview = useCallback((booking: IBooking) => {
@@ -182,8 +214,9 @@ export default function MyBookingTable({
                 onView: handleView,
                 onReview: handleReview,
                 onReturn: handleReturn,
+                onPickup: handlePickup,
             }),
-        [handlePay, handleCancel, handleReview],
+        [handlePay, handleCancel, handleReview, handlePickup],
     );
 
     return (
@@ -242,6 +275,24 @@ export default function MyBookingTable({
                 onClose={() => setPayModalOpen(false)}
                 booking={payingBooking}
                 onPayNow={handlePayNow}
+            />
+
+            <PickupModal
+                open={pickupModalOpen}
+                onOpenChange={setPickupModalOpen}
+                booking={pickupingBooking}
+            />
+
+            <ReturnModal
+                open={returnModalOpen}
+                onOpenChange={setReturnModalOpen}
+                booking={returningBooking}
+            />
+
+            <ReviewModal
+                open={reviewModalOpen}
+                onOpenChange={setReviewModalOpen}
+                booking={reviewingBooking}
             />
         </>
     );

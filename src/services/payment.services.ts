@@ -44,6 +44,22 @@ export async function createAdvancePaymentSession(id: string) {
 
         return result;
     } catch (error: any) {
+        console.error("Error creating session:", error.response.data);
+        return error.response.data;
+    }
+}
+
+export async function createRemainingPaymentSession(id: string) {
+    try {
+        const result = await httpClient.post<IPayment>(
+            `/payment/create-remaining-session`,
+            {
+                bookingId: id,
+            },
+        );
+
+        return result;
+    } catch (error: any) {
         console.error("Error creating session:", error);
         return error.response.data;
     }

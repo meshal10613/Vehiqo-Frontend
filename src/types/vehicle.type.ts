@@ -29,5 +29,4 @@ export interface IVehicle {
     updatedAt: Date;
 
     bookings: IBooking[];
-    reviews: IReview[];
 }

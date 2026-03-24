@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { IReview } from "../../../types/review.type";
 import { Star, Quote } from "lucide-react";
+import Marquee from "react-fast-marquee";
 
 function getInitials(name?: string): string {
     if (!name) return "?";
@@ -60,9 +61,9 @@ function Avatar({ image, name }: { image?: string | null; name?: string }) {
     );
 }
 
-function ReviewCard({ review, index }: { review: IReview; index: number }) {
-    const vehicleName = review.vehicle
-        ? `${review.vehicle.brand} ${review.vehicle.model}`
+export function ReviewCard({ review, index }: { review: IReview; index: number }) {
+    const vehicleName = review.booking?.vehicle
+        ? `${review?.booking?.vehicle.brand} ${review?.booking?.vehicle.model}`
         : "Unknown Vehicle";
 
     return (
@@ -75,7 +76,7 @@ function ReviewCard({ review, index }: { review: IReview; index: number }) {
                 ease: "easeOut" as const,
                 delay: (index % 3) * 0.08,
             }}
-            className="group relative flex flex-col bg-white border border-zinc-100 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-[#FF5100]/15 transition-all duration-300 overflow-hidden"
+            className="group relative flex flex-col bg-white border border-zinc-100 rounded-2xl p-6 shadow-sm hover:shadow-md hover:border-[#FF5100]/15 transition-all duration-300 overflow-hidden w-72 h-70"
         >
             {/* Top-left orange accent */}
             <div className="absolute top-0 left-0 w-10 h-1 bg-[#FF5100] rounded-br-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -135,9 +136,7 @@ export default function Reviews({ reviews }: { reviews: IReview[] }) {
     return (
         <section className="relative py-20 overflow-hidden">
             {/* Dot grid */}
-            <div
-                className="absolute inset-0 opacity-40 pointer-events-none"
-            />
+            <div className="absolute inset-0 opacity-40 pointer-events-none" />
 
             <div className="relative container mx-auto px-4 sm:px-6 lg:px-8">
                 {/* ── Header ── */}
@@ -219,11 +218,21 @@ export default function Reviews({ reviews }: { reviews: IReview[] }) {
                 </motion.div>
 
                 {/* ── Review Grid ── */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                     {reviews.map((review, i) => (
                         <ReviewCard key={review.id} review={review} index={i} />
                     ))}
-                </div>
+                </div> */}
+
+                <Marquee speed={50} gradient={false}>
+                    <div className="flex">
+                        {reviews.map((review, i) => (
+                            <div key={review.id} className="w-72 h-72 mr-5">
+                                <ReviewCard review={review} index={i} />
+                            </div>
+                        ))}
+                    </div>
+                </Marquee>
             </div>
         </section>
     );

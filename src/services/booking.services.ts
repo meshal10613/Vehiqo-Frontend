@@ -60,6 +60,22 @@ export const cancelBooking = async ({
     }
 };
 
+export const updateBooking = async (
+    id: string,
+    payload: { status?: BookingStatus; pickedUpAt?: string, returnedAt?: string },
+) => {
+    try {
+        const result = await httpClient.patch<IBooking>(
+            `/booking/${id}`,
+            payload,
+        );
+
+        return result;
+    } catch (error: any) {
+        console.error("Error updating my bookings:", error);
+        return error.response.data;
+    }
+};
 
 export const getBookingById = async (id: string) => {
     try {

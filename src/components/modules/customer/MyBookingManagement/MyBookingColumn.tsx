@@ -2,12 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { cn } from "@/lib/utils";
-import {
-    CalendarDays,
-    CreditCard,
-    Car,
-    MoreHorizontal,
-} from "lucide-react";
+import { CalendarDays, CreditCard, Car, MoreHorizontal } from "lucide-react";
 import { BookingStatus } from "../../../../types/enum.type";
 import { IBooking } from "../../../../types/booking.type";
 import DateCell from "../../../shared/cell/DateCell";
@@ -83,10 +78,11 @@ function fmt(n: number) {
 
 interface MyBookingColumnHandlers {
     onView: (booking: IBooking) => void;
-    onPay: (booking: IBooking) => void;
     onCancel: (booking: IBooking) => void;
-    onReview: (booking: IBooking) => void;
+    onPay: (booking: IBooking) => void;
+    onPickup: (booking: IBooking) => void;
     onReturn: (booking: IBooking) => void;
+    onReview: (booking: IBooking) => void;
 }
 
 // No actions column here — DataTable appends its own dropdown when the
@@ -228,16 +224,19 @@ export function MyBookingColumns(
             enableSorting: false,
             cell: ({ row }) => {
                 const booking = row.original;
+                const canCancel = booking.status === "PENDING";
 
                 const canPay =
                     booking.status === "PENDING" ||
                     (booking.status === "RETURNED" && booking.remainingDue > 0);
 
-                const canReview = booking.status === "COMPLETED";
-
-                const canCancel = booking.status === "PENDING";
+                const canPickup = booking.status === "ADVANCE_PAID";
 
                 const canReturn = booking.status === "PICKED_UP";
+
+                const canReview =
+                    booking.status === "COMPLETED" &&
+                    booking.review?.bookingId === null;
 
                 return (
                     <DropdownMenu>
@@ -269,28 +268,27 @@ export function MyBookingColumns(
                                     Cancel
                                 </DropdownMenuItem>
                             )}
-                            {
-                                canReview && (
-                                    <DropdownMenuItem
-                                        onClick={() =>
-                                            handlers.onReview(booking)
-                                        }
-                                    >
-                                        Review
-                                    </DropdownMenuItem>
-                                )
-                            }
-                            {
-                                canReturn && (
-                                    <DropdownMenuItem
-                                        onClick={() =>
-                                            handlers.onReturn(booking)
-                                        }
-                                    >
-                                        Return
-                                    </DropdownMenuItem>
-                                )
-                            }
+                            {canPickup && (
+                                <DropdownMenuItem
+                                    onClick={() => handlers.onPickup(booking)}
+                                >
+                                    Pick up
+                                </DropdownMenuItem>
+                            )}
+                            {canReview && (
+                                <DropdownMenuItem
+                                    onClick={() => handlers.onReview(booking)}
+                                >
+                                    Review
+                                </DropdownMenuItem>
+                            )}
+                            {canReturn && (
+                                <DropdownMenuItem
+                                    onClick={() => handlers.onReturn(booking)}
+                                >
+                                    Return
+                                </DropdownMenuItem>
+                            )}
                         </DropdownMenuContent>
                     </DropdownMenu>
                 );
