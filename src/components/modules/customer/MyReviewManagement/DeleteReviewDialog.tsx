@@ -38,6 +38,7 @@ export default function DeleteReviewDialog({
             }
             toast.success(result.message || "Review deleted successfully.");
             void queryClient.invalidateQueries({ queryKey: ["my-reviews"] });
+            void queryClient.invalidateQueries({ queryKey: ["reviews"] });
             onOpenChange(false);
         },
         onError: (error: any) => {
