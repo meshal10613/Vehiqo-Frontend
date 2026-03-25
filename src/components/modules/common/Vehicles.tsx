@@ -374,12 +374,13 @@ export default function Vehicles({
     } = useQuery({
         queryKey: ["vehicle", queryString],
         queryFn: () => getAllVehicles(queryString),
+        refetchOnWindowFocus: true,
     });
 
-    const v: IVehicle[] = vehicleData?.data ?? [];
-    const vehicles: IVehicle[] = v.filter(
-        (vehicle: IVehicle) => vehicle.status === VehicleStatusEnum.AVAILABLE,
-    );
+    const vehicles: IVehicle[] = vehicleData?.data ?? [];
+    // const vehicles: IVehicle[] = v.filter(
+    //     (vehicle: IVehicle) => vehicle.status === VehicleStatusEnum.AVAILABLE,
+    // );
     const meta: PaginationMeta | undefined = vehicleData?.meta;
 
     // Search state

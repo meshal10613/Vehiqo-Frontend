@@ -4,6 +4,49 @@ import { CarFront, IdCard, Settings2, Users, Zap } from "lucide-react";
 import { IVehicle } from "../../../types/vehicle.type";
 import { ImageSlider } from "./Vehicles";
 import Link from "next/link";
+import { VehicleStatus } from "../../../types/enum.type";
+import { cn } from "../../../lib/utils";
+
+const getStatusConfig = (status: VehicleStatus) => {
+    switch (status) {
+        case "AVAILABLE":
+            return {
+                label: "Rent Now",
+                className: "bg-primary hover:bg-[#ff5a00] text-white",
+                disabled: false,
+            };
+        case "BOOKED":
+            return {
+                label: "Booked",
+                className: "bg-yellow-500 text-white cursor-not-allowed",
+                disabled: true,
+            };
+        case "RENTED":
+            return {
+                label: "Rented",
+                className: "bg-blue-500 text-white cursor-not-allowed",
+                disabled: true,
+            };
+        case "MAINTENANCE":
+            return {
+                label: "Maintenance",
+                className: "bg-gray-500 text-white cursor-not-allowed",
+                disabled: true,
+            };
+        case "RETIRED":
+            return {
+                label: "Unavailable",
+                className: "bg-red-500 text-white cursor-not-allowed",
+                disabled: true,
+            };
+        default:
+            return {
+                label: "Unavailable",
+                className: "bg-gray-400 text-white cursor-not-allowed",
+                disabled: true,
+            };
+    }
+};
 
 export default function VehicleCard({ vehicle }: { vehicle: IVehicle }) {
     const formattedTransmission =
@@ -12,6 +55,8 @@ export default function VehicleCard({ vehicle }: { vehicle: IVehicle }) {
 
     const images = vehicle.image ?? [];
     const hasMultipleImages = images.length > 1;
+
+    const statusConfig = getStatusConfig(vehicle.status);
 
     return (
         <div className="border border-zinc-200 rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow flex flex-col w-92 md:w-88 lg:w-full mx-auto">
@@ -97,11 +142,32 @@ export default function VehicleCard({ vehicle }: { vehicle: IVehicle }) {
                 </div>
 
                 <div className="flex justify-between items-center mt-auto">
-                    <Link
+                    {/* <Link
                         href={`/vehicles/${vehicle.id}`}
                         className="bg-primary hover:bg-[#ff5a00] text-white font-semibold py-1.5 pl-5 pr-1.5 rounded-lg flex items-center gap-3 transition-colors cursor-pointer"
                     >
                         Rent Now
+                        <span className="bg-white text-zinc-900 p-1.5 rounded-md flex items-center justify-center">
+                            <CarFront className="w-4 h-4" strokeWidth={2} />
+                        </span>
+                    </Link> */}
+                    <Link
+                        href={
+                            statusConfig.disabled
+                                ? "#"
+                                : `/vehicles/${vehicle.id}`
+                        }
+                        onClick={(e) =>
+                            statusConfig.disabled && e.preventDefault()
+                        }
+                        className={cn(
+                            "font-semibold py-1.5 pl-5 pr-1.5 rounded-lg flex items-center gap-3 transition-colors",
+                            statusConfig.className,
+                            statusConfig.disabled &&
+                                "pointer-events-none opacity-70",
+                        )}
+                    >
+                        {statusConfig.label}
                         <span className="bg-white text-zinc-900 p-1.5 rounded-md flex items-center justify-center">
                             <CarFront className="w-4 h-4" strokeWidth={2} />
                         </span>

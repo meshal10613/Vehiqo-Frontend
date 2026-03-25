@@ -70,6 +70,7 @@ const defaultValues = {
     description: "",
     features: "" as unknown as string,
     vehicleTypeId: "",
+    image: [] as File[],
 };
 
 interface CreateVehicleFormModalProps {
@@ -104,10 +105,11 @@ export default function CreateVehicleFormModal({
                 fuelType: value.fuelType,
                 pricePerDay: Number(value.pricePerDay),
                 vehicleTypeId: value.vehicleTypeId,
+                seats: Number(value.seats),
+                image: imageFiles,
             };
 
             if (value.color) payload.color = value.color;
-            if (value.seats) payload.seats = Number(value.seats);
             if (value.engineCC) payload.engineCC = Number(value.engineCC);
             if (value.description) payload.description = value.description;
 
@@ -125,9 +127,7 @@ export default function CreateVehicleFormModal({
                     .filter(Boolean);
                 if (featuresArray.length > 0) payload.features = featuresArray;
             }
-
-            if (imageFiles.length > 0) payload.image = imageFiles;
-
+            console.log(payload)
             const result = await mutateAsync(payload);
             if (!result?.success) {
                 toast.error(result?.message || "Failed to create vehicle");
@@ -177,7 +177,16 @@ export default function CreateVehicleFormModal({
             }
         }
 
+        const updated = [...imageFiles, ...files];
+
+        setImageFiles(updated);
         setImageError(null);
+
+        form.setFieldValue("image", updated);
+        form.setFieldMeta("image", (prev) => ({
+            ...prev,
+            isTouched: true,
+        }));
         setImageFiles((prev) => [...prev, ...files]);
         files.forEach((file) => {
             const reader = new FileReader();
@@ -297,11 +306,39 @@ export default function CreateVehicleFormModal({
                                         JPG, PNG or WEBP · Max 5MB each
                                     </p>
                                 </div>
-                                {imageError && (
+                                <form.Field
+                                    name="image"
+                                    validators={{
+                                        onChange:
+                                            createVehicleSchema.shape.image,
+                                    }}
+                                >
+                                    {(field) => {
+                                        const error =
+                                            field.state.meta.isTouched &&
+                                            field.state.meta.errors.length > 0
+                                                ? field.state.meta.errors[0]
+                                                : null;
+
+                                        return (
+                                            <>
+                                                {/* sync form value */}
+                                                <input type="hidden" value="" />
+
+                                                {error && (
+                                                    <p className="text-xs text-red-500">
+                                                        {getErrorMessage(error)}
+                                                    </p>
+                                                )}
+                                            </>
+                                        );
+                                    }}
+                                </form.Field>
+                                {/* {imageError && (
                                     <p className="text-xs text-red-500">
                                         {imageError}
                                     </p>
-                                )}
+                                )} */}
                             </div>
 
                             {/* ── Identity ──────────────────────────────────── */}
@@ -381,7 +418,9 @@ export default function CreateVehicleFormModal({
                                     )}
                                 </form.Field>
 
-                                <form.Field name="seats">
+                                <form.Field
+                                    name="seats"
+                                >
                                     {(field) => (
                                         <AppField
                                             field={field}
@@ -404,6 +443,29 @@ export default function CreateVehicleFormModal({
                                         onChange:
                                             createVehicleSchema.shape
                                                 .vehicleTypeId,
+                                    }}
+                                    listeners={{
+                                        onChange: ({ value, fieldApi }) => {
+                                            const selected = vehicleTypes.find(
+                                                (t) => t.id === value,
+                                            );
+                                            if (selected?.isElectric) {
+                                                fieldApi.form.setFieldValue(
+                                                    "fuelType",
+                                                    FuelEnum.ELECTRIC,
+                                                );
+                                                fieldApi.form.setFieldValue(
+                                                    "mileage",
+                                                    undefined,
+                                                );
+                                            } else {
+                                                // Reset fuelType if switching away from an electric type
+                                                fieldApi.form.setFieldValue(
+                                                    "fuelType",
+                                                    "" as FuelEnum,
+                                                );
+                                            }
+                                        },
                                     }}
                                 >
                                     {(field) => {
@@ -571,6 +633,16 @@ export default function CreateVehicleFormModal({
                                     }}
                                 >
                                     {(field) => {
+                                        const selectedType = vehicleTypes.find(
+                                            (t) =>
+                                                t.id ===
+                                                form.getFieldValue(
+                                                    "vehicleTypeId",
+                                                ),
+                                        );
+                                        const isLocked =
+                                            !!selectedType?.isElectric;
+
                                         const firstError =
                                             field.state.meta.isTouched &&
                                             field.state.meta.errors.length > 0
@@ -597,7 +669,9 @@ export default function CreateVehicleFormModal({
                                                         );
                                                         field.handleBlur();
                                                     }}
-                                                    disabled={isPending}
+                                                    disabled={
+                                                        isPending || isLocked
+                                                    }
                                                 >
                                                     <SelectTrigger
                                                         id={field.name}
@@ -623,6 +697,13 @@ export default function CreateVehicleFormModal({
                                                         ))}
                                                     </SelectContent>
                                                 </Select>
+                                                {isLocked && (
+                                                    <p className="text-[11px] text-zinc-400">
+                                                        Fuel type is fixed to
+                                                        Electric for this
+                                                        vehicle type.
+                                                    </p>
+                                                )}
                                                 <FieldMessage
                                                     error={firstError}
                                                 />
@@ -635,7 +716,9 @@ export default function CreateVehicleFormModal({
                             {/* ── Pricing & Specs ───────────────────────────── */}
                             <SectionTitle>Pricing & Specs</SectionTitle>
                             <div className="grid grid-cols-2 gap-4">
-                                <form.Field name="pricePerDay">
+                                <form.Field
+                                    name="pricePerDay"
+                                >
                                     {(field) => (
                                         <AppField
                                             field={field}

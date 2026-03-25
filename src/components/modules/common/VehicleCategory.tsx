@@ -18,8 +18,8 @@ function getVehiclesForCategory(category: IVehicleCategory): IVehicle[] {
     for (const type of category.types) {
         for (const v of type.vehicles ?? []) {
             if (
-                !seen.has(v.id) &&
-                v?.status === ("AVAILABLE" as VehicleStatusEnum)
+                !seen.has(v.id) 
+                // && v?.status === ("AVAILABLE" as VehicleStatusEnum)
             ) {
                 seen.add(v.id);
                 vehicles.push(v);

@@ -125,7 +125,7 @@ export default function VehicleTypeTable({
                 id: "category.name",
                 label: "Vehicle Category",
                 type: "single-select",
-                options: vehicleCategory.map((v) => ({
+                options: vehicleCategory.map((v: any) => ({
                     label: v.name,
                     value: v.name,
                 })),

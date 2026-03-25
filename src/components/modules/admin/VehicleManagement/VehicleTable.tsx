@@ -113,7 +113,7 @@ export default function VehicleTable({
     // ── vehicle types (for filters + form) ────────────────────────────────────
     const { data: vehicleTypeData, isLoading: isLoadingVehicleType } = useQuery(
         {
-            queryKey: ["vehicle"],
+            queryKey: ["vehicle-type"],
             queryFn: () => getAllVehicleType(),
         },
     );

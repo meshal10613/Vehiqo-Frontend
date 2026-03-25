@@ -5,7 +5,7 @@ import { IReview } from "../../../types/review.type";
 import { Star, Quote } from "lucide-react";
 import Marquee from "react-fast-marquee";
 
-function getInitials(name?: string): string {
+export function getInitials(name?: string): string {
     if (!name) return "?";
     return name
         .split(" ")
@@ -15,7 +15,7 @@ function getInitials(name?: string): string {
         .slice(0, 2);
 }
 
-function timeAgo(date: Date): string {
+export function timeAgo(date: Date): string {
     const diff = Date.now() - new Date(date).getTime();
     const days = Math.floor(diff / 86400000);
     if (days === 0) return "Today";
@@ -27,7 +27,7 @@ function timeAgo(date: Date): string {
     return `${years} year${years > 1 ? "s" : ""} ago`;
 }
 
-function StarRating({ rating }: { rating: number }) {
+export function StarRating({ rating }: { rating: number }) {
     return (
         <div className="flex items-center gap-0.5">
             {[1, 2, 3, 4, 5].map((i) => (
@@ -44,7 +44,7 @@ function StarRating({ rating }: { rating: number }) {
     );
 }
 
-function Avatar({ image, name }: { image?: string | null; name?: string }) {
+export function Avatar({ image, name }: { image?: string | null; name?: string }) {
     if (image) {
         return (
             <img

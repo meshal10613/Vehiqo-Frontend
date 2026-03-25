@@ -236,7 +236,7 @@ export function MyBookingColumns(
 
                 const canReview =
                     booking.status === "COMPLETED" &&
-                    booking.review?.bookingId === null;
+                    (!booking.review || booking.review?.bookingId !== booking.id);
 
                 return (
                     <DropdownMenu>
