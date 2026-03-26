@@ -28,6 +28,21 @@ export const createBooking = async (payload: ICreateBookingPayload) => {
     }
 };
 
+export const getAllBooking = async (queryString?: string) => {
+    try {
+        const result = await httpClient.get<IBooking[]>(
+            queryString
+                ? `/booking?${queryString}`
+                : `/booking`,
+        );
+        return result;
+    } catch (error: any) {
+        console.error("Error fetching my bookings:", error);
+        return error.response.data;
+    }
+};
+
+
 export const getMyBooking = async (queryString?: string) => {
     try {
         const result = await httpClient.get<IBooking[]>(

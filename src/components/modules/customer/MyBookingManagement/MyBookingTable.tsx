@@ -225,8 +225,8 @@ export default function MyBookingTable({
                 <h1 className="text-2xl font-bold text-zinc-900 tracking-tight">
                     My Bookings
                 </h1>
-                <p className="text-sm text-zinc-500 mt-1">
-                    Track your vehicle rentals, payments, and rental history.
+                <p className="text-sm text-zinc-500 mt-1 max-w-xl">
+                    Track all your vehicle rental bookings in one place. View booking status, rental dates, and vehicle details — and cancel any pending bookings you no longer need.
                 </p>
             </div>
 

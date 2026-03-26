@@ -334,13 +334,13 @@ export default function AllReviewCard({
 
     return (
         <>
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-baseline justify-between mb-6">
                 <div>
                     <h1 className="text-2xl font-bold text-zinc-900 tracking-tight">
                         All Reviews
                     </h1>
-                    <p className="text-sm text-zinc-500 mt-1">
-                        Manage all reviews.
+                    <p className="text-sm text-zinc-500 mt-1 max-w-xl">
+                        Get a complete overview of every review submitted across all bookings. Monitor customer feedback, spot trends, filter by star rating, and remove any inappropriate or incorrect reviews.
                     </p>
                 </div>
                 <StarSortFilter

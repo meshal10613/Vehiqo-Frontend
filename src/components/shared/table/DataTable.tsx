@@ -368,6 +368,7 @@ import DataTableFilters, {
 } from "./DataTableFilters";
 import LoadingSpinner from "../LoadingSpinner";
 import { Separator } from "../../ui/separator";
+import { motion } from "framer-motion";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -633,7 +634,7 @@ const DataTable = <TData,>({
                                               onClick={() =>
                                                   actions.onDelete?.(rowData)
                                               }
-                                            //   className="text-destructive hover:cursor-pointer"
+                                              //   className="text-destructive hover:cursor-pointer"
                                           >
                                               {/* <Trash2 className="mr-2 h-4 w-4" /> */}
                                               Delete
@@ -773,9 +774,41 @@ const DataTable = <TData,>({
                             <TableRow>
                                 <TableCell
                                     colSpan={tableColumns.length}
-                                    className="h-24 text-center"
+                                    className="h-40 text-center"
                                 >
-                                    {emptyMessage || "No data available."}
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{
+                                            duration: 0.35,
+                                            ease: "easeOut",
+                                        }}
+                                        className="flex flex-col items-center justify-center gap-3"
+                                    >
+                                        {/* Animated dots */}
+                                        <div className="flex items-center gap-1.5">
+                                            {[0, 1, 2].map((i) => (
+                                                <motion.span
+                                                    key={i}
+                                                    className="w-1.5 h-1.5 rounded-full bg-zinc-300"
+                                                    animate={{
+                                                        opacity: [0.3, 1, 0.3],
+                                                        y: [0, -4, 0],
+                                                    }}
+                                                    transition={{
+                                                        duration: 1.2,
+                                                        repeat: Infinity,
+                                                        ease: "easeInOut",
+                                                        delay: i * 0.2,
+                                                    }}
+                                                />
+                                            ))}
+                                        </div>
+                                        <p className="text-sm text-zinc-400 font-medium">
+                                            {emptyMessage ||
+                                                "No data available."}
+                                        </p>
+                                    </motion.div>
                                 </TableCell>
                             </TableRow>
                         )}
