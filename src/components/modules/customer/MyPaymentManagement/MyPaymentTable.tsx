@@ -169,12 +169,12 @@ export default function MyPaymentTable({
                     state: optimisticPaginationState,
                     onPaginationChange: handlePaginationChange,
                 }}
-                search={{
-                    initialValue: searchTermFromUrl,
-                    placeholder: "Search by brand, model, plate number...",
-                    debounceMs: 700,
-                    onDebouncedChange: handleDebouncedSearchChange,
-                }}
+                // search={{
+                //     initialValue: searchTermFromUrl,
+                //     placeholder: "Search by brand, model, plate number...",
+                //     debounceMs: 700,
+                //     onDebouncedChange: handleDebouncedSearchChange,
+                // }}
                 filters={{
                     configs: filterConfigs,
                     values: filterValuesForTable,
