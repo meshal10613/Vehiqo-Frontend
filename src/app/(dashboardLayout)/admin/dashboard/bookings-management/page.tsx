@@ -1,4 +1,10 @@
-import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
+export const dynamic = "force-dynamic";
+
+import {
+    dehydrate,
+    HydrationBoundary,
+    QueryClient,
+} from "@tanstack/react-query";
 import { Metadata } from "next";
 import { getAllBooking } from "../../../../../services/booking.services";
 import AllBookingTable from "../../../../../components/modules/admin/BookingManagement/AllBookingTable";
@@ -13,7 +19,7 @@ export default async function BookingsManagementPage({
 }: {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-	    const queryParamsObjects = await searchParams;
+    const queryParamsObjects = await searchParams;
     const queryString = Object.keys(queryParamsObjects)
         .map((key) => {
             const value = queryParamsObjects[key];
@@ -43,9 +49,9 @@ export default async function BookingsManagementPage({
         gcTime: 1000 * 60 * 60 * 6, // 6 hour
     });
 
-	return(
+    return (
         <HydrationBoundary state={dehydrate(queryClient)}>
             <AllBookingTable initialQueryString={queryString} />
         </HydrationBoundary>
-	)
+    );
 }

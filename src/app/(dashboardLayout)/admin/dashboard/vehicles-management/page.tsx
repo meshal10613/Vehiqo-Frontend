@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import { Metadata } from "next";
 import VehicleTable from "../../../../../components/modules/admin/VehicleManagement/VehicleTable";

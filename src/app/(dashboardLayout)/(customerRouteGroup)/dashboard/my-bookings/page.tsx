@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { dehydrate, HydrationBoundary, QueryClient } from "@tanstack/react-query";
 import type { Metadata } from "next";
 import { getMyBooking } from "../../../../../services/booking.services";

@@ -149,7 +149,11 @@ export default function ViewVehicleDialog({
     if (!vehicle) return null;
 
     const bookingCount = vehicle.bookings?.length ?? 0;
-    const reviewCount = vehicle.reviews?.length ?? 0;
+    const reviewCount =
+        vehicle.bookings?.reduce(
+            (acc, booking) => acc + (booking?.review?.rating != null ? 1 : 0),
+            0,
+        ) ?? 0;
 
     const statusColors: Record<string, string> = {
         AVAILABLE: "border-green-200 text-green-600 bg-green-50",
@@ -284,7 +288,11 @@ export default function ViewVehicleDialog({
                                     <span>{vehicle.fuelType}</span>
                                     {vehicle.fuel && (
                                         <span className="text-xs text-zinc-400">
-                                            ·{formatCurrency(vehicle.fuel.pricePerUnit)} /{" "}
+                                            ·
+                                            {formatCurrency(
+                                                vehicle.fuel.pricePerUnit,
+                                            )}{" "}
+                                            /{" "}
                                             {vehicle.fuel.unit
                                                 .replace(/_/g, " ")
                                                 .toLowerCase()}

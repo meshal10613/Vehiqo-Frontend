@@ -2,6 +2,7 @@ import React from "react";
 import DashboardSidebar from "../../components/modules/dashboard/DashboardSidebar";
 import DashboardNavbar from "../../components/modules/dashboard/DashboardNavbar";
 import { getUserInfo } from "../../services/auth.services";
+import LoadingSpinner from "../../components/shared/LoadingSpinner";
 
 const RootDashboardLayout = async ({
     children,
@@ -9,6 +10,8 @@ const RootDashboardLayout = async ({
     children: React.ReactNode;
 }) => {
     const userInfo = await getUserInfo();
+    if(!userInfo) return <LoadingSpinner/>;
+
     return (
         <div className="flex h-screen overflow-hidden">
             {/* Dashboard Sidebar */}

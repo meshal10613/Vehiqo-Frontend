@@ -24,7 +24,9 @@ export async function getAllPayments(queryString?: string) {
 export async function getMyPayments(queryString?: string) {
     try {
         const result = await httpClient.get<IPayment[]>(
-            queryString ? `/payment/my-payment?${queryString}` : "/payment/my-payment",
+            queryString
+                ? `/payment/my-payment?${queryString}`
+                : "/payment/my-payment",
         );
         return result;
     } catch (error: any) {
@@ -61,6 +63,17 @@ export async function createRemainingPaymentSession(id: string) {
         return result;
     } catch (error: any) {
         console.error("Error creating session:", error);
+        return error.response.data;
+    }
+}
+
+export async function deletePayment(id: string) {
+    try {
+        const result = await httpClient.delete<IPayment>(`/payment/${id}`);
+
+        return result;
+    } catch (error: any) {
+        console.error("Error deleting payment:", error);
         return error.response.data;
     }
 }

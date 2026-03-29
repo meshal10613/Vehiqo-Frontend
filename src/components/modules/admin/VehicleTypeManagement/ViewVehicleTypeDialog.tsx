@@ -242,7 +242,12 @@ export default function ViewVehicleTypeDialog({
         ) ?? 0;
     const totalReviews =
         vehicleType.vehicles?.reduce(
-            (acc, v) => acc + (v.reviews?.length ?? 0),
+            (acc, v) =>
+                acc +
+                (v.bookings?.reduce(
+                    (count, b) => count + (b?.review?.rating != null ? 1 : 0),
+                    0,
+                ) ?? 0),
             0,
         ) ?? 0;
 

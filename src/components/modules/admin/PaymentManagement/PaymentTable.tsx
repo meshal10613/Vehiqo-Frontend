@@ -27,6 +27,7 @@ import {
     PaymentStatusEnum,
     PaymentTypeEnum,
 } from "../../../../types/enum.type";
+import DeletePaymentFormModal from "./DeletePaymentFormModal";
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 10;
@@ -94,7 +95,7 @@ export default function PaymentTable({
         queryKey: ["payments", queryString],
         queryFn: () => getAllPayments(queryString),
     });
-    console.log(paymentData);
+
     const payments: IPayment[] = paymentData?.data ?? [];
     const meta: PaginationMeta | undefined = paymentData?.meta;
 
@@ -175,12 +176,12 @@ export default function PaymentTable({
                     state: optimisticPaginationState,
                     onPaginationChange: handlePaginationChange,
                 }}
-                search={{
-                    initialValue: searchTermFromUrl,
-                    placeholder: "Search by brand, model, plate number...",
-                    debounceMs: 700,
-                    onDebouncedChange: handleDebouncedSearchChange,
-                }}
+                // search={{
+                //     initialValue: searchTermFromUrl,
+                //     placeholder: "Search by brand, model, plate number...",
+                //     debounceMs: 700,
+                //     onDebouncedChange: handleDebouncedSearchChange,
+                // }}
                 filters={{
                     configs: filterConfigs,
                     values: filterValuesForTable,
@@ -197,25 +198,11 @@ export default function PaymentTable({
                 actions={{ onDelete: (row) => tableActions.onDelete?.(row) }}
             />
 
-            {/* <EditVehicleFormModal
-				open={isEditModalOpen}
-				onOpenChange={onEditOpenChange}
-				vehicle={editingItem}
-				vehicleTypes={vehicleTypes}
-				isLoadingVehicleTypes={isLoadingVehicleType}
-			/> */}
-
-            {/* <DeleteVehicleFormModal
+            <DeletePaymentFormModal
 				open={isDeleteDialogOpen}
 				onOpenChange={onDeleteOpenChange}
 				vehicle={deletingItem}
-			/> */}
-
-            {/* <ViewVehicleDialog
-				open={isViewDialogOpen}
-				onOpenChange={onViewOpenChange}
-				vehicle={viewingItem}
-			/> */}
+			/>
         </>
     );
 }

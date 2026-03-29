@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import type { Metadata } from "next";
 import { getUserInfo } from "../../../../services/auth.services";
 import MyProfile from "../../../../components/modules/common/MyProfile";

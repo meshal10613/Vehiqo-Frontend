@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import Banner from "../../components/modules/home/Banner";
 import { IVehicleCategory } from "../../types/vehicleCategory.type";
 import VehicleCategory from "../../components/modules/common/VehicleCategory";
