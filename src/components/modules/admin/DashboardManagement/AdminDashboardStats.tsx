@@ -273,8 +273,6 @@ const DashboardSkeleton = () => (
     </div>
 );
 
-// ── MAIN COMPONENT ────────────────────────────────────────────────────────────
-
 export default function AdminDashboardStats() {
     const {
         data: statsData,

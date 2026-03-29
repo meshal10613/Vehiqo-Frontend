@@ -127,7 +127,7 @@ export default function CreateVehicleFormModal({
                     .filter(Boolean);
                 if (featuresArray.length > 0) payload.features = featuresArray;
             }
-            console.log(payload)
+            console.log(payload);
             const result = await mutateAsync(payload);
             if (!result?.success) {
                 toast.error(result?.message || "Failed to create vehicle");
@@ -418,9 +418,7 @@ export default function CreateVehicleFormModal({
                                     )}
                                 </form.Field>
 
-                                <form.Field
-                                    name="seats"
-                                >
+                                <form.Field name="seats">
                                     {(field) => (
                                         <AppField
                                             field={field}
@@ -515,7 +513,15 @@ export default function CreateVehicleFormModal({
                                                             }
                                                         />
                                                     </SelectTrigger>
-                                                    <SelectContent>
+                                                    <SelectContent
+                                                        className="max-h-60"
+                                                        style={{
+                                                            maxHeight: "240px",
+                                                            overflowY: "auto",
+                                                        }}
+                                                        position="popper"
+                                                        sideOffset={4}
+                                                    >
                                                         {vehicleTypes.map(
                                                             (t) => (
                                                                 <SelectItem
@@ -716,9 +722,7 @@ export default function CreateVehicleFormModal({
                             {/* ── Pricing & Specs ───────────────────────────── */}
                             <SectionTitle>Pricing & Specs</SectionTitle>
                             <div className="grid grid-cols-2 gap-4">
-                                <form.Field
-                                    name="pricePerDay"
-                                >
+                                <form.Field name="pricePerDay">
                                     {(field) => (
                                         <AppField
                                             field={field}

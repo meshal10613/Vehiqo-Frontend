@@ -258,7 +258,7 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                                 </form.Field>
                             </motion.div>
 
-                            <motion.div
+                            {/* <motion.div
                                 variants={itemVariants}
                                 className="text-right"
                             >
@@ -268,7 +268,7 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                                 >
                                     Forgot password?
                                 </Link>
-                            </motion.div>
+                            </motion.div> */}
 
                             <motion.div variants={itemVariants}>
                                 <form.Subscribe
@@ -292,7 +292,7 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                         </form>
 
                         {/* Divider */}
-                        <motion.div
+                        {/* <motion.div
                             variants={itemVariants}
                             className="flex items-center gap-3 my-5"
                         >
@@ -301,10 +301,10 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                                 or continue with
                             </span>
                             <Separator className="flex-1 bg-zinc-100" />
-                        </motion.div>
+                        </motion.div> */}
 
                         {/* Google */}
-                        <motion.div variants={itemVariants}>
+                        {/* <motion.div variants={itemVariants}>
                             <Button
                                 variant="outline"
                                 className="w-full cursor-pointer h-10 border-zinc-200 text-zinc-700 hover:bg-zinc-50 hover:border-zinc-300 gap-2.5 transition-all duration-200"
@@ -317,7 +317,7 @@ const LoginForm = ({ redirectPath }: LoginFormProps) => {
                                 <FcGoogle size={18} />
                                 Sign in with Google
                             </Button>
-                        </motion.div>
+                        </motion.div> */}
                     </CardContent>
 
                     <CardFooter className="justify-center border-t border-zinc-100 py-5">

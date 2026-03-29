@@ -93,24 +93,24 @@ const VerifyEmailForm = ({ email, redirectPath }: VerifyEmailFormProps) => {
         }
     };
 
-    const handleResend = async () => {
-        setIsResending(true);
-        const toastId = toast.loading("Resending verification code...");
-        try {
-            // TODO: replace with resendOtpAction(email)
-            await new Promise((res) => setTimeout(res, 1200));
-            toast.success("A new code has been sent to your email.", {
-                id: toastId,
-            });
-            setOtp("");
-        } catch (error: any) {
-            toast.error(error?.message || "Failed to resend code.", {
-                id: toastId,
-            });
-        } finally {
-            setIsResending(false);
-        }
-    };
+    // const handleResend = async () => {
+    //     setIsResending(true);
+    //     const toastId = toast.loading("Resending verification code...");
+    //     try {
+    //         // TODO: replace with resendOtpAction(email)
+    //         await new Promise((res) => setTimeout(res, 1200));
+    //         toast.success("A new code has been sent to your email.", {
+    //             id: toastId,
+    //         });
+    //         setOtp("");
+    //     } catch (error: any) {
+    //         toast.error(error?.message || "Failed to resend code.", {
+    //             id: toastId,
+    //         });
+    //     } finally {
+    //         setIsResending(false);
+    //     }
+    // };
 
     return (
         <div className="min-h-screen flex items-center justify-center px-4 bg-zinc-50">
@@ -233,7 +233,7 @@ const VerifyEmailForm = ({ email, redirectPath }: VerifyEmailFormProps) => {
                         </form>
 
                         {/* Resend */}
-                        <motion.div
+                        {/* <motion.div
                             variants={itemVariants}
                             className="flex items-center justify-center gap-1.5 mt-5"
                         >
@@ -260,7 +260,7 @@ const VerifyEmailForm = ({ email, redirectPath }: VerifyEmailFormProps) => {
                                     </>
                                 )}
                             </Button>
-                        </motion.div>
+                        </motion.div> */}
                     </CardContent>
 
                     <CardFooter className="justify-center border-t border-zinc-100 py-5">

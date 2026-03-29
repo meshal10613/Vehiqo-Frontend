@@ -86,7 +86,7 @@ export default function VehicleCategoryTable({
                 data={vehicleCategory}
                 columns={vehicleCategoryColumn}
                 isLoading={isLoading || isFetching || isRouteRefreshPending}
-                emptyMessage="No doctors found."
+                emptyMessage="No vehicle categories found."
                 sorting={{
                     state: optimisticSortingState,
                     onSortingChange: handleSortingChange,

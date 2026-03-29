@@ -113,7 +113,7 @@ const RegisterForm = ({ redirectPath }: RegisterFormProps) => {
                 );
                 targetPath = redirectPath ? redirectPath : "/";
 
-                router.push(targetPath);
+                router.push(`/sign-in?redirect=${targetPath}`);
             } catch (error: any) {
                 console.log(`Registration failed: ${error.message}`);
                 toast.error(
@@ -432,7 +432,7 @@ const RegisterForm = ({ redirectPath }: RegisterFormProps) => {
                         </form>
 
                         {/* Divider */}
-                        <motion.div
+                        {/* <motion.div
                             variants={itemVariants}
                             className="flex items-center gap-3 my-5"
                         >
@@ -441,10 +441,10 @@ const RegisterForm = ({ redirectPath }: RegisterFormProps) => {
                                 or continue with
                             </span>
                             <Separator className="flex-1 bg-zinc-100" />
-                        </motion.div>
+                        </motion.div> */}
 
                         {/* Google */}
-                        <motion.div variants={itemVariants}>
+                        {/* <motion.div variants={itemVariants}>
                             <Button
                                 variant="outline"
                                 className="w-full cursor-pointer h-10 border-zinc-200 text-zinc-700 hover:bg-zinc-50 hover:border-zinc-300 gap-2.5 transition-all duration-200"
@@ -457,7 +457,7 @@ const RegisterForm = ({ redirectPath }: RegisterFormProps) => {
                                 <FcGoogle size={18} />
                                 Sign up with Google
                             </Button>
-                        </motion.div>
+                        </motion.div> */}
                     </CardContent>
 
                     <CardFooter className="justify-center border-t border-zinc-100 py-5">

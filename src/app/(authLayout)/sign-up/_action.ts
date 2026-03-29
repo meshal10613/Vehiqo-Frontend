@@ -28,26 +28,26 @@ export const registerAction = async (
         );
 
         const { accessToken, refreshToken, token, user } = response.data;
-        if (user.emailVerified === false) {
-            return {
-                success: false,
-                message: "Email not verified",
-            };
-        }
+        // if (user.emailVerified === false) {
+        //     return {
+        //         success: false,
+        //         message: "Email not verified",
+        //     };
+        // }
 
-        await Promise.all(
-            [
-                accessToken
-                    ? setTokenInCookies("accessToken", accessToken)
-                    : null,
-                refreshToken
-                    ? setTokenInCookies("refreshToken", refreshToken)
-                    : null,
-                token
-                    ? setTokenInCookies("better-auth.session_token", token)
-                    : null,
-            ].filter(Boolean),
-        );
+        // await Promise.all(
+        //     [
+        //         accessToken
+        //             ? setTokenInCookies("accessToken", accessToken)
+        //             : null,
+        //         refreshToken
+        //             ? setTokenInCookies("refreshToken", refreshToken)
+        //             : null,
+        //         token
+        //             ? setTokenInCookies("better-auth.session_token", token)
+        //             : null,
+        //     ].filter(Boolean),
+        // );
 
         return response;
     } catch (error: any) {
