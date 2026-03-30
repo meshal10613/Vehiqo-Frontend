@@ -3,7 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { cn } from "@/lib/utils";
 import { CalendarDays, CreditCard, Car, MoreHorizontal } from "lucide-react";
-import { BookingStatus } from "../../../../types/enum.type";
+import { BookingStatus, BookingStatusEnum } from "../../../../types/enum.type";
 import { IBooking } from "../../../../types/booking.type";
 import DateCell from "../../../shared/cell/DateCell";
 import {
@@ -224,19 +224,23 @@ export function MyBookingColumns(
             enableSorting: false,
             cell: ({ row }) => {
                 const booking = row.original;
-                const canCancel = booking.status === "PENDING";
+                const canCancel = booking.status === BookingStatusEnum.PENDING;
 
                 const canPay =
-                    booking.status === "PENDING" ||
-                    (booking.status === "RETURNED" && booking.remainingDue > 0);
+                    booking.status === BookingStatusEnum.PENDING ||
+                    (booking.status === BookingStatusEnum.RETURNED &&
+                        booking.remainingDue > 0);
 
-                const canPickup = booking.status === "ADVANCE_PAID";
+                const canPickup =
+                    booking.status === BookingStatusEnum.ADVANCE_PAID;
 
-                const canReturn = booking.status === "PICKED_UP";
+                const canReturn =
+                    booking.status === BookingStatusEnum.PICKED_UP;
 
                 const canReview =
-                    booking.status === "COMPLETED" &&
-                    (!booking.review || booking.review?.bookingId !== booking.id);
+                    booking.status === BookingStatusEnum.COMPLETED &&
+                    (!booking.review ||
+                        booking.review?.bookingId !== booking.id);
 
                 return (
                     <DropdownMenu>

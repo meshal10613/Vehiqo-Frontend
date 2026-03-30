@@ -163,7 +163,7 @@ export default function ReviewModal({
                     </p>
                 </div>
 
-                <DialogFooter className="gap-2 flex items-center">
+                <DialogFooter className="gap-2 flex flex-row items-center">
                     <Button
                         variant="outline"
                         onClick={() => onOpenChange(false)}
