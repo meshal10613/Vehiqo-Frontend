@@ -97,6 +97,7 @@ export interface IAdminStats {
     };
     payment: {
         total: number;
+        totalRevenue: number;
         status: {
             unpaid: number;
             pending: number;

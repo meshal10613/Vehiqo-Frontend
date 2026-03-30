@@ -25,7 +25,7 @@ export default async function Home() {
         review: 0,
     };
     const vehicleCategory: IVehicleCategory[] | [] = category.data ?? [];
-    const reviews: IReview[] = review.data.data ?? [];
+    const reviews: IReview[] = review.data ?? [];
 
     return (
         <div>

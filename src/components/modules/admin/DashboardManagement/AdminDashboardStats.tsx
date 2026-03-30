@@ -15,23 +15,16 @@ import {
     YAxis,
     Tooltip,
     ResponsiveContainer,
-    RadialBarChart,
-    RadialBar,
     Legend,
-    AreaChart,
-    Area,
     CartesianGrid,
 } from "recharts";
 import {
     Car,
     Users,
     CalendarCheck,
-    CreditCard,
     Star,
-    Layers,
     Fuel,
     TrendingUp,
-    Activity,
     RefreshCcw,
     MoreHorizontal,
     ArrowUpRight,
@@ -41,14 +34,6 @@ import {
 import { cn } from "@/lib/utils";
 
 // ── CONSTANTS & UTILS ─────────────────────────────────────────────────────────
-
-const BRAND = {
-    primary: "#FF5100",
-    primaryLight: "#FFF0E6", // Light orange background
-    text: "#18181B", // Zinc 900
-    muted: "#71717A", // Zinc 500
-    border: "#E4E4E7", // Zinc 200
-};
 
 const PALETTE = {
     orange: "#FF5100",
@@ -63,18 +48,8 @@ const PALETTE = {
     dark: "#1F2937",
 };
 
-const CHART_COLORS = [
-    PALETTE.orange,
-    PALETTE.blue,
-    PALETTE.emerald,
-    PALETTE.violet,
-    PALETTE.amber,
-    PALETTE.rose,
-    PALETTE.cyan,
-    PALETTE.zinc,
-];
-
-function fmt(n: number) {
+function fmt(n: number | undefined | null): string {
+    if (n === undefined || n === null || isNaN(n)) return "0";
     if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
     if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
     return new Intl.NumberFormat("en-US").format(n);
@@ -101,7 +76,6 @@ const itemVar: Variants = {
 
 // ── SUB-COMPONENTS ────────────────────────────────────────────────────────────
 
-// 1. Dashboard Header
 const DashboardHeader = ({
     onRefresh,
     isRefetching,
@@ -137,7 +111,6 @@ const DashboardHeader = ({
     </div>
 );
 
-// 2. Kpi Card
 const KpiCard = ({
     title,
     value,
@@ -147,7 +120,7 @@ const KpiCard = ({
     color,
 }: {
     title: string;
-    value: string | number;
+    value: string | number | undefined | null;
     icon: any;
     trend?: string;
     sub?: string;
@@ -174,11 +147,10 @@ const KpiCard = ({
         <div>
             <p className="text-sm font-medium text-zinc-500 mb-1">{title}</p>
             <h3 className="text-3xl font-bold text-zinc-900 tracking-tight">
-                {fmt(Number(value))}
+                {fmt(Number(value ?? 0))}
             </h3>
             {sub && <p className="text-xs text-zinc-400 mt-2">{sub}</p>}
         </div>
-        {/* Decorative gradient blob */}
         <div
             className="absolute -right-6 -bottom-6 h-24 w-24 rounded-full opacity-0 group-hover:opacity-10 transition-opacity duration-500 blur-2xl"
             style={{ backgroundColor: color }}
@@ -186,7 +158,6 @@ const KpiCard = ({
     </motion.div>
 );
 
-// 3. Chart Container
 const ChartCard = ({
     title,
     subtitle,
@@ -226,7 +197,6 @@ const ChartCard = ({
     </motion.div>
 );
 
-// 4. Custom Tooltip
 const CustomTooltip = ({ active, payload, label }: any) => {
     if (!active || !payload?.length) return null;
     return (
@@ -273,20 +243,44 @@ const DashboardSkeleton = () => (
     </div>
 );
 
+// ── ERROR STATE ───────────────────────────────────────────────────────────────
+
+const ErrorState = ({ onRetry }: { onRetry: () => void }) => (
+    <div className="flex flex-col items-center justify-center min-h-64 gap-4 py-20">
+        <div className="h-12 w-12 rounded-full bg-red-50 flex items-center justify-center">
+            <span className="text-red-500 text-xl">!</span>
+        </div>
+        <div className="text-center">
+            <p className="text-zinc-700 font-medium">Could not load dashboard data</p>
+            <p className="text-zinc-400 text-sm mt-1">There was a problem fetching your stats.</p>
+        </div>
+        <button
+            onClick={onRetry}
+            className="px-4 py-2 bg-orange-50 text-orange-600 border border-orange-200 rounded-lg text-sm font-medium hover:bg-orange-100 transition-colors"
+        >
+            Try again
+        </button>
+    </div>
+);
+
+// ── MAIN COMPONENT ────────────────────────────────────────────────────────────
+
 export default function AdminDashboardStats() {
     const {
         data: statsData,
         isLoading,
+        isError,
         refetch,
         isRefetching,
     } = useQuery({
         queryKey: ["stats"],
         queryFn: () => getStats(),
+        retry: 2,
     });
 
-    const stats: IAdminStats = statsData?.data;
+    // FIX: explicitly type as possibly undefined
+    const stats: IAdminStats | undefined = statsData?.data;
 
-    // ── Data Transformation using useMemo for performance ──
     const chartData = useMemo(() => {
         if (!stats) return null;
 
@@ -294,27 +288,27 @@ export default function AdminDashboardStats() {
             vehicleStatus: [
                 {
                     name: "Available",
-                    value: stats.vehicle.status.available,
+                    value: stats.vehicle?.status?.available ?? 0,
                     color: PALETTE.emerald,
                 },
                 {
                     name: "Rented",
-                    value: stats.vehicle.status.rented,
+                    value: stats.vehicle?.status?.rented ?? 0,
                     color: PALETTE.orange,
                 },
                 {
                     name: "Maintenance",
-                    value: stats.vehicle.status.maintenance,
+                    value: stats.vehicle?.status?.maintenance ?? 0,
                     color: PALETTE.amber,
                 },
                 {
                     name: "Booked",
-                    value: stats.vehicle.status.booked,
+                    value: stats.vehicle?.status?.booked ?? 0,
                     color: PALETTE.blue,
                 },
                 {
                     name: "Retired",
-                    value: stats.vehicle.status.retired,
+                    value: stats.vehicle?.status?.retired ?? 0,
                     color: PALETTE.zinc,
                 },
             ].filter((d) => d.value > 0),
@@ -322,27 +316,27 @@ export default function AdminDashboardStats() {
             bookingStatus: [
                 {
                     name: "Pending",
-                    value: stats.booking.status.pending,
+                    value: stats.booking?.status?.pending ?? 0,
                     fill: PALETTE.amber,
                 },
                 {
                     name: "Confirmed",
-                    value: stats.booking.status.advancePaid,
+                    value: stats.booking?.status?.advancePaid ?? 0,
                     fill: PALETTE.blue,
                 },
                 {
                     name: "Active",
-                    value: stats.booking.status.pickedUp,
+                    value: stats.booking?.status?.pickedUp ?? 0,
                     fill: PALETTE.violet,
                 },
                 {
                     name: "Completed",
-                    value: stats.booking.status.completed,
+                    value: stats.booking?.status?.completed ?? 0,
                     fill: PALETTE.emerald,
                 },
                 {
                     name: "Cancelled",
-                    value: stats.booking.status.cancelled,
+                    value: stats.booking?.status?.cancelled ?? 0,
                     fill: PALETTE.rose,
                 },
             ].filter((d) => d.value > 0),
@@ -350,23 +344,23 @@ export default function AdminDashboardStats() {
             revenue: [
                 {
                     name: "Stripe",
-                    value: stats.payment.method.stripe,
+                    value: stats.payment?.method?.stripe ?? 0,
                     fill: PALETTE.blue,
                 },
                 {
                     name: "SSLCommerz",
-                    value: stats.payment.method.sslcommerz,
+                    value: stats.payment?.method?.sslcommerz ?? 0,
                     fill: PALETTE.dark,
                 },
                 {
                     name: "Cash",
-                    value: stats.payment.method.cash,
+                    value: stats.payment?.method?.cash ?? 0,
                     fill: PALETTE.emerald,
                 },
                 {
                     name: "Mobile Money",
-                    value:
-                        stats.payment.method.bkash + stats.payment.method.nogod,
+                    // FIX: guard both values before adding
+                    value: (stats.payment?.method?.bkash ?? 0) + (stats.payment?.method?.nogod ?? 0),
                     fill: PALETTE.rose,
                 },
             ].filter((d) => d.value > 0),
@@ -374,20 +368,72 @@ export default function AdminDashboardStats() {
             transmission: [
                 {
                     name: "Auto",
-                    value: stats.vehicle.transmission.automatic,
+                    value: stats.vehicle?.transmission?.automatic ?? 0,
                     fill: PALETTE.orange,
                 },
                 {
                     name: "Manual",
-                    value: stats.vehicle.transmission.manual,
+                    value: stats.vehicle?.transmission?.manual ?? 0,
                     fill: PALETTE.slate,
+                },
+            ].filter((d) => d.value > 0),
+
+            paymentStatus: [
+                {
+                    name: "Paid",
+                    value: stats.payment?.status?.paid ?? 0,
+                    color: PALETTE.emerald,
+                },
+                {
+                    name: "Pending",
+                    value: stats.payment?.status?.pending ?? 0,
+                    color: PALETTE.amber,
+                },
+                {
+                    name: "Unpaid",
+                    value: stats.payment?.status?.unpaid ?? 0,
+                    color: PALETTE.zinc,
+                },
+                {
+                    name: "Failed",
+                    value: stats.payment?.status?.failed ?? 0,
+                    color: PALETTE.rose,
+                },
+                {
+                    name: "Refunded",
+                    value: stats.payment?.status?.refunded ?? 0,
+                    color: PALETTE.violet,
+                },
+            ].filter((d) => d.value > 0),
+
+            paymentType: [
+                {
+                    name: "Advance",
+                    value: stats.payment?.type?.advance ?? 0,
+                    color: PALETTE.blue,
+                },
+                {
+                    name: "Final",
+                    value: stats.payment?.type?.final ?? 0,
+                    color: PALETTE.orange,
+                },
+                {
+                    name: "Full",
+                    value: stats.payment?.type?.full ?? 0,
+                    color: PALETTE.cyan,
+                },
+                {
+                    name: "Refund",
+                    value: stats.payment?.type?.refund ?? 0,
+                    color: PALETTE.violet,
                 },
             ].filter((d) => d.value > 0),
         };
     }, [stats]);
 
     if (isLoading) return <DashboardSkeleton />;
-    if (!stats || !chartData) return null;
+    if (isError) return <ErrorState onRetry={refetch} />;
+    if (!stats || !chartData) return <ErrorState onRetry={refetch} />;
 
     return (
         <div className="bg-zinc-50/50 min-h-screen pb-10">
@@ -403,221 +449,192 @@ export default function AdminDashboardStats() {
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                     <KpiCard
                         title="Total Revenue"
-                        value={stats.payment.total}
+                        value={stats.payment?.totalRevenue}
                         icon={DollarSign}
                         color={PALETTE.emerald}
-                        sub={`${stats.payment.status.paid} successful transactions`}
+                        sub={`${stats.payment?.status?.paid ?? 0} successful transactions`}
                     />
                     <KpiCard
                         title="Total Bookings"
-                        value={stats.booking.total}
+                        value={stats.booking?.total}
                         icon={CalendarCheck}
                         color={PALETTE.blue}
-                        // trend="12% vs last month"
-                        sub={`${stats.booking.status.pending} pending approval`}
+                        sub={`${stats.booking?.status?.pending ?? 0} pending approval`}
                     />
                     <KpiCard
                         title="Fleet Size"
-                        value={stats.vehicle.total}
+                        value={stats.vehicle?.total}
                         icon={Car}
                         color={PALETTE.orange}
-                        sub={`${stats.vehicle.status.available} currently available`}
+                        sub={`${stats.vehicle?.status?.available ?? 0} currently available`}
                     />
                     <KpiCard
                         title="Active Users"
-                        value={stats.user.customer}
+                        value={stats.user?.customer}
                         icon={Users}
                         color={PALETTE.violet}
                         sub="Registered customers"
                     />
                 </div>
 
-                {/* ── Section 2: Operational Overview (Bento Grid) ── */}
+                {/* ── Section 2: Operational Overview ── */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Main Chart: Booking Pipeline */}
                     <ChartCard
                         title="Booking Pipeline"
                         subtitle="Distribution of current booking statuses"
                         className="lg:col-span-2 shadow-sm border-zinc-200"
                     >
-                        <ResponsiveContainer width="100%" height={300}>
-                            <BarChart
-                                data={chartData.bookingStatus}
-                                layout="vertical"
-                                margin={{
-                                    top: 10,
-                                    right: 30,
-                                    left: 0,
-                                    bottom: 0,
-                                }}
-                                barSize={32}
-                            >
-                                <CartesianGrid
-                                    strokeDasharray="3 3"
-                                    horizontal={false}
-                                    stroke="#E4E4E7"
-                                />
-                                <XAxis type="number" hide />
-                                <YAxis
-                                    dataKey="name"
-                                    type="category"
-                                    tick={{
-                                        fontSize: 12,
-                                        fill: "#52525B",
-                                        fontWeight: 500,
-                                    }}
-                                    width={100}
-                                    axisLine={false}
-                                    tickLine={false}
-                                />
-                                <Tooltip
-                                    cursor={{ fill: "#F4F4F5", radius: 4 }}
-                                    content={<CustomTooltip />}
-                                />
-                                <Bar
-                                    dataKey="value"
-                                    name="Bookings"
-                                    radius={[0, 4, 4, 0]}
-                                    animationDuration={1000}
+                        {chartData.bookingStatus.length > 0 ? (
+                            <ResponsiveContainer width="100%" height={300}>
+                                <BarChart
+                                    data={chartData.bookingStatus}
+                                    layout="vertical"
+                                    margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                                    barSize={32}
                                 >
-                                    {chartData.bookingStatus.map(
-                                        (entry, index) => (
-                                            <Cell
-                                                key={`cell-${index}`}
-                                                fill={entry.fill}
-                                            />
-                                        ),
-                                    )}
-                                </Bar>
-                            </BarChart>
-                        </ResponsiveContainer>
+                                    <CartesianGrid
+                                        strokeDasharray="3 3"
+                                        horizontal={false}
+                                        stroke="#E4E4E7"
+                                    />
+                                    <XAxis type="number" hide />
+                                    <YAxis
+                                        dataKey="name"
+                                        type="category"
+                                        tick={{ fontSize: 12, fill: "#52525B", fontWeight: 500 }}
+                                        width={100}
+                                        axisLine={false}
+                                        tickLine={false}
+                                    />
+                                    <Tooltip
+                                        cursor={{ fill: "#F4F4F5", radius: 4 }}
+                                        content={<CustomTooltip />}
+                                    />
+                                    <Bar
+                                        dataKey="value"
+                                        name="Bookings"
+                                        radius={[0, 4, 4, 0]}
+                                        animationDuration={1000}
+                                    >
+                                        {chartData.bookingStatus.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.fill} />
+                                        ))}
+                                    </Bar>
+                                </BarChart>
+                            </ResponsiveContainer>
+                        ) : (
+                            <div className="flex items-center justify-center h-full text-zinc-400 text-sm">
+                                No booking data available
+                            </div>
+                        )}
                     </ChartCard>
 
-                    {/* Secondary Chart: Vehicle Status */}
                     <ChartCard
-                        title="Fleet Status"
-                        subtitle="Real-time availability"
-                    >
-                        <div className="relative h-62.5 w-full flex items-center justify-center">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <PieChart>
-                                    <Pie
-                                        data={chartData.vehicleStatus}
-                                        cx="50%"
-                                        cy="50%"
-                                        innerRadius={60}
-                                        outerRadius={85}
-                                        paddingAngle={5}
-                                        dataKey="value"
-                                    >
-                                        {chartData.vehicleStatus.map(
-                                            (entry, index) => (
-                                                <Cell
-                                                    key={`cell-${index}`}
-                                                    fill={entry.color}
-                                                    strokeWidth={0}
-                                                />
-                                            ),
-                                        )}
-                                    </Pie>
-                                    <Tooltip content={<CustomTooltip />} />
-                                </PieChart>
-                            </ResponsiveContainer>
-                            {/* Center Text Overlay */}
-                            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                <span className="text-3xl font-bold text-zinc-800">
-                                    {stats.vehicle.total}
-                                </span>
-                                <span className="text-xs text-zinc-500 uppercase tracking-wider font-semibold">
-                                    Vehicles
-                                </span>
+                        title="Fuel Market"
+                        subtitle="Current pricing rules"
+                        action={
+                            <div className="flex items-center gap-1 text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded">
+                                <Zap className="h-3 w-3" /> Live
                             </div>
-                        </div>
-                        {/* Custom Legend below chart */}
-                        <div className="flex flex-wrap justify-center gap-3 mt-4">
-                            {chartData.vehicleStatus
-                                .slice(0, 3)
-                                .map((item, i) => (
+                        }
+                    >
+                        {/* FIX: guard fuelPrice with fallback empty array */}
+                        {(stats.fuelPrice ?? []).length > 0 ? (
+                            <div className="overflow-y-auto max-h-70 pr-2 space-y-2 scrollbar-thin scrollbar-thumb-zinc-200">
+                                {(stats.fuelPrice ?? []).map((fp, i) => (
                                     <div
                                         key={i}
-                                        className="flex items-center gap-1.5 text-xs text-zinc-600"
+                                        className="flex items-center justify-between py-3 border-b border-zinc-100 last:border-0 group"
                                     >
-                                        <div
-                                            className="w-2.5 h-2.5 rounded-full"
-                                            style={{ background: item.color }}
-                                        />
-                                        {item.name}
+                                        <div className="flex items-center gap-3">
+                                            <div className="h-8 w-8 rounded-full bg-orange-100/50 flex items-center justify-center text-orange-600">
+                                                <Fuel className="h-4 w-4" />
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-semibold text-zinc-800">
+                                                    {fp.fuelType}
+                                                </p>
+                                                <p className="text-[10px] uppercase text-zinc-400 font-bold tracking-wider">
+                                                    Per {fp.unit}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-sm font-bold text-zinc-900">
+                                                ৳{fp.pricePerUnit}
+                                            </p>
+                                            <span className="text-[10px] text-emerald-500 flex items-center justify-end gap-0.5">
+                                                <TrendingUp className="h-3 w-3" /> Updated
+                                            </span>
+                                        </div>
                                     </div>
                                 ))}
-                        </div>
+                            </div>
+                        ) : (
+                            <div className="flex items-center justify-center h-full text-zinc-400 text-sm">
+                                No fuel pricing data
+                            </div>
+                        )}
                     </ChartCard>
                 </div>
 
                 {/* ── Section 3: Financials & Details ── */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {/* Revenue Source */}
                     <ChartCard
                         title="Payment Methods"
                         subtitle="Transaction volume by provider"
                     >
-                        <ResponsiveContainer width="100%" height={220}>
-                            <PieChart>
-                                <Pie
-                                    data={chartData.revenue}
-                                    cx="50%"
-                                    cy="50%"
-                                    outerRadius={80}
-                                    dataKey="value"
-                                >
-                                    {chartData.revenue.map((entry, index) => (
-                                        <Cell
-                                            key={`cell-${index}`}
-                                            fill={entry.fill}
-                                            stroke="white"
-                                            strokeWidth={2}
-                                        />
-                                    ))}
-                                </Pie>
-                                <Tooltip content={<CustomTooltip />} />
-                                <Legend
-                                    iconType="circle"
-                                    layout="vertical"
-                                    verticalAlign="middle"
-                                    align="right"
-                                    wrapperStyle={{
-                                        fontSize: "12px",
-                                        color: "#52525B",
-                                    }}
-                                />
-                            </PieChart>
-                        </ResponsiveContainer>
+                        {chartData.revenue.length > 0 ? (
+                            <ResponsiveContainer width="100%" height={220}>
+                                <PieChart>
+                                    <Pie
+                                        data={chartData.revenue}
+                                        cx="50%"
+                                        cy="50%"
+                                        outerRadius={80}
+                                        dataKey="value"
+                                    >
+                                        {chartData.revenue.map((entry, index) => (
+                                            <Cell
+                                                key={`cell-${index}`}
+                                                fill={entry.fill}
+                                                stroke="white"
+                                                strokeWidth={2}
+                                            />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip content={<CustomTooltip />} />
+                                    <Legend
+                                        iconType="circle"
+                                        layout="vertical"
+                                        verticalAlign="middle"
+                                        align="right"
+                                        wrapperStyle={{ fontSize: "12px", color: "#52525B" }}
+                                    />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        ) : (
+                            <div className="flex items-center justify-center h-full text-zinc-400 text-sm">
+                                No payment data available
+                            </div>
+                        )}
                     </ChartCard>
 
-                    {/* User Roles */}
-                    <ChartCard
-                        title="Platform Users"
-                        subtitle="Role distribution"
-                    >
+                    <ChartCard title="Platform Users" subtitle="Role distribution">
                         <div className="space-y-4 mt-2">
                             {[
                                 {
                                     label: "Customers",
-                                    count: stats.user.customer,
+                                    count: stats.user?.customer ?? 0,
                                     color: PALETTE.blue,
                                     icon: Users,
                                 },
                                 {
                                     label: "Admins",
-                                    count: stats.user.admin,
+                                    count: stats.user?.admin ?? 0,
                                     color: PALETTE.orange,
                                     icon: Star,
                                 },
-                                // {
-                                //     label: "Staff",
-                                //     count: stats.user.user,
-                                //     color: PALETTE.zinc,
-                                //     icon: Activity,
-                                // },
                             ].map((role, i) => (
                                 <div
                                     key={i}
@@ -638,48 +655,159 @@ export default function AdminDashboardStats() {
                             ))}
                         </div>
                     </ChartCard>
-
-                    {/* Fuel Market Watch */}
-                    <ChartCard
-                        title="Fuel Market"
-                        subtitle="Current pricing rules"
-                        action={
-                            <div className="flex items-center gap-1 text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded">
-                                <Zap className="h-3 w-3" /> Live
-                            </div>
-                        }
-                    >
-                        <div className="overflow-y-auto max-h-55 pr-2 space-y-2 scrollbar-thin scrollbar-thumb-zinc-200">
-                            {stats.fuelPrice.map((fp, i) => (
-                                <div
-                                    key={i}
-                                    className="flex items-center justify-between py-3 border-b border-zinc-100 last:border-0 group"
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-8 w-8 rounded-full bg-orange-100/50 flex items-center justify-center text-orange-600">
-                                            <Fuel className="h-4 w-4" />
-                                        </div>
-                                        <div>
-                                            <p className="text-sm font-semibold text-zinc-800">
-                                                {fp.fuelType}
-                                            </p>
-                                            <p className="text-[10px] uppercase text-zinc-400 font-bold tracking-wider">
-                                                Per {fp.unit}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="text-sm font-bold text-zinc-900">
-                                            ৳{fp.pricePerUnit}
-                                        </p>
-                                        <span className="text-[10px] text-emerald-500 flex items-center justify-end gap-0.5">
-                                            <TrendingUp className="h-3 w-3" />{" "}
-                                            Updated
+                    
+                    <ChartCard title="Fleet Status" subtitle="Real-time availability">
+                        {chartData.vehicleStatus.length > 0 ? (
+                            <>
+                                <div className="relative h-62.5 w-full flex items-center justify-center">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <PieChart>
+                                            <Pie
+                                                data={chartData.vehicleStatus}
+                                                cx="50%"
+                                                cy="50%"
+                                                innerRadius={60}
+                                                outerRadius={85}
+                                                paddingAngle={5}
+                                                dataKey="value"
+                                            >
+                                                {chartData.vehicleStatus.map((entry, index) => (
+                                                    <Cell
+                                                        key={`cell-${index}`}
+                                                        fill={entry.color}
+                                                        strokeWidth={0}
+                                                    />
+                                                ))}
+                                            </Pie>
+                                            <Tooltip content={<CustomTooltip />} />
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                        <span className="text-3xl font-bold text-zinc-800">
+                                            {stats.vehicle?.total ?? 0}
+                                        </span>
+                                        <span className="text-xs text-zinc-500 uppercase tracking-wider font-semibold">
+                                            Vehicles
                                         </span>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
+                                <div className="flex flex-wrap justify-center gap-3 mt-4">
+                                    {chartData.vehicleStatus.slice(0, 3).map((item, i) => (
+                                        <div key={i} className="flex items-center gap-1.5 text-xs text-zinc-600">
+                                            <div
+                                                className="w-2.5 h-2.5 rounded-full"
+                                                style={{ background: item.color }}
+                                            />
+                                            {item.name}
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
+                        ) : (
+                            <div className="flex items-center justify-center h-full text-zinc-400 text-sm">
+                                No vehicle data available
+                            </div>
+                        )}
+                    </ChartCard>
+                </div>
+                {/* ── Section 4: Payment Status & Type ── */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Payment Status Pie */}
+                    <ChartCard
+                        title="Payment Status"
+                        subtitle="Breakdown by transaction status"
+                    >
+                        {chartData.paymentStatus.length > 0 ? (
+                            <div className="flex flex-col items-center">
+                                <ResponsiveContainer width="100%" height={220}>
+                                    <PieChart>
+                                        <Pie
+                                            data={chartData.paymentStatus}
+                                            cx="50%"
+                                            cy="50%"
+                                            innerRadius={55}
+                                            outerRadius={85}
+                                            paddingAngle={4}
+                                            dataKey="value"
+                                        >
+                                            {chartData.paymentStatus.map((entry, index) => (
+                                                <Cell
+                                                    key={`cell-${index}`}
+                                                    fill={entry.color}
+                                                    strokeWidth={0}
+                                                />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip content={<CustomTooltip />} />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                                <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-2">
+                                    {chartData.paymentStatus.map((item, i) => (
+                                        <div key={i} className="flex items-center gap-1.5 text-xs text-zinc-600">
+                                            <div
+                                                className="w-2.5 h-2.5 rounded-full shrink-0"
+                                                style={{ background: item.color }}
+                                            />
+                                            <span>{item.name}</span>
+                                            <span className="font-semibold text-zinc-800">{fmt(item.value)}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="flex items-center justify-center h-full text-zinc-400 text-sm">
+                                No payment status data
+                            </div>
+                        )}
+                    </ChartCard>
+
+                    {/* Payment Type Pie */}
+                    <ChartCard
+                        title="Payment Types"
+                        subtitle="Breakdown by transaction type"
+                    >
+                        {chartData.paymentType.length > 0 ? (
+                            <div className="flex flex-col items-center">
+                                <ResponsiveContainer width="100%" height={220}>
+                                    <PieChart>
+                                        <Pie
+                                            data={chartData.paymentType}
+                                            cx="50%"
+                                            cy="50%"
+                                            innerRadius={55}
+                                            outerRadius={85}
+                                            paddingAngle={4}
+                                            dataKey="value"
+                                        >
+                                            {chartData.paymentType.map((entry, index) => (
+                                                <Cell
+                                                    key={`cell-${index}`}
+                                                    fill={entry.color}
+                                                    strokeWidth={0}
+                                                />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip content={<CustomTooltip />} />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                                <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-2">
+                                    {chartData.paymentType.map((item, i) => (
+                                        <div key={i} className="flex items-center gap-1.5 text-xs text-zinc-600">
+                                            <div
+                                                className="w-2.5 h-2.5 rounded-full shrink-0"
+                                                style={{ background: item.color }}
+                                            />
+                                            <span>{item.name}</span>
+                                            <span className="font-semibold text-zinc-800">{fmt(item.value)}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="flex items-center justify-center h-full text-zinc-400 text-sm">
+                                No payment type data
+                            </div>
+                        )}
                     </ChartCard>
                 </div>
             </motion.div>
