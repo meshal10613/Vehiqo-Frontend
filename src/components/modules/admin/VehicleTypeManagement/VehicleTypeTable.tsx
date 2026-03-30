@@ -95,8 +95,8 @@ export default function VehicleTypeTable({
 
     const { data: vehicleCategoryData, isLoading: isLoadingVehicleCategory } =
         useQuery({
-            queryKey: ["vehicle-category", queryString],
-            queryFn: () => getAllVehicleCategory(queryString),
+            queryKey: ["vehicle-category"],
+            queryFn: () => getAllVehicleCategory("limit=100"),
         });
 
     const vehicleCategory = vehicleCategoryData?.data ?? [];
@@ -155,7 +155,12 @@ export default function VehicleTypeTable({
             <DataTable
                 data={vehicleType}
                 columns={vehicleTypeColumn}
-                isLoading={isLoading || isFetching || isRouteRefreshPending}
+                isLoading={
+                    isLoading ||
+                    isFetching ||
+                    isRouteRefreshPending ||
+                    isLoadingVehicleCategory
+                }
                 emptyMessage="No vehicle types found."
                 sorting={{
                     state: optimisticSortingState,

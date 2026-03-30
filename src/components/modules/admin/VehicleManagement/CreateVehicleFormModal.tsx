@@ -127,7 +127,7 @@ export default function CreateVehicleFormModal({
                     .filter(Boolean);
                 if (featuresArray.length > 0) payload.features = featuresArray;
             }
-            console.log(payload);
+
             const result = await mutateAsync(payload);
             if (!result?.success) {
                 toast.error(result?.message || "Failed to create vehicle");
@@ -165,8 +165,8 @@ export default function CreateVehicleFormModal({
         }
 
         for (const file of files) {
-            if (file.size > 5 * 1024 * 1024) {
-                setImageError("Each image must be less than 5MB");
+            if (file.size > 2 * 1024 * 1024) {
+                setImageError("Each image must be less than 2MB");
                 return;
             }
             if (
@@ -187,7 +187,7 @@ export default function CreateVehicleFormModal({
             ...prev,
             isTouched: true,
         }));
-        setImageFiles((prev) => [...prev, ...files]);
+        
         files.forEach((file) => {
             const reader = new FileReader();
             reader.onload = () =>

@@ -76,8 +76,6 @@ const InfoRow = ({
     </div>
 );
 
-// ── ImageCarousel ─────────────────────────────────────────────────────────────
-
 const ImageCarousel = ({ images, alt }: { images: string[]; alt: string }) => {
     const [active, setActive] = useState(0);
 

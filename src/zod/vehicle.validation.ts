@@ -9,8 +9,8 @@ const vehicleImageArray = z
     .array(
         z
             .instanceof(File, { message: "Each image must be a file" })
-            .refine((file) => file.size <= 5 * 1024 * 1024, {
-                message: "Each image must be less than 5MB",
+            .refine((file) => file.size <= 2 * 1024 * 1024, {
+                message: "Each image must be less than 2MB",
             })
             .refine(
                 (file) =>

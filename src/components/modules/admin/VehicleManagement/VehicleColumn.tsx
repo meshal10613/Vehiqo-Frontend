@@ -93,7 +93,7 @@ export const vehicleColumn: ColumnDef<IVehicle>[] = [
         cell: ({ row }) => (
             <div className="flex flex-col">
                 <span className="text-sm font-semibold text-[#FF5100]">
-                    ${row.original.pricePerDay.toLocaleString()}
+                    ৳{row.original.pricePerDay.toLocaleString()}
                 </span>
             </div>
         ),
