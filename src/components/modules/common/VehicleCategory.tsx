@@ -18,7 +18,7 @@ function getVehiclesForCategory(category: IVehicleCategory): IVehicle[] {
     for (const type of category.types) {
         for (const v of type.vehicles ?? []) {
             if (
-                !seen.has(v.id) 
+                !seen.has(v.id)
                 // && v?.status === ("AVAILABLE" as VehicleStatusEnum)
             ) {
                 seen.add(v.id);
@@ -59,7 +59,7 @@ function TabPill({
             onClick={onClick}
             className={`
                 relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold
-                transition-all duration-200 cursor-pointer whitespace-nowrap shrink-0
+                transition-all duration-200 cursor-pointer
                 ${
                     active
                         ? "bg-[#FF5100] text-white shadow-md shadow-[#FF5100]/25"
@@ -237,7 +237,7 @@ export default function VehicleCategory({
 
                 {/* ── Tab Pills ── */}
                 <motion.div
-                    className="flex items-center justify-center gap-2.5 overflow-x-auto pb-2 mb-8 scrollbar-none"
+                    className="flex flex-wrap items-center justify-center gap-2.5 pb-2 mb-8"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{
@@ -255,15 +255,23 @@ export default function VehicleCategory({
                     />
 
                     {/* Per-category tabs */}
-                    {vehicleCategory.map((cat) => (
-                        <TabPill
-                            key={cat.id}
-                            label={cat.name}
-                            count={categoryVehicleMap.get(cat.id)?.length ?? 0}
-                            active={activeId === cat.id}
-                            onClick={() => setActiveId(cat.id)}
-                        />
-                    ))}
+                    {vehicleCategory
+                        .filter(
+                            (cat) =>
+                                (categoryVehicleMap.get(cat.id)?.length ?? 0) >
+                                0,
+                        )
+                        .map((cat) => (
+                            <TabPill
+                                key={cat.id}
+                                label={cat.name}
+                                count={
+                                    categoryVehicleMap.get(cat.id)?.length ?? 0
+                                }
+                                active={activeId === cat.id}
+                                onClick={() => setActiveId(cat.id)}
+                            />
+                        ))}
                 </motion.div>
 
                 {/* ── Vehicles ── */}

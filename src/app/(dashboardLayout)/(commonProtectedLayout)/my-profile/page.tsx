@@ -15,8 +15,6 @@ export default async function MyProfilePage() {
     await queryClient.prefetchQuery({
         queryKey: ["user"],
         queryFn: () => getUserInfo(),
-        staleTime: 1000 * 60 * 60, // 1 hour
-        gcTime: 1000 * 60 * 60 * 6, // 6 hour
     });
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>

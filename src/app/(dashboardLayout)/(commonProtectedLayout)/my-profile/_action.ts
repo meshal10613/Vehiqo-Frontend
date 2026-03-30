@@ -2,7 +2,6 @@
 
 import { httpClient } from "../../../../lib/axios/httpClient";
 import { ApiErrorResponse, ApiResponse } from "../../../../types/api.type";
-import { ILoginResponse } from "../../../../types/auth.type";
 import { IUser } from "../../../../types/user.type";
 import {
     IUpdateUserPayload,

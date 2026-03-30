@@ -93,6 +93,58 @@ export default function EditMyProfileModal({
 
     const form = useForm({
         defaultValues: getDefaultValues(user),
+        // onSubmit: async ({ value }) => {
+        //     const formData = new FormData();
+
+        //     // Only append fields that differ from original user data
+        //     // (or are newly set — all optional, send only what changed)
+        //     if (value.name && value.name !== user.name)
+        //         formData.append("name", value.name);
+        //     if (value.mobileNumber && value.mobileNumber !== user.mobileNumber)
+        //         formData.append("mobileNumber", value.mobileNumber);
+        //     if (value.gender && value.gender !== user.gender)
+        //         formData.append("gender", value.gender);
+        //     if (
+        //         value.licenseNumber &&
+        //         value.licenseNumber !== user.licenseNumber
+        //     )
+        //         formData.append("licenseNumber", value.licenseNumber);
+        //     if (value.nidNumber && value.nidNumber !== user.nidNumber)
+        //         formData.append("nidNumber", value.nidNumber);
+
+        //     // Nothing changed
+        //     if ([...formData.entries()].length === 0) {
+        //         toast.info("No changes to save.");
+        //         return;
+        //     }
+
+        //     const toastId = toast.loading("Updating profile...");
+
+        //     try {
+        //         const payload = Object.fromEntries(formData.entries());
+        //         const result = (await mutateAsync(payload)) as any;
+
+        //         if (!result?.success) {
+        //             toast.error(result?.message || "Failed to update profile", {
+        //                 id: toastId,
+        //             });
+        //             return;
+        //         }
+
+        //         toast.success(result.message || "Profile updated!", {
+        //             id: toastId,
+        //         });
+
+        //         // resetForm();
+        //         void queryClient.invalidateQueries({ queryKey: ["user"] });
+        //         onOpenChange(false);
+        //     } catch (error: any) {
+        //         toast.error(error?.message || "Something went wrong.", {
+        //             id: toastId,
+        //         });
+        //     }
+        // },
+
         onSubmit: async ({ value }) => {
             const formData = new FormData();
 
@@ -112,7 +164,6 @@ export default function EditMyProfileModal({
             if (value.nidNumber && value.nidNumber !== user.nidNumber)
                 formData.append("nidNumber", value.nidNumber);
 
-            // Nothing changed
             if ([...formData.entries()].length === 0) {
                 toast.info("No changes to save.");
                 return;
@@ -120,11 +171,40 @@ export default function EditMyProfileModal({
 
             const toastId = toast.loading("Updating profile...");
 
+            // ✅ Snapshot current data in case we need to roll back
+            const previousUser = queryClient.getQueryData<IUser>(["user"]);
+
+            // ✅ Optimistically update the cache immediately — UI updates instantly
+            queryClient.setQueryData<IUser>(["user"], (old) => {
+                if (!old) return old;
+                return {
+                    ...old,
+                    ...(value.name !== user.name && { name: value.name }),
+                    ...(value.mobileNumber !== user.mobileNumber && {
+                        mobileNumber: value.mobileNumber,
+                    }),
+                    ...(value.gender !== user.gender && {
+                        gender: value.gender,
+                    }),
+                    ...(value.licenseNumber !== user.licenseNumber && {
+                        licenseNumber: value.licenseNumber,
+                    }),
+                    ...(value.nidNumber !== user.nidNumber && {
+                        nidNumber: value.nidNumber,
+                    }),
+                };
+            });
+
+            // ✅ Close modal immediately — user sees changes right away
+            onOpenChange(false);
+
             try {
                 const payload = Object.fromEntries(formData.entries());
                 const result = (await mutateAsync(payload)) as any;
 
                 if (!result?.success) {
+                    // ✅ Roll back on failure
+                    queryClient.setQueryData(["user"], previousUser);
                     toast.error(result?.message || "Failed to update profile", {
                         id: toastId,
                     });
@@ -135,10 +215,11 @@ export default function EditMyProfileModal({
                     id: toastId,
                 });
 
-                resetForm();
-                onOpenChange(false);
+                // Reconcile with server in background — no await needed
                 void queryClient.invalidateQueries({ queryKey: ["user"] });
             } catch (error: any) {
+                // ✅ Roll back on error too
+                queryClient.setQueryData(["user"], previousUser);
                 toast.error(error?.message || "Something went wrong.", {
                     id: toastId,
                 });

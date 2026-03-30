@@ -74,10 +74,10 @@ export async function getUserInfo() {
                 "Content-Type": "application/json",
                 Cookie: `accessToken=${accessToken}; better-auth.session_token=${sessionToken}`,
             },
-            next: {
-                tags: ["user"],
-                revalidate: 60, // cache for 60 seconds
-            },
+            // next: {
+            //     tags: ["user"],
+            //     revalidate: 60, // cache for 60 seconds
+            // },
         });
 
         if (!res.ok) {

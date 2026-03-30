@@ -303,7 +303,7 @@ export default function CreateVehicleFormModal({
                                             : "Upload Images"}
                                     </Button>
                                     <p className="text-[11px] text-zinc-400">
-                                        JPG, PNG or WEBP · Max 5MB each
+                                        JPG, PNG or WEBP · Max 2MB each
                                     </p>
                                 </div>
                                 <form.Field
