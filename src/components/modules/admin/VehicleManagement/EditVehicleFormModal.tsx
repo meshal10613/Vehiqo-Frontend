@@ -230,8 +230,8 @@ export default function EditVehicleFormModal({
             return;
         }
         for (const file of files) {
-            if (file.size > 5 * 1024 * 1024) {
-                setImageError("Each image must be less than 5MB");
+            if (file.size > 2 * 1024 * 1024) {
+                setImageError("Each image must be less than 2MB");
                 return;
             }
             if (
@@ -377,7 +377,7 @@ export default function EditVehicleFormModal({
                                             : "Upload Images"}
                                     </Button>
                                     <p className="text-[11px] text-zinc-400">
-                                        JPG, PNG or WEBP · Max 5MB each
+                                        JPG, PNG or WEBP · Max 2MB each
                                     </p>
                                 </div>
                                 {imageError && (

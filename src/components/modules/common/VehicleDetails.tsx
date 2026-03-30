@@ -38,6 +38,8 @@ import { cn } from "@/lib/utils";
 import { BookingModal } from "./BookingModal";
 import { IBooking } from "../../../types/booking.type";
 import Reviews from "../home/Reviews";
+import { UserRoleEnum } from "../../../types/enum.type";
+import { toast } from "sonner";
 
 function capitalize(s: string) {
     return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
@@ -649,6 +651,11 @@ export default function VehicleDetails({ id }: { id: string }) {
     const handleBookNow = () => {
         if (!user) {
             setAuthModal(true);
+        } else if (user.role === UserRoleEnum.ADMIN) {
+            toast.error("Admins cannot book vehicles.", {
+                duration: 2000,
+            });
+            return;
         } else if (
             vehicle?.vehicleType?.requiresLicense &&
             !user.licenseNumber
