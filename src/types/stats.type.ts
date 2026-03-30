@@ -3,6 +3,7 @@ export interface IPublicStats {
     vehicleCategory: number;
     vehicle: number;
     review: number;
+    rating: number;
 }
 
 export interface ICustomerStats {

@@ -23,13 +23,14 @@ export default async function Home() {
         vehicleCategory: 0,
         vehicle: 0,
         review: 0,
+        rating: 0
     };
     const vehicleCategory: IVehicleCategory[] | [] = category.data ?? [];
     const reviews: IReview[] = review.data ?? [];
 
     return (
         <div>
-            <Banner/>
+            <Banner stat={stat}/>
             <VehicleCategory vehicleCategory={vehicleCategory} />
             <Stats stat={stat} />
             <Faq/>
